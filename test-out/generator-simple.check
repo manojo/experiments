@@ -9,7 +9,6 @@ val x10 = if (x2) {
 var x5 : Int = x0
 val x8 = while (x5 < x1) {
 x3 = x5
-()
 x5 = x5 + 1
 }
 x8
@@ -37,7 +36,6 @@ var x31 : Int = x26
 val x35 = while (x31 < x27) {
 val x32 = x31 * 2
 x29 = x32
-()
 x31 = x31 + 1
 }
 x35
@@ -66,7 +64,6 @@ val x64 = while (x59 < x55) {
 val x60 = x57
 val x61 = x60 + x59
 x57 = x61
-()
 x59 = x59 + 1
 }
 x64
@@ -102,7 +99,6 @@ x87 = x93
 } else {
 ()
 }
-x96
 x89 = x89 + 1
 }
 x98
@@ -131,7 +127,6 @@ val x132 = while (x127 < x123) {
 val x128 = x125
 val x129 = x128 + x127
 x125 = x129
-()
 x127 = x127 + 1
 }
 x132
@@ -151,7 +146,6 @@ x125 = x139
 } else {
 ()
 }
-x142
 x135 = x135 + 1
 }
 x144
@@ -184,14 +178,12 @@ val x189 = while (x184 < x181) {
 val x185 = x179
 val x186 = x185 + x184
 x179 = x186
-()
 x184 = x184 + 1
 }
 x189
 } else {
 ()
 }
-x191
 x181 = x181 + 1
 }
 x193
@@ -259,40 +251,70 @@ compilation: ok
 /*****************************************
   Emitting Generated Code                  
 *******************************************/
-class test6b extends ((Int, Int)=>(Int)) {
+class test9 extends ((Int, Int)=>(Int)) {
 def apply(x269:Int, x270:Int): Int = {
 var x272: Int = 0
 val x271 = x269 < x270
-val x288 = if (x271) {
+val x284 = if (x271) {
 var x274 : Int = x269
-val x286 = while (x274 < x270) {
-val x275 = x269 < x274
-val x284 = if (x275) {
-var x277 : Int = x269
-val x282 = while (x277 < x274) {
+val x282 = while (x274 < x270) {
 val x278 = x272
+val x275 = x274 * 2
+val x276 = x275 + 1
+val x277 = x276 * 3
 val x279 = x278 + x277
 x272 = x279
-()
-x277 = x277 + 1
-}
-true
-} else {
-false
-}
-()
 x274 = x274 + 1
 }
-true
+x282
 } else {
-false
+()
 }
-val x289 = x272
-x289
+val x285 = x272
+x285
 }
 }
 /*****************************************
   End of Generated Code                  
 *******************************************/
 compilation: ok
-20
+297
+/*****************************************
+  Emitting Generated Code                  
+*******************************************/
+class test10 extends ((Int)=>(Int)) {
+def apply(x305:Int): Int = {
+var x307: Int = 0
+val x306 = 1 < x305
+val x324 = if (x306) {
+var x309 : Int = 1
+val x322 = while (x309 < x305) {
+val x310 = 1 < x309
+val x320 = if (x310) {
+var x312 : Int = 1
+val x318 = while (x312 < x309) {
+val x314 = x307
+val x313 = x309 * x312
+val x315 = x314 + x313
+x307 = x315
+x312 = x312 + 1
+}
+x318
+} else {
+()
+}
+x309 = x309 + 1
+}
+x322
+} else {
+()
+}
+val x325 = x307
+x325
+}
+}
+/*****************************************
+  End of Generated Code                  
+*******************************************/
+compilation: ok
+870

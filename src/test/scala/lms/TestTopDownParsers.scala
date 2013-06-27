@@ -12,10 +12,11 @@ import java.io.FileOutputStream
 trait GenCharParsersProg extends TokenParsers with Structs{
 
   //some basic structs
-  type Lettah = Record { val left: Char; val right: Char }
+/*  type Lettah = Record { val left: Char; val right: Char }
   def Lettah(l: Rep[Char], r: Rep[Char]): Rep[Lettah] = new Record {
     val left = l; val right = r
   }
+*/
 
   def test1(in: Rep[Array[Char]]): Rep[(Char,Int)] = {
     var s = make_tuple2(unit('a'), unit(-1))
@@ -70,7 +71,7 @@ trait GenCharParsersProg extends TokenParsers with Structs{
   }
 
   //a simple map
-  def test8(in: Rep[Array[Char]], i: Rep[Int]): Rep[(Lettah,Int)] = {
+/*  def test8(in: Rep[Array[Char]], i: Rep[Int]): Rep[(Lettah,Int)] = {
     val l = Lettah(unit('a'), unit('a'))
     var s = make_tuple2(l, unit(-1))
     val parser = (letter(in)~letter(in) ^^ {x: Rep[(Char, Char)] =>
@@ -80,7 +81,7 @@ trait GenCharParsersProg extends TokenParsers with Structs{
     parser{x: Rep[(Lettah, Int)] => s = x}
     s
   }
-
+*/
   //or
   def test9(in: Rep[Array[Char]]): Rep[(Char,Int)] = {
     var s = make_tuple2(unit('a'), unit(-1))

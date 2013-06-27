@@ -12,13 +12,6 @@ trait GeneratorProg extends GeneratorOps with NumericOps
   with Structs with MiscOps with ArrayOps with OverloadHack
   {
 
-  type Complex = Record { val re: Double; val im: Double }
-  def Complex(r: Rep[Double], i: Rep[Double]): Rep[Complex] = new Record { val re = r; val im = i }
-
-  def infix_+(x: Rep[Complex], y: Rep[Complex])(implicit o: Overloaded1): Rep[Complex] = Complex(x.re + y.re, x.im + y.im)
-  def infix_-(x: Rep[Complex], y: Rep[Complex])(implicit o: Overloaded1): Rep[Complex] = Complex(x.re - y.re, x.im - y.im)
-  def infix_toDouble(x: Rep[Int]): Rep[Double] = x.asInstanceOf[Rep[Double]]
-
   def test1(start: Rep[Int], end: Rep[Int]) = {
     val g = range(start,end)
 
@@ -78,18 +71,6 @@ trait GeneratorProg extends GeneratorOps with NumericOps
     s
   }
 
-
-  //a flatMap!!!
-  def test6b(start: Rep[Int], end: Rep[Int]) = {
-    val f = rangeb(start, end).flatMap{i:Rep[Int] =>
-      rangeb(start,i)
-    }
-
-    var s = unit(0)
-    f{ x:Rep[Int] => s = s+x }
-    s
-  }
-
   //gen-ing a single elem from a list
   def test7(start: Rep[Int], end: Rep[Int]) = {
     val a : Rep[Array[Int]] = Array(1,2,3)
@@ -141,7 +122,7 @@ trait GeneratorProg extends GeneratorOps with NumericOps
 
 }
 
-trait ArrayProg extends GeneratorOps with NumericOps
+/*trait ArrayProg extends GeneratorOps with NumericOps
   with OrderingOps with PrimitiveOps with Equal
   with Structs with MiscOps with TupleOps with ArrayOps with OverloadHack{
 
@@ -208,7 +189,7 @@ trait ArrayProg extends GeneratorOps with NumericOps
 
     println(costMatrix(0 * (in.length + unit(1)) + in.length))
   }
-}
+}*/
 
 class TestGeneratorOps extends FileDiffSuite {
 
@@ -270,11 +251,6 @@ class TestGeneratorOps extends FileDiffSuite {
         val testc8 = compile(test8)
         scala.Console.println(testc8(1))
 
-        //test6b: a flatMap with boolGenerators
-        codegen.emitSource2(test6b _ , "test6b", printWriter)
-        val testc6b = compile2(test6b)
-        scala.Console.println(testc6b(1,6))
-
         //test9
         codegen.emitSource2(test9 _ , "test9", printWriter)
         val testc9 = compile2(test9)
@@ -291,7 +267,7 @@ class TestGeneratorOps extends FileDiffSuite {
   }
 
 
-  def testgenerator2 = {
+/*  def testgenerator2 = {
     withOutFile(prefix+"generator-array"){
        new ArrayProg with GeneratorOpsExp with NumericOpsExp
         with OrderingOpsExp with PrimitiveOpsExp with EqualExp
@@ -318,9 +294,9 @@ class TestGeneratorOps extends FileDiffSuite {
     }
     assertFileEqualsCheck(prefix+"generator-array")
   }
-
+*/
   //C Code generation!!!
-  def testgenerator1c = {
+/*  def testgenerator1c = {
     withOutFile(prefix+"generator-simple-c"){
        new GeneratorProg with GeneratorOpsExp with NumericOpsExp
         with OrderingOpsExp with PrimitiveOpsExp with EqualExp
@@ -362,4 +338,5 @@ class TestGeneratorOps extends FileDiffSuite {
     }
     assertFileEqualsCheck(prefix+"generator-simple-c")
   }
+  */
 }

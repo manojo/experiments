@@ -4,8 +4,15 @@ scalaOrganization := "org.scala-lang.virtualized"
 
 scalaVersion := "2.10.1"
 
+resolvers ++= Seq(
+  ScalaToolsSnapshots, //needed for custom build of scala test
+  "ScalaTest" at "https://oss.sonatype.org/content/groups/public"
+)
+
 libraryDependencies ++= Seq(
-  "EPFL" %% "lms" % "0.3-SNAPSHOT"
+  "EPFL" %% "lms" % "0.3-SNAPSHOT",
+  "org.scala-lang" % "scala-actors" % "2.10.0", // for ScalaTest
+  "org.scalatest" % "scalatest_2.10.0" % "2.0.M5" % "test"
 )
 
 scalacOptions += "-Yvirtualize"

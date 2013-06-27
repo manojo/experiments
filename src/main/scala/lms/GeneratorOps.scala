@@ -121,7 +121,7 @@ trait ScalaGenGeneratorOps extends ScalaGenWhile with ScalaGenVariables
 
 }
 
-/*
+
 trait CGenGeneratorOps extends CGenWhile with CGenVariables
   with CGenRangeOps with CGenNumericOps with CGenOrderingOps
   with CGenIfThenElse with CGenMiscOps{
@@ -138,4 +138,3 @@ trait CGenGeneratorOps extends CGenWhile with CGenVariables
   }
 
 }
-*/
