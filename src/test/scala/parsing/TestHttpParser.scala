@@ -20,18 +20,24 @@ class TestHttpParser extends HTTP with FunSuite{
   test("response headers: valid"){
 
     val headers = List(
-      """Date: Mon, 23 May 2005 22:38:34 GMT
-""",
-      """Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)
-""",
-      """Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT
-""",
-      """Etag: \"3f80f-1b6-3e1cb03b\"
-""",
-      """Content-Type: text/html; charset=UTF-8
-""",
-      """Content-Length: 131
-"""   )
+   """|Date: Mon, 23 May 2005 22:38:34 GMT
+      |""".stripMargin,
+
+   """|Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)
+      |""".stripMargin,
+
+   """|Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT
+      |""".stripMargin,
+
+   """|Etag: \"3f80f-1b6-3e1cb03b\"
+      |""".stripMargin,
+
+   """|Content-Type: text/html; charset=UTF-8
+      |""".stripMargin,
+
+   """|Content-Length: 131
+      |""".stripMargin
+    )
 
     headers.foreach{h =>
       assert(isSuccessful(header, h))
@@ -59,9 +65,10 @@ class TestHttpParser extends HTTP with FunSuite{
   test("statusMessages: valid"){
     val statusMessages = List(
       """HTTP/1.1 200 OK
-""",
+      |""".stripMargin,
+
       """HTTP/1.1 418 I'm a teapot
-"""
+      |""".stripMargin
     )
 
     statusMessages.foreach{sm =>
@@ -80,7 +87,7 @@ class TestHttpParser extends HTTP with FunSuite{
     }
   }
 
-  test("An almost full response"){
+  test("A response with headers"){
     val httpMessage =
    """|HTTP/1.1 200 OK
       |Date: Mon, 23 May 2005 22:38:34 GMT
@@ -92,7 +99,19 @@ class TestHttpParser extends HTTP with FunSuite{
       |Connection: close
       |
       |""".stripMargin
-    assert(isSuccessful(message, httpMessage))
+
+    val rsp2 = Response(
+      status = 200,
+      connection = "close",
+      contentLength = 131,
+      upgrade = false,
+      chunked = false
+    )
+
+    parseAll(response,httpMessage) match {
+      case s@Success(rsp,_) => assert(rsp == rsp2)
+      case _ => assert(false)
+    }
   }
 
 }
