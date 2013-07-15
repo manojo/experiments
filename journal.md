@@ -11,6 +11,8 @@ of parsing. These callbacks can return error messages which will
 stop the parsing completely.
 One idea to deal with this functionally is to use some sort of
 continuations.
+Answer: the `into` function on Parsers goes quite a long
+way to achieve this :-)
 
 #### 10.07
 
@@ -19,3 +21,14 @@ most relevant state based on characters already seen. The parser combinator
 way is to parse the whole line and then check what the name is. For the length
 of the line in question, don't think it will make a huge difference either way,
 but to keep in mind for testing.
+
+#### 15.07
+
+To be determined: If we parse a content length X > remaining content, do we wait
+for further data? Or is it a failure?
+
+A chunk header is a hex number followed possibly by other chars which should
+be ignored. Is there a buffer overflow attack check to be done here?
+
+There is a need for a ~ operator that does not skip whitespace. The problem is
+that the whiteSpace skipping is managed by the reader, not by the Parsers trait.
