@@ -209,6 +209,56 @@ class TestHttpParser extends HTTP with FunSuite{
     messages foreach { case (message, res) =>
       testWithResult(respAndMessage, message, res)
     }
+  }
+
+  test("urls"){
+    val urls = List(
+      ("http://en.wikipedia.org/wiki/URI_scheme",
+        Url(
+          schema = "http",
+          hostName = "en.wikipedia.org",
+          path = "/wiki/URI_scheme",
+          queryString = "",
+          fragment = "",
+          port = 80
+        )
+      ),
+
+      ("https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions?redirectlocale=en-US&redirectslug=JavaScript%2FGuide%2FRegular_Expressions",
+        Url( schema = "https",
+             hostName = "developer.mozilla.org",
+             path = "/en-US/docs/Web/JavaScript/Guide/Regular_Expressions?redirectlocale=en-US&redirectslug=JavaScript%2FGuide%2FRegular_Expressions",
+             queryString = "redirectlocale=en-US&redirectslug=JavaScript%2FGuide%2FRegular_Expressions",
+             fragment = "",
+             port = 80
+        )
+      ) ,
+      ("http://en.wikipedia.org/wiki/List_of_HTTP_headers#Responses",
+        Url( schema = "http",
+             hostName = "en.wikipedia.org",
+             path = "/wiki/List_of_HTTP_headers#Responses",
+             queryString = "",
+             fragment = "Responses",
+             port = 80
+        )
+      ),
+
+      //TODO: some delimiting characters are lost, to be corrected
+      ("ldap://ldap1.example.net:6666/o=University%20of%20Michigan, c=US??sub?(cn=Babs%20Jensen)",
+        Url( schema = "ldap",
+             hostName = "ldap1.example.net",
+             path = "/o=University%20of%20Michigan,c=US?sub(cn=Babs%20Jensen)",
+             queryString = "sub(cn=Babs%20Jensen)",
+             fragment = "",
+             port = 6666
+        )
+      )
+
+    )
+
+    urls foreach { case (url1, res) =>
+      testWithResult(url, url1, res)
+    }
 
   }
 }

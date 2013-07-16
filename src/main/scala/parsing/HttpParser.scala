@@ -38,6 +38,55 @@ case class Response(
   // keep alive is kept in the connection field
 )
 
+case class Request(
+  //could be an ADT
+  requestType: String,
+  //could be a class with separate fields
+  url: Url,
+  contentLength: Int,
+  connection: String,
+  chunked: Boolean = false,
+  upgrade: Boolean = false
+)
+
+case class Url(
+  schema: String,
+  hostName: String,
+  path: String,
+  queryString: String,
+  fragment: String,
+  port: Int = 80
+)
+
+object HTTP{
+  val requestTypes = List(
+  "connect",
+  "copy",
+  "checkout",
+  "delete",
+  "get",
+  "head",
+  "lock",
+  "merge",
+  "mkactivity",
+  "mkcol",
+  "move",
+  "msearch",
+  "notify",
+  "options",
+  "post",
+  "propfind",
+  "proppatch",
+  "put",
+  "report",
+  "subscribe",
+  "trace",
+  "unlock",
+  "unsubscribe"
+  )
+
+}
+
 class HTTP extends JavaTokenParsers {
 
   //removing cr-lf from whiteSpace
@@ -49,6 +98,9 @@ class HTTP extends JavaTokenParsers {
   val wildRegex = """[^\r\n]*""".r
   val headerName = """[A-Z][\w-]*""".r
   val hexNumber = """[0-9A-F]+""".r
+
+  // 0x23 == '#', 0x74 == 'del'
+  val urlChar = """[^\x00-\x20#\?\x7F]""".r
 
   def hexToInt(s: String) = Integer.parseInt(s, 16)
 
@@ -64,7 +116,6 @@ class HTTP extends JavaTokenParsers {
         //TODO: other cases to be dealt with
       } ^^ {(rsp, _)}
   }
-
 
   /**
    * to match line terminators with ".", suggestion by
@@ -117,6 +168,69 @@ class HTTP extends JavaTokenParsers {
     case hName~prop => collect(hName.toLowerCase, prop)
   }
 
+  /*TODO: the handwritten parser has an order for these which is not alphabetic
+   * coincidence? */
+
+  //TODO: make whiteSpace consuming explicit
+  def requestType: Parser[String] = ("(?i)" + HTTP.requestTypes.mkString("|")).r ^^ {x => x.toLowerCase()}
+  def schema: Parser[String] = "[a-z]+".r
+  def hostName: Parser[String] = "[a-z0-9-.]+".r
+  def host: Parser[Map[String,String]] =
+    hostName ~ opt(":" ~> wholeNumber) ^^ {
+      case x ~ Some(y) => Map("hostName" -> x, "port" -> y)
+      case x ~ None => Map("hostName" -> x)
+    }
+
+  def reqFragment: Parser[Map[String, String]] =
+    //the greediness of the first regex prevents ambiguity
+    ("#*".r ~> (urlChar|"?"|"#")*) ^^ {case xs => Map("fragment" -> xs.mkString(""))}
+
+  //TODO: Don't care about the actual type of this now
+  def httpInfo: Parser[Any] = opt("HTTP/"~decimalNumber)
+
+  def reqPath: Parser[Map[String,String]] =
+    (urlChar*) ~ opt( ("?" ~> queryString) |
+                 ("#" ~> reqFragment)
+               ) <~ httpInfo ^^ {
+      case urlc ~ Some(aMap: Map[String, String]) =>
+        aMap + ("path" -> ("/"+urlc.mkString + {
+          if(aMap.isDefinedAt("queryString")) "?" + aMap("queryString")
+          else if(aMap.isDefinedAt("fragment")) "#" + aMap("fragment")
+          else ""
+        }))
+
+      case urlc ~ None => Map("path" -> ("/" + urlc.mkString))
+    }
+
+  def queryString: Parser[Map[String,String]] =
+    ("\\?*".r~>(urlChar|"?")*)~opt("#"~>reqFragment) ^^ {
+      case x ~ Some(aMap) =>
+        aMap + ("queryString" -> (x.mkString + "#" + aMap("fragment")))
+      case x ~ None => Map("queryString" -> x.mkString)
+    }
+
+  def url: Parser[Url] =
+    ((schema <~ ( "://" | "." | "[0-9]")) //TODO: not too sure about this one.
+           ~ opt(host)
+           ~ ("/"~> reqPath | "?" ~> queryString | "/|*".r ~> reqPath)
+    ) ^^
+    { case sc~Some(h)~aMap =>
+      Url(
+        schema = sc,
+        hostName = h.getOrElse("hostName", ""),
+        path = aMap.getOrElse("path", ""),
+        queryString = aMap.getOrElse("queryString",""),
+        fragment = aMap.getOrElse("fragment",""),
+        port = h.getOrElse("port","80").toInt
+      )
+    }
+
+  def requestStatus: Parser[Any] = requestType ~ url <~ crlf
+
+  def request: Parser[Any] = requestStatus~headers<~crlf
+
+
+  /**** Utility functions ****/
   def collect(hName: String, prop: String) : Option[(String,Any)] = hName match {
     case "connection" | "proxy-connection"
       if (prop == "keep-alive" || prop == "close") => Some((hName, prop))
@@ -155,7 +269,9 @@ object HttpParser extends HTTP{
        |
        |""".stripMargin
 
-    println(parseAll(respAndMessage, httpMessage))
+      val url1 = "ldap://ldap1.example.net:6666/o=University%20of%20Michigan, c=US??sub?(cn=Babs%20Jensen)"
+
+    println(parseAll(url, url1))
 
   }
 }

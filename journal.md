@@ -32,3 +32,12 @@ be ignored. Is there a buffer overflow attack check to be done here?
 
 There is a need for a ~ operator that does not skip whitespace. The problem is
 that the whiteSpace skipping is managed by the reader, not by the Parsers trait.
+
+The schema parser in the hand-written version does not confirm to the RFC standard
+for URIs (http://en.wikipedia.org/wiki/URI_scheme). For now, transliterating the
+hand-written version more-or-less loyally.
+
+#### 16.07
+
+Apparently, the hand-written version does not support sip urls as follows:
+ - sip:alice@atlanta.com?subject=project%20x&priority=urgent
