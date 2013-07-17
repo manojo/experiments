@@ -41,3 +41,12 @@ hand-written version more-or-less loyally.
 
 Apparently, the hand-written version does not support sip urls as follows:
  - sip:alice@atlanta.com?subject=project%20x&priority=urgent
+
+#### 17.07
+
+The alternation combinator in LMS parsers should be reworked. As for
+the moment we do not have Success or Failure classes, should we just
+use the position as a measure of success? in that case we need to
+find a way to do `guard` or `peek`.
+
+Noticed that structs have changed in LMS. Will need to reintegrate that with Parsers at some point.

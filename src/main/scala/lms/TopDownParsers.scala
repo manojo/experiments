@@ -41,6 +41,7 @@ trait TopDownParsers extends ScalaOpsPkg with GeneratorOps with LiftVariables{
     def ^^[U:Manifest](f : Rep[T] => Rep[U]) = self.map(f)
     def ^^^[U:Manifest](u: Rep[U]) = self.map(x => u)
 
+    //TODO: this or is neither backtracking, nor an actual or
     def | (that: Parser[T]) = Parser[T]{ pos =>
       self(pos) ++ that(pos)
     }
@@ -100,17 +101,6 @@ trait CharParsers extends TopDownParsers{
     )
   }
 }
-
-/*trait Tokens{
-  abstract class Token
-  case class NumericLit(s : String) extends Token
-  case class Keyword(s: String) extends Token
-  case class StringLit(s: String) extends Token
-  case object EOF extends Token
-  case object NoToken extends Token
-
-
-}*/
 
 trait TokenParsers extends TopDownParsers with CharParsers{
 

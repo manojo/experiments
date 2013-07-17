@@ -71,6 +71,9 @@ trait GeneratorOps extends Variables with While with LiftVariables
     def apply(f: Rep[A] => Rep[Unit]) = {}
   }
 
+  /**
+   * A generator for a single element
+   */
   def elGen[A:Manifest](a: Rep[A]): Generator[A] = new Generator[A]{
     def apply(f: Rep[A] => Rep[Unit]) = {
       f(a)

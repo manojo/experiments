@@ -18,6 +18,7 @@ trait GenCharParsersProg extends TokenParsers with Structs{
   }
 */
 
+  //simple acceptIf filter
   def test1(in: Rep[Array[Char]]): Rep[(Char,Int)] = {
     var s = make_tuple2(unit('a'), unit(-1))
     val parser = acceptIf(in, x => x == unit('h')).apply(unit(0))
@@ -25,6 +26,7 @@ trait GenCharParsersProg extends TokenParsers with Structs{
     s
   }
 
+  //accept function: generates the exact same code as test1
   def test2(in: Rep[Array[Char]]): Rep[(Char,Int)] = {
     var s = make_tuple2(unit('a'), unit(-1))
     val parser = accept(in, unit('h')).apply(unit(0))
@@ -32,6 +34,7 @@ trait GenCharParsersProg extends TokenParsers with Structs{
     s
   }
 
+  //parsing a single lowercase letter
   def test3(in: Rep[Array[Char]]): Rep[(Char,Int)] = {
     var s = make_tuple2(unit('a'), unit(-1))
     val parser = letter(in).apply(unit(0))
@@ -39,6 +42,7 @@ trait GenCharParsersProg extends TokenParsers with Structs{
     s
   }
 
+  //parsing a single digit
   def test4(in: Rep[Array[Char]]): Rep[(Char,Int)] = {
     var s = make_tuple2(unit('a'), unit(-1))
     val parser = digit(in).apply(unit(0))
@@ -204,13 +208,13 @@ trait GenRecParsersProg extends TokenParsers with Functions {
 class TestTopDownParsers extends FileDiffSuite {
 
   val prefix = "test-out/"
-/*
+
   def testSimpleParsers = {
     withOutFile(prefix+"gen-topdown-char"){
-       new GenCharParsersProg with PackageExp with GeneratorOpsExp
+       new GenCharParsersProg with ScalaOpsPkgExp with GeneratorOpsExp
         with StructExp with StructExpOptCommon with MyScalaCompile{self =>
 
-        val codegen = new ScalaGenPackage with ScalaGenGeneratorOps
+        val codegen = new ScalaCodeGenPkg with ScalaGenGeneratorOps
           with ScalaGenStruct{ val IR: self.type = self }
 
         codegen.emitSource(test1 _ , "test1", new java.io.PrintWriter(System.out))
@@ -249,6 +253,7 @@ class TestTopDownParsers extends FileDiffSuite {
         val res7 = testc7("hello".toArray)
         scala.Console.println(res7)
 
+/*
         val printWriter = new java.io.PrintWriter(System.out)
         codegen.emitSource2(test8 _, "test8", printWriter)
         codegen.emitDataStructures(printWriter)
@@ -256,6 +261,7 @@ class TestTopDownParsers extends FileDiffSuite {
         codegen.emitDataStructures(new PrintWriter(source))
         val testc8 = compile2s(test8, source)
         scala.Console.println(testc8("hello".toArray, 1))
+*/
 
         codegen.emitSource(test9 _ , "test9", new java.io.PrintWriter(System.out))
         val testc9 = compile(test9)
@@ -273,7 +279,7 @@ class TestTopDownParsers extends FileDiffSuite {
     assertFileEqualsCheck(prefix+"gen-topdown-char")
   }
 
-
+/*
   def testTokenParsers = {
     withOutFile(prefix+"gen-topdown-token"){
        new GenCharParsersProg with PackageExp with GeneratorOpsExp
