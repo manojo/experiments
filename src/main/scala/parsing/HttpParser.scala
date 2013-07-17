@@ -246,32 +246,40 @@ object HttpParser extends HTTP{
   def main(args:Array[String]){
     println("a wa do dem!")
 
-     val httpMessage =
-    """|HTTP/1.1 200 OK
-       |Date: Mon, 23 May 2005 22:38:34 GMT
-       |Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)
-       |Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT
-       |Etag: "3f80f-1b6-3e1cb03b"
-       |Content-Type: text/html; charset=UTF-8
-       |Content-Length: 131
-       |Connection: close
-       |Transfer-Encoding: chunked
-       |
-       |4
-       |Wiki
-       |4
-       |pedi
-       |D
-       |a in
-       |
-       |chunks.
-       |0
-       |
-       |""".stripMargin
+    val httpMessage =
+    """HTTP/1.1 200 OK
+      |Date: Mon, 23 May 2005 22:38:34 GMT
+      |Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)
+      |Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT
+      |Etag: "3f80f-1b6-3e1cb03b"
+      |Content-Type: text/html; charset=UTF-8
+      |Content-Length: 129
+      |Connection: close
+      |
+      |<html>
+      |<head>
+      |  <title>An Example Page</title>
+      |</head>
+      |<body>
+      |  Hello World, this is a very simple HTML document.
+      |</body>
+      |</html>
+      |""".stripMargin
 
-      val url1 = "ldap://ldap1.example.net:6666/o=University%20of%20Michigan, c=US??sub?(cn=Babs%20Jensen)"
+    val url1 = "ldap://ldap1.example.net:6666/o=University%20of%20Michigan, c=US??sub?(cn=Babs%20Jensen)"
 
-    println(parseAll(url, url1))
+    val str = """<html>
+      |<head>
+      |  <title>An Example Page</title>
+      |</head>
+      |<body>
+      |  Hello World, this is a very simple HTML document.
+      |</body>
+      |</html>
+      |""".stripMargin
+
+    println(str.length)
+    println(parseAll(body(129), str))
 
   }
 }
