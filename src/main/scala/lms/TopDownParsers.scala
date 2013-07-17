@@ -38,7 +38,7 @@ trait TopDownParsers extends ScalaOpsPkg with GeneratorOps with LiftVariables{
       self(pos).map{x:Rep[(T,Int)] => (f(x._1), x._2)}
     }
 
-    def ^^[U:Manifest](f : Rep[T] => Rep[U]) = self.map(f)
+    def ^^[U:Manifest](f: Rep[T] => Rep[U]) = self.map(f)
     def ^^^[U:Manifest](u: Rep[U]) = self.map(x => u)
 
     //TODO: this or is neither backtracking, nor an actual or
@@ -46,7 +46,6 @@ trait TopDownParsers extends ScalaOpsPkg with GeneratorOps with LiftVariables{
       self(pos) ++ that(pos)
     }
   }
-
 
   /*def failure = Parser{pos => None}
   def debuggable[T](p : => Parser[T]) = Parser{pos =>
@@ -100,6 +99,10 @@ trait CharParsers extends TopDownParsers{
       )
     )
   }
+
+  //def accept(in: Rep[Input], s: Rep[String]) = Parser{in =>
+    //
+  //}
 }
 
 trait TokenParsers extends TopDownParsers with CharParsers{

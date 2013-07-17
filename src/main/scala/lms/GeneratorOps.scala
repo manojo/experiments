@@ -16,47 +16,45 @@ trait GeneratorOps extends Variables with While with LiftVariables
 
   abstract class Generator[T:Manifest] extends ((Rep[T] => Rep[Unit]) => Rep[Unit]) {self =>
 
-    def map[U:Manifest](g: Rep[T] => Rep[U]) = new Generator[U]{
-      def apply(f: Rep[U] => Rep[Unit]) = self.apply{
+    def map[U:Manifest](g: Rep[T] => Rep[U]) = Generator[U]{ f =>
+      self.apply{
         x:Rep[T] => f(g(x))
       }
     }
 
-    def filter(p: Rep[T] => Rep[Boolean]) = new Generator[T]{
-      def apply(f: Rep[T] => Rep[Unit]) = self.apply{
+    def filter(p: Rep[T] => Rep[Boolean]) = Generator[T]{ f =>
+      self.apply{
         x:Rep[T] => if(p(x)) f(x)
       }
     }
 
-    def ++(that: Generator[T]) = new Generator[T]{
-      def apply(f: Rep[T] => Rep[Unit]) = {
-        self.apply(f)
-        that.apply(f)
-      }
+    def ++(that: Generator[T]) = Generator[T]{ f =>
+      self.apply(f)
+      that.apply(f)
     }
 
-    def flatMap[U:Manifest](g: Rep[T] => Generator[U]) = new Generator[U]{
-      def apply(f: Rep[U] => Rep[Unit]) = self.apply{ x:Rep[T] =>
+    def flatMap[U:Manifest](g: Rep[T] => Generator[U]) = Generator[U]{ f =>
+      self.apply{ x:Rep[T] =>
         val tmp : Generator[U] = g(x)
         tmp(f)
       }
     }
 
-    def reduce(h:(Rep[T],Rep[T])=>Rep[T], z:Rep[T]) = new Generator[T] {
-      def apply(f: Rep[T] => Rep[Unit]) = {
-        var best = z;
-        self.apply { x:Rep[T] => if (best==z) best=x; else best=h(best,x) }
-        if (best!=z) f(best)
-      }
+    def reduce(h:(Rep[T],Rep[T])=>Rep[T], z:Rep[T]) = Generator[T]{ f =>
+      var best = z;
+      self.apply { x:Rep[T] => if (best==z) best=x; else best=h(best,x) }
+      if (best!=z) f(best)
     }
   }
 
+  def Generator[T:Manifest](g: (Rep[T] => Rep[Unit]) => Rep[Unit]) = new Generator{
+    def apply(f: Rep[T] => Rep[Unit]) = g(f)
+  }
+
   def range(start: Rep[Int], end: Rep[Int]) : Generator[Int] = {
-    val tmp = new Generator[Int]{
-      def apply(f: Rep[Int] => Rep[Unit]) = {
-        for(i <- start until end){
-          f(i)
-        }
+    val tmp = Generator[Int]{ f =>
+      for(i <- start until end){
+        f(i)
       }
     }
     cond((start < end), tmp, emptyGen())
@@ -67,23 +65,19 @@ trait GeneratorOps extends Variables with While with LiftVariables
     else if(xs.length == 1) elGen(xs.head)
     else elGen(xs.head) ++ fromSeq(xs.tail)
 
-  def emptyGen[A:Manifest](): Generator[A] = new Generator[A]{
-    def apply(f: Rep[A] => Rep[Unit]) = {}
+  def emptyGen[A:Manifest](): Generator[A] = Generator[A]{
+    f => {}
   }
 
   /**
    * A generator for a single element
    */
-  def elGen[A:Manifest](a: Rep[A]): Generator[A] = new Generator[A]{
-    def apply(f: Rep[A] => Rep[Unit]) = {
-      f(a)
-    }
+  def elGen[A:Manifest](a: Rep[A]): Generator[A] = Generator[A]{
+    f => f(a)
   }
 
-  def cond[A:Manifest](cond: Rep[Boolean], a: Generator[A], b: Generator[A]) = new Generator[A]{
-    def apply(f: Rep[A] => Rep[Unit]) = {
-      if(cond) a(f) else b(f)
-    }
+  def cond[A:Manifest](cond: Rep[Boolean], a: Generator[A], b: Generator[A]) = Generator[A]{
+    f => if(cond) a(f) else b(f)
   }
 }
 
@@ -99,7 +93,6 @@ trait GeneratorOpsExp extends GeneratorOps with EffectExp with VariablesExp
     val s = summarizeEffects(body)
     reflectEffect(Let(x,rhs,body), s)
   }
-
 
   override def boundSyms(e: Any): List[Sym[Any]] = e match {
     case Let(x, rhs, block) => x :: effectSyms(block)
