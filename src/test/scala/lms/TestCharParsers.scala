@@ -9,7 +9,7 @@ import java.io.StringWriter
 import java.io.FileOutputStream
 
 
-trait CharParsersProg extends TokenParsers with Structs{
+trait CharParsersProg extends TokenParsers with CharOps{
 
   //some basic structs
 /*  type Lettah = Record { val left: Char; val right: Char }
@@ -101,6 +101,15 @@ trait CharParsersProg extends TokenParsers with Structs{
     parser{x: Rep[(String, Int)] => s = x}
     s
   }
+
+  //repFold
+  def test11(in: Rep[Array[Char]]): Rep[(Int,Int)] = {
+    var s = make_tuple2(unit(0), unit(-1))
+    val digitP : Parser[Int] =  digit(in) ^^ {x: Rep[Char] => char_toint(x - unit('0'))}
+    val parser = repFold(digitP)(unit(0), (x: Rep[Int], y :Rep[Int]) => x + y) .apply(unit(0))
+    parser{x: Rep[(Int, Int)] => s = x}
+    s
+  }
 }
 
 
@@ -112,10 +121,10 @@ class TestCharParsers extends FileDiffSuite {
   def testSimpleParsers = {
     withOutFile(prefix+"char-parser"){
        new CharParsersProg with ScalaOpsPkgExp with GeneratorOpsExp
-        with StructExp with StructExpOptCommon with MyScalaCompile{self =>
+        with CharOpsExp with MyScalaCompile{self =>
 
         val codegen = new ScalaCodeGenPkg with ScalaGenGeneratorOps
-          with ScalaGenStruct{ val IR: self.type = self }
+          with ScalaGenCharOps{ val IR: self.type = self }
 
         codegen.emitSource(test1 _ , "test1", new java.io.PrintWriter(System.out))
         val testc1 = compile(test1)
@@ -171,6 +180,10 @@ class TestCharParsers extends FileDiffSuite {
         codegen.emitSource(test10 _ , "test10", new java.io.PrintWriter(System.out))
         val testc10 = compile(test10)
         scala.Console.println(testc10("hello21".toArray))
+
+        codegen.emitSource(test11 _ , "test11", new java.io.PrintWriter(System.out))
+        val testc11 = compile(test11)
+        scala.Console.println(testc11("12345".toArray))
 
       }
 

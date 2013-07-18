@@ -53,7 +53,23 @@ trait TopDownParsers extends ScalaOpsPkg with GeneratorOps with LiftVariables{
     p(pos)
   }*/
 
-  def rep[T:Manifest](p : Parser[T]): Parser[List[T]] = Parser[List[T]]{ pos =>
+  def repFold[T:Manifest, U:Manifest](p : Parser[T])(z: Rep[U], f: (Rep[U], Rep[T]) => Rep[U]) = Parser[U]{ pos =>
+    var s = z
+    var old = unit(-1)
+    var cur = pos
+
+    while(old != cur){
+      old = cur
+      p(cur).apply{ x: Rep[(T, Int)] =>
+        s = f(s, x._1)
+        cur = x._2
+      }
+    }
+
+    elGen(make_tuple2(readVar(s), cur))
+  }
+
+  def rep[T:Manifest](p : Parser[T]) = Parser[List[T]]{ pos =>
     var s = List[T]().asInstanceOf[Rep[List[T]]]
     var old = unit(-1)
     var cur = pos
@@ -99,13 +115,6 @@ trait CharParsers extends TopDownParsers{
       )
     )
   }
-
-  def accept(in: Rep[Input], cs: List[Rep[Char]]): Parser[String] = cs match {
-    case Nil => Parser{i => elGen(make_tuple2(unit(""),i))}
-    case x::xs => accept(in, x) ~ accept(in, xs) ^^ {
-      y: Rep[(Char, String)] => y._1 + y._2
-    }
-  }
 }
 
 trait TokenParsers extends TopDownParsers with CharParsers{
@@ -119,6 +128,8 @@ trait TokenParsers extends TopDownParsers with CharParsers{
   def numeric(in:Rep[Input]) : Parser[String] = digit(in) ~ rep(digit(in)) ^^ {
     x : Rep[(Char, List[Char])] => unit("NumericLit(") + (x._1::x._2).mkString + unit(")")
   }
+
+  //def decimalNumber(in: Rep[Input]): Parser[Int]
 
   def stringLit(in:Rep[Input]) : Parser[String] =
     accept(in, unit('\"')) ~> rep( acceptIf(in, (x:Rep[Char]) => x != unit('\"'))) <~ accept(in, unit('\"')) ^^ {
@@ -153,6 +164,12 @@ trait TokenParsers extends TopDownParsers with CharParsers{
     }
   }*/
 
-//  def accept(in: Rep[Input], s: String): Parser[String] =
-//    accept(in, s(0)) ~ accept(in, )
+  def accept(in: Rep[Input], cs: List[Rep[Char]]): Parser[String] = cs match {
+    case Nil => Parser{i => elGen(make_tuple2(unit(""),i))}
+    case x::xs => accept(in, x) ~ accept(in, xs) ^^ {
+      y: Rep[(Char, String)] => y._1 + y._2
+    }
+  }
+
+  def accept(in: Rep[Input], s: String): Parser[String] = accept(in, s.toList.map{c => unit(c)})
 }

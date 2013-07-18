@@ -19,6 +19,9 @@ trait HttpParser extends TokenParsers {
   // 0x23 == '#', 0x74 == 'del'
   val urlChar = """[^\x00-\x20#\?\x7F]""".r
 
+ // def status: Parser[Int] =
+ //   ("HTTP/"~decimalNumber)~>wholeNumber<~(wildRegex~crlf) ^^ (_.toInt)
+
 /*  def header: Parser[Option[(String,Any)]] =  (headerName<~":")~(wildRegex<~crlf) ^^ {
     case hName~prop => collect(hName.toLowerCase, prop)
   }

@@ -375,3 +375,97 @@ x488
 *******************************************/
 compilation: ok
 (hello,5)
+/*****************************************
+  Emitting Generated Code                  
+*******************************************/
+class parseString extends ((Array[Char])=>(scala.Tuple2[java.lang.String, Int])) {
+def apply(x556:Array[Char]): scala.Tuple2[java.lang.String, Int] = {
+val x1 = ("",-1)
+var x557: scala.Tuple2[java.lang.String, Int] = x1
+val x558 = x556.length
+val x559 = 0 >= x558
+val x619 = if (x559) {
+()
+} else {
+val x560 = x556(0)
+val x561 = x560 == 'h'
+val x617 = if (x561) {
+val x9 = 0 + 1
+val x563 = x9 >= x558
+val x615 = if (x563) {
+()
+} else {
+val x564 = x556(x9)
+val x565 = x564 == 'e'
+val x613 = if (x565) {
+val x429 = x9 + 1
+val x567 = x429 >= x558
+val x611 = if (x567) {
+()
+} else {
+val x568 = x556(x429)
+val x569 = x568 == 'l'
+val x609 = if (x569) {
+val x434 = x429 + 1
+val x571 = x434 >= x558
+val x607 = if (x571) {
+()
+} else {
+val x572 = x556(x434)
+val x573 = x572 == 'l'
+val x605 = if (x573) {
+val x439 = x434 + 1
+val x575 = x439 >= x558
+val x603 = if (x575) {
+()
+} else {
+val x576 = x556(x439)
+val x577 = x576 == 'o'
+val x601 = if (x577) {
+val x444 = x439 + 1
+val x581 = x576+""
+val x585 = x572+x581
+val x589 = x568+x585
+val x593 = x564+x589
+val x597 = x560+x593
+val x598 = (x597,x444)
+x557 = x598
+()
+} else {
+()
+}
+x601
+}
+x603
+} else {
+()
+}
+x605
+}
+x607
+} else {
+()
+}
+x609
+}
+x611
+} else {
+()
+}
+x613
+}
+x615
+} else {
+()
+}
+x617
+}
+val x620 = x557
+x620
+}
+}
+/*****************************************
+  End of Generated Code                  
+*******************************************/
+compilation: ok
+(hello,5)

@@ -34,6 +34,14 @@ trait TokenParsersProg extends TokenParsers{
     parser{x: Rep[(String, Int)] => s = x}
     s
   }
+
+  //parse string
+  def parseString(in: Rep[Array[Char]]): Rep[(String, Int)] = {
+    var s = make_tuple2(unit(""), unit(-1))
+    val parser = accept(in, "hello").apply(unit(0))
+    parser{x: Rep[(String, Int)] => s = x}
+    s
+  }
 }
 
 class TestTokenParsers extends FileDiffSuite {
@@ -60,8 +68,12 @@ class TestTokenParsers extends FileDiffSuite {
         scala.Console.println(res2)
 
         codegen.emitSource(parseListofChars _ , "parseListofChars", new java.io.PrintWriter(System.out))
-        val testc11 = compile(parseListofChars)
-        scala.Console.println(testc11("hello21".toArray))
+        val testc3 = compile(parseListofChars)
+        scala.Console.println(testc3("hello21".toArray))
+
+        codegen.emitSource(parseString _ , "parseString", new java.io.PrintWriter(System.out))
+        val testc4 = compile(parseString)
+        scala.Console.println(testc4("hello21".toArray))
 
       }
 

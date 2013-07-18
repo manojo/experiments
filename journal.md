@@ -50,3 +50,10 @@ use the position as a measure of success? in that case we need to
 find a way to do `guard` or `peek`.
 
 Noticed that structs have changed in LMS. Will need to reintegrate that with Parsers at some point.
+
+#### 18.07
+
+Need to think about fusing the `rep(p){xs => xs.fold}`. `xs` is a
+List produced at runtime, and we do not want to produce a
+Generator. An alternative is to have a repFold combinator, but it
+seems a rather common pattern, so might be useful to fuse it.

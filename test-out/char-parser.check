@@ -400,3 +400,57 @@ x373
 *******************************************/
 compilation: ok
 (hello,5)
+/*****************************************
+  Emitting Generated Code                  
+*******************************************/
+class test11 extends ((Array[Char])=>(scala.Tuple2[Int, Int])) {
+def apply(x413:Array[Char]): scala.Tuple2[Int, Int] = {
+val x414 = (0,-1)
+var x415: scala.Tuple2[Int, Int] = x414
+var x416: Int = 0
+var x417: Int = -1
+var x418: Int = 0
+val x425 = x413.length
+val x445 = while ({val x419 = x417
+val x420 = x418
+val x421 = x419 != x420
+x421}) {
+val x423 = x418
+x417 = x423
+val x426 = x423 >= x425
+val x443 = if (x426) {
+()
+} else {
+val x427 = x413(x423)
+val x428 = x427 >= '0'
+val x429 = x427 <= '9'
+val x430 = x428 && x429
+val x441 = if (x430) {
+val x436 = x416
+val x433 = x427 - '0'
+val x434 = x433.toInt
+val x437 = x436 + x434
+x416 = x437
+val x431 = x423 + 1
+x418 = x431
+()
+} else {
+()
+}
+x441
+}
+x443
+}
+val x446 = x416
+val x447 = x418
+val x448 = (x446,x447)
+x415 = x448
+val x450 = x415
+x450
+}
+}
+/*****************************************
+  End of Generated Code                  
+*******************************************/
+compilation: ok
+(15,5)
