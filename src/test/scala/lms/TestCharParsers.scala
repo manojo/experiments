@@ -9,7 +9,7 @@ import java.io.StringWriter
 import java.io.FileOutputStream
 
 
-trait GenCharParsersProg extends TokenParsers with Structs{
+trait CharParsersProg extends TokenParsers with Structs{
 
   //some basic structs
 /*  type Lettah = Record { val left: Char; val right: Char }
@@ -101,117 +101,17 @@ trait GenCharParsersProg extends TokenParsers with Structs{
     parser{x: Rep[(String, Int)] => s = x}
     s
   }
-
-  //keyword parse
-  def keywordParse(in: Rep[Array[Char]]): Rep[(String,Int)] = {
-    var s = make_tuple2(unit(""), unit(-1))
-    val parser = (keyword(in)).apply(unit(0))
-    parser{x: Rep[(String, Int)] => s = x}
-    s
-  }
-
-  //keyword parse
-  def twoWordParse(in: Rep[Array[Char]]): Rep[((String,String),Int)] = {
-    var s = make_tuple2(make_tuple2(unit(""), unit("")), unit(-1))
-    val parser = ((stringLit(in) <~ whitespaces(in)) ~ stringLit(in)).apply(unit(0))
-    parser{x: Rep[((String, String), Int)] => s = x}
-    s
-  }
 }
 
-trait GenRecParsersProg extends TokenParsers with Functions {
 
-  class LambdaOps[A:Manifest,B:Manifest](f: Rep[A=>B]) {
-    def apply(x:Rep[A]): Rep[B] = doApply(f, x)
-  }
 
-  //def expr: Parser[String] = term ~ rep("+" ~ term | "-" ~ term)
-/*
-  def ~ [U:Manifest](that: => Parser[U]) = Parser[(T,U)]{ pos =>
-    self(pos).flatMap{ x: Rep[(T,Int)] =>
-      that(x._2).map{ y: Rep[(U,Int)] =>
-        make_tuple2((x._1, y._1), y._2)
-      }
-    }
-  }
-*/
-/*  term(in) = digit(in) ~ opt(term(in))
-
-  digit(in)(i).flatMap{ x: Rep[(Char, Int)] =>
-    term(in)(x._2).map{ y:Rep[(String,Int)] =>
-      if(y._2 == x._2) {()} else {
-        (unit(x._1)+y._1 , y._2)
-      }
-    }
-  }
-
-  {
-    self(pos).flatMap{ x: Rep[(T,Int)] =>
-      that(x._2).map{ y: Rep[(U,Int)] =>
-        make_tuple2((x._1, y._1), y._2)
-      }
-    }
-
-    digit(in)
-  }
-
-  expr = term ~ rep("+" ~ term | "-" ~ term)
-  term = factor ~ rep(" * " ~ factor | "/" ~ factor)
-  factor = floatingPointNumber | "(" ~ expr ~ ")"
-
-  def expr(in: Rep[Input]): Parser[String] = Parser{ i: Rep[Int] =>
-    new Generator[(String,Int)]{
-
-    }
-
-  }
-
-*/
-
-/*  def rec(p: Parser[T]) = Parser{ i:Rep[Int] =>
-    new Generator[(T,Int)]{
-      def apply(f: Rep[(T,Int)] => Rep[Unit]) = {
-        lazy val termg: Rep[((T,Int))=>Unit] = doLambda{ t: Rep =>
-          digit(in)(t._2).apply{ x: Rep[(Char,Int)] =>
-            val param = make_tuple2(t._1 + (unit("")+x._1), x._2 )
-            f(param)
-            termg(param)
-        }
-      }
-    }
-  }}
-
-  def term(in: Rep[Input]): Parser[String] = Parser{ i: Rep[Int] =>
-    new Generator[(String, Int)]{
-      def apply(f: Rep[(String,Int)] => Rep[Unit]) = {
-        lazy val termg: Rep[((String,Int))=>Unit] = doLambda{ t: Rep[(String,Int)] =>
-          digit(in)(t._2).apply{ x: Rep[(Char,Int)] =>
-            val param = make_tuple2(t._1 + (unit("")+x._1), x._2 )
-            f(param)
-            termg(param)
-          }
-//          val param = make_tuple2( (unit("")+x._1)+t._1, x._2 )
-        }
-        termg(make_tuple2(unit(""), i))
-      }
-    }
-  }
-
-  def testTerm(in:Rep[Input]) = {
-    var s = make_tuple2(unit(""), unit(-1))
-    term(in).apply(unit(0)).apply{x : Rep[(String, Int)] => s =x }
-    s
-  }
-  */
-}
-
-class TestTopDownParsers extends FileDiffSuite {
+class TestCharParsers extends FileDiffSuite {
 
   val prefix = "test-out/"
 
   def testSimpleParsers = {
-    withOutFile(prefix+"gen-topdown-char"){
-       new GenCharParsersProg with ScalaOpsPkgExp with GeneratorOpsExp
+    withOutFile(prefix+"char-parser"){
+       new CharParsersProg with ScalaOpsPkgExp with GeneratorOpsExp
         with StructExp with StructExpOptCommon with MyScalaCompile{self =>
 
         val codegen = new ScalaCodeGenPkg with ScalaGenGeneratorOps
@@ -276,56 +176,6 @@ class TestTopDownParsers extends FileDiffSuite {
 
     }
 
-    assertFileEqualsCheck(prefix+"gen-topdown-char")
+    assertFileEqualsCheck(prefix+"char-parser")
   }
-
-/*
-  def testTokenParsers = {
-    withOutFile(prefix+"gen-topdown-token"){
-       new GenCharParsersProg with PackageExp with GeneratorOpsExp
-        with StructExp with StructExpOptCommon with MyScalaCompile{self =>
-
-        val codegen = new ScalaGenPackage with ScalaGenGeneratorOps
-          with ScalaGenStruct{ val IR: self.type = self }
-
-        codegen.emitSource(keywordParse _ , "test1", new java.io.PrintWriter(System.out))
-        val testc1 = compile(keywordParse)
-        val res1 = testc1("true false".toArray)
-        scala.Console.println(res1)
-
-        codegen.emitSource(twoWordParse _ , "test2", new java.io.PrintWriter(System.out))
-        val testc2 = compile(twoWordParse)
-        val res2 = testc2("\"hello\" \"carol\"".toArray)
-        scala.Console.println(res2)
-
-      }
-
-    }
-
-    assertFileEqualsCheck(prefix+"gen-topdown-token")
-  }
-*/
-/*  def testRec = {
-    withOutFile(prefix+"gen-topdown-rec") {
-      new GenRecParsersProg with FunctionsExternalDef
-       with GeneratorOpsExp with PackageExp with MyScalaCompile {self =>
-
-        val codegen = new ScalaGenPackage with ScalaGenGeneratorOps
-         with ScalaGenFunctionsExternal {
-          val IR: self.type = self
-        }
-
-        codegen.emitSource(testTerm, "LiftTerm", new java.io.PrintWriter(System.out))
-        val testc2 = compile(testTerm)
-        scala.Console.println(testc2("23".toArray))
-        //val testc1 = compile(f)
-        //scala.Console.println(testc1("\"hello\" \"carol\"".toArray))
-
-
-      }
-    }
-    assertFileEqualsCheck(prefix+"gen-topdown-rec")
-
-  }
-*/
 }

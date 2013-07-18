@@ -119,7 +119,6 @@ trait GeneratorProg extends GeneratorOps with NumericOps
     f{ x: Rep[Int] => s = s+x}
     s
   }
-
 }
 
 /*trait ArrayProg extends GeneratorOps with NumericOps

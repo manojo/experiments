@@ -100,14 +100,17 @@ trait CharParsers extends TopDownParsers{
     )
   }
 
-  //def accept(in: Rep[Input], s: Rep[String]) = Parser{in =>
-    //
-  //}
+  def accept(in: Rep[Input], cs: List[Rep[Char]]): Parser[String] = cs match {
+    case Nil => Parser{i => elGen(make_tuple2(unit(""),i))}
+    case x::xs => accept(in, x) ~ accept(in, xs) ^^ {
+      y: Rep[(Char, String)] => y._1 + y._2
+    }
+  }
 }
 
 trait TokenParsers extends TopDownParsers with CharParsers{
 
-  def processIdent(s: Rep[String]) = if(s == "true" || s == "null" || s == "false") unit("Keyword") + s else unit("NoToken")
+  def processIdent(s: Rep[String]) = if(s == "true" || s == "null" || s == "false") unit("Keyword(") + s + unit(")") else unit("NoToken")
 
   def keyword(in:Rep[Input]) : Parser[String] = letter(in) ~ rep( letter(in) /*| digit(in)*/ ) ^^ {
     x : Rep[(Char, List[Char])] => processIdent((x._1 :: x._2).mkString)
@@ -138,4 +141,18 @@ trait TokenParsers extends TopDownParsers with CharParsers{
   def word : Parser[String] =
   def stringLit
   */
+
+  /* The string itself is static, it's not a Rep[String] */
+
+  /*val i = 0
+  while(i <- s.length){
+    if(in(j) == s(i)){
+      //good
+    }else{
+      //break
+    }
+  }*/
+
+//  def accept(in: Rep[Input], s: String): Parser[String] =
+//    accept(in, s(0)) ~ accept(in, )
 }
