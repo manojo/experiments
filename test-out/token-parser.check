@@ -5,28 +5,28 @@ class keywordParse extends ((Array[Char])=>(scala.Tuple2[java.lang.String, Int])
 def apply(x0:Array[Char]): scala.Tuple2[java.lang.String, Int] = {
 val x1 = ("",-1)
 var x2: scala.Tuple2[java.lang.String, Int] = x1
-val x3 = x0.length
-val x4 = 0 >= x3
-val x59 = if (x4) {
+val x4 = x0.length
+val x5 = 0 >= x4
+val x59 = if (x5) {
 ()
 } else {
-val x5 = x0(0)
-val x6 = x5 >= 'a'
-val x7 = x5 <= 'z'
-val x8 = x6 && x7
-val x57 = if (x8) {
-val x11 = List()
-var x12: scala.collection.immutable.List[Char] = x11
+val x6 = x0(0)
+val x7 = x6 >= 'a'
+val x8 = x6 <= 'z'
+val x9 = x7 && x8
+val x57 = if (x9) {
+val x3 = List()
+var x12: scala.collection.immutable.List[Char] = x3
 var x13: Int = -1
-val x9 = 0 + 1
-var x14: Int = x9
+val x10 = 0 + 1
+var x14: Int = x10
 val x38 = while ({val x15 = x13
 val x16 = x14
 val x17 = x15 != x16
 x17}) {
 val x19 = x14
 x13 = x19
-val x21 = x19 >= x3
+val x21 = x19 >= x4
 val x36 = if (x21) {
 ()
 } else {
@@ -51,7 +51,7 @@ x36
 }
 val x39 = x12
 val x40 = x14
-val x44 = x5 :: x39
+val x44 = x6 :: x39
 val x45 = x44.mkString
 val x46 = x45 == "true"
 val x47 = x45 == "null"
@@ -98,11 +98,11 @@ val x268 = if (x126) {
 val x127 = x121(0)
 val x128 = x127 == '"'
 val x266 = if (x128) {
-val x11 = List()
-var x130: scala.collection.immutable.List[Char] = x11
+val x3 = List()
+var x130: scala.collection.immutable.List[Char] = x3
 var x131: Int = -1
-val x9 = 0 + 1
-var x132: Int = x9
+val x10 = 0 + 1
+var x132: Int = x10
 val x154 = while ({val x133 = x131
 val x134 = x132
 val x135 = x133 != x134
@@ -139,7 +139,7 @@ val x264 = if (x158) {
 val x159 = x121(x156)
 val x160 = x159 == '"'
 val x262 = if (x160) {
-var x168: scala.collection.immutable.List[Char] = x11
+var x168: scala.collection.immutable.List[Char] = x3
 var x169: Int = -1
 val x161 = x156 + 1
 var x170: Int = x161
@@ -198,7 +198,7 @@ val x260 = if (x207) {
 val x208 = x121(x203)
 val x209 = x208 == '"'
 val x258 = if (x209) {
-var x212: scala.collection.immutable.List[Char] = x11
+var x212: scala.collection.immutable.List[Char] = x3
 var x213: Int = -1
 val x210 = x203 + 1
 var x214: Int = x210
@@ -296,15 +296,15 @@ val x487 = if (x422) {
 val x423 = x419(0)
 val x424 = x423 == 'h'
 val x485 = if (x424) {
-val x9 = 0 + 1
-val x426 = x9 >= x421
+val x10 = 0 + 1
+val x426 = x10 >= x421
 val x483 = if (x426) {
 ()
 } else {
-val x427 = x419(x9)
+val x427 = x419(x10)
 val x428 = x427 == 'e'
 val x481 = if (x428) {
-val x429 = x9 + 1
+val x429 = x10 + 1
 val x431 = x429 >= x421
 val x479 = if (x431) {
 ()
@@ -390,15 +390,15 @@ val x619 = if (x559) {
 val x560 = x556(0)
 val x561 = x560 == 'h'
 val x617 = if (x561) {
-val x9 = 0 + 1
-val x563 = x9 >= x558
+val x10 = 0 + 1
+val x563 = x10 >= x558
 val x615 = if (x563) {
 ()
 } else {
-val x564 = x556(x9)
+val x564 = x556(x10)
 val x565 = x564 == 'e'
 val x613 = if (x565) {
-val x429 = x9 + 1
+val x429 = x10 + 1
 val x567 = x429 >= x558
 val x611 = if (x567) {
 ()
@@ -469,3 +469,58 @@ x620
 *******************************************/
 compilation: ok
 (hello,5)
+/*****************************************
+  Emitting Generated Code                  
+*******************************************/
+class parseWholeNumber extends ((Array[Char])=>(scala.Tuple2[Int, Int])) {
+def apply(x688:Array[Char]): scala.Tuple2[Int, Int] = {
+val x689 = (0,-1)
+var x690: scala.Tuple2[Int, Int] = x689
+var x691: Int = 0
+var x692: Int = -1
+var x693: Int = 0
+val x700 = x688.length
+val x721 = while ({val x694 = x692
+val x695 = x693
+val x696 = x694 != x695
+x696}) {
+val x698 = x693
+x692 = x698
+val x701 = x698 >= x700
+val x719 = if (x701) {
+()
+} else {
+val x702 = x688(x698)
+val x703 = x702 >= '0'
+val x704 = x702 <= '9'
+val x705 = x703 && x704
+val x717 = if (x705) {
+val x711 = x691
+val x708 = x702 - '0'
+val x709 = x708.toInt
+val x712 = x711 * 10
+val x713 = x712 + x709
+x691 = x713
+val x706 = x698 + 1
+x693 = x706
+()
+} else {
+()
+}
+x717
+}
+x719
+}
+val x722 = x691
+val x723 = x693
+val x724 = (x722,x723)
+x690 = x724
+val x726 = x690
+x726
+}
+}
+/*****************************************
+  End of Generated Code                  
+*******************************************/
+compilation: ok
+(1234,4)

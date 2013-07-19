@@ -19,7 +19,7 @@ trait TokenParsersProg extends TokenParsers{
     s
   }
 
-  //keyword parse
+  //two word parse
   def twoWordParse(in: Rep[Array[Char]]): Rep[((String,String),Int)] = {
     var s = make_tuple2(make_tuple2(unit(""), unit("")), unit(-1))
     val parser = ((stringLit(in) <~ whitespaces(in)) ~ stringLit(in)).apply(unit(0))
@@ -42,6 +42,14 @@ trait TokenParsersProg extends TokenParsers{
     parser{x: Rep[(String, Int)] => s = x}
     s
   }
+
+  //wholeNumber
+  def parseWholeNumber(in: Rep[Array[Char]]): Rep[(Int, Int)] = {
+    var s = make_tuple2(unit(0), unit(-1))
+    val parser = wholeNumber(in).apply(unit(0))
+    parser{x: Rep[(Int, Int)] => s = x}
+    s
+  }
 }
 
 class TestTokenParsers extends FileDiffSuite {
@@ -51,9 +59,10 @@ class TestTokenParsers extends FileDiffSuite {
   def testTokenParsers = {
     withOutFile(prefix+"token-parser"){
        new TokenParsersProg with ScalaOpsPkgExp with GeneratorOpsExp
-        with MyScalaCompile{self =>
+        with CharOpsExp with MyScalaCompile{self =>
 
-        val codegen = new ScalaCodeGenPkg with ScalaGenGeneratorOps{
+        val codegen = new ScalaCodeGenPkg with ScalaGenGeneratorOps
+         with ScalaGenCharOps{
           val IR: self.type = self
         }
 
@@ -74,6 +83,10 @@ class TestTokenParsers extends FileDiffSuite {
         codegen.emitSource(parseString _ , "parseString", new java.io.PrintWriter(System.out))
         val testc4 = compile(parseString)
         scala.Console.println(testc4("hello21".toArray))
+
+        codegen.emitSource(parseWholeNumber _ , "parseWholeNumber", new java.io.PrintWriter(System.out))
+        val testc5 = compile(parseWholeNumber)
+        scala.Console.println(testc5("1234a".toArray))
 
       }
 

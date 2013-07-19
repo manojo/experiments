@@ -1,0 +1,161 @@
+package lms.parsing
+
+import lms._
+import scala.virtualization.lms.common._
+import scala.virtualization.lms.internal.Effects
+
+import java.io.PrintWriter
+import java.io.StringWriter
+import java.io.FileOutputStream
+
+
+trait HttpParserProg extends HttpParser{
+
+  //decimal number
+  def decimalParse(in: Rep[Array[Char]]): Rep[((Int,Int),Int)] = {
+    var s = make_tuple2(make_tuple2(unit(0), unit(0)), unit(-1))
+    val parser = (decimalNumber(in)).apply(unit(0))
+    parser{x: Rep[((Int,Int), Int)] => s = x}
+    s
+  }
+
+  //wildRegex
+  def wildRegexParse(in: Rep[Array[Char]]): Rep[(String,Int)] = {
+    var s = make_tuple2(unit(""), unit(-1))
+    val parser = (wildRegex(in)).apply(unit(0))
+    parser{x: Rep[(String, Int)] => s = x}
+    s
+  }
+
+  //crlf
+  def crlfParse(in: Rep[Array[Char]]): Rep[(Char,Int)] = {
+    var s = make_tuple2(unit('a'), unit(-1))
+    val parser = crlf(in).apply(unit(0))
+    parser{x: Rep[(Char, Int)] => s = x}
+    s
+  }
+
+  //wildRegexCrlf
+  def wildRegexCrlfParse(in: Rep[Array[Char]]): Rep[(String,Int)] = {
+    var s = make_tuple2(unit(""), unit(-1))
+    val parser = ((wildRegex(in)~crlf(in))^^{
+      x: Rep[(String, Char)] => x._1 + x._2
+    }).apply(unit(0))
+
+    parser{x: Rep[(String, Int)] => s = x}
+    s
+  }
+
+  //
+  def httpNumParse(in: Rep[Array[Char]]): Rep[((Int, Int),Int)] = {
+    var s = make_tuple2(make_tuple2(unit(0), unit(0)), unit(-1))
+    val parser = (accept(in, "HTTP/")~>decimalNumber(in)).apply(unit(0))
+    parser{x: Rep[((Int, Int), Int)] => s = x}
+    s
+  }
+
+  def httpNumStatusParse(in: Rep[Array[Char]]): Rep[(Int,Int)] = {
+    var s = make_tuple2(unit(0), unit(-1))
+    val parser =
+      ((accept(in, "HTTP/")~decimalNumber(in)~whitespaces(in))~>wholeNumber(in)).apply(unit(0))
+    parser{x: Rep[(Int, Int)] => s = x}
+    s
+  }
+
+  //status parse temp
+  def statusParseTemp(in: Rep[Array[Char]]): Rep[((Int,String),Int)] = {
+    var s = make_tuple2(make_tuple2(unit(0),unit("")), unit(-1))
+
+    val statusTemp: Parser[(Int,String)] =
+      (accept(in, "HTTP/")~decimalNumber(in)~whitespaces(in))~>wholeNumber(in)~(wildRegex(in)<~crlf(in))
+
+    val parser = statusTemp.apply(unit(0))
+    parser{x: Rep[((Int, String), Int)] => s = x}
+    s
+  }
+
+  //status parse
+  def statusParse(in: Rep[Array[Char]]): Rep[(Int,Int)] = {
+    var s = make_tuple2(unit(0), unit(-1))
+    val parser = (status(in)).apply(unit(0))
+    parser{x: Rep[(Int, Int)] => s = x}
+    s
+  }
+
+}
+
+class TestHttpParser extends FileDiffSuite {
+
+  val prefix = "test-out/"
+
+  def testHttpParser = {
+    withOutFile(prefix+"http-parser"){
+       new HttpParserProg with ScalaOpsPkgExp with GeneratorOpsExp
+        with CharOpsExp with MyScalaCompile{self =>
+
+        val codegen = new ScalaCodeGenPkg with ScalaGenGeneratorOps
+         with ScalaGenCharOps{
+          val IR: self.type = self
+        }
+
+        codegen.emitSource(decimalParse _ , "decimalParse", new java.io.PrintWriter(System.out))
+        val testc1 = compile(decimalParse)
+        val res1 = testc1("12.34".toArray)
+        scala.Console.println(res1)
+
+        codegen.emitSource(wildRegexParse _ , "wildRegexParse", new java.io.PrintWriter(System.out))
+        val testc2 = compile(wildRegexParse)
+        val res2 = testc2("f33l l1ke funkin' it up! (o_^) \\o/ \n".toArray)
+        scala.Console.println(res2)
+
+        codegen.emitSource(crlfParse _ , "crlfParse", new java.io.PrintWriter(System.out))
+        val testcCrlf = compile(crlfParse)
+        val resCrlf = testcCrlf("\n".toArray)
+        scala.Console.println(resCrlf)
+
+        codegen.emitSource(wildRegexCrlfParse _ , "wildRegexCrlfParse", new java.io.PrintWriter(System.out))
+        val testcWrc = compile(wildRegexCrlfParse)
+        val resWrc = testcWrc("f33l l1ke funkin' it up! (o_^) \\o/ \n".toArray)
+        scala.Console.println(resWrc)
+
+        codegen.emitSource(httpNumParse _ , "httpNumParse", new java.io.PrintWriter(System.out))
+        val testc3 = compile(httpNumParse)
+        val res3 = testc3("HTTP/1.1 200".toArray)
+        scala.Console.println(res3)
+
+        codegen.emitSource(httpNumStatusParse _ , "httpNumStatusParse", new java.io.PrintWriter(System.out))
+        val testc4 = compile(httpNumStatusParse)
+        val res4 = testc4("HTTP/1.1 200".toArray)
+        scala.Console.println(res4)
+
+        codegen.emitSource(statusParseTemp _ , "statusParseTemp", new java.io.PrintWriter(System.out))
+        val testcstpTemp = compile(statusParseTemp)
+        val rescstpTemp = testcstpTemp("HTTP/1.1 200 ok \n".toArray)
+        scala.Console.println(rescstpTemp)
+
+/*        codegen.emitSource(statusParse _ , "statusParse", new java.io.PrintWriter(System.out))
+        val testcStatus = compile(statusParse)
+        val rescStatus = testcStatus("HTTP/1.1 200 ok \n".toArray)
+        scala.Console.println(rescStatus)
+*/
+        codegen.emitSource(statusParse _ , "statusParse", new java.io.PrintWriter(System.out))
+        val testcStatus = compile(statusParse)
+
+        val statusMessages = scala.List(
+          """HTTP/1.1 200 OK
+          |""".stripMargin,
+
+          """HTTP/1.1 418 I'm a teapot
+          |""".stripMargin
+        )
+
+        statusMessages.foreach{sm =>
+          scala.Console.println(testcStatus(sm.toArray))
+        }
+
+      }
+    }
+
+    assertFileEqualsCheck(prefix+"http-parser")
+  }
+}

@@ -9,7 +9,7 @@ import java.io.StringWriter
 import java.io.FileOutputStream
 
 
-trait CharParsersProg extends TokenParsers with CharOps{
+trait CharParsersProg extends TokenParsers{
 
   //some basic structs
 /*  type Lettah = Record { val left: Char; val right: Char }

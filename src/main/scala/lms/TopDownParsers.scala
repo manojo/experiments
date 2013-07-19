@@ -69,21 +69,11 @@ trait TopDownParsers extends ScalaOpsPkg with GeneratorOps with LiftVariables{
     elGen(make_tuple2(readVar(s), cur))
   }
 
-  def rep[T:Manifest](p : Parser[T]) = Parser[List[T]]{ pos =>
-    var s = List[T]().asInstanceOf[Rep[List[T]]]
-    var old = unit(-1)
-    var cur = pos
-
-    while(old != cur){
-      old = cur
-      p(cur).apply{ x: Rep[(T, Int)] =>
-        s = s ++ List(x._1)
-        cur = x._2
-      }
-    }
-
-    elGen(make_tuple2(readVar(s), cur))
-  }
+  //rep can be expressed as a fold
+  def rep[T:Manifest](p : Parser[T]) =
+    repFold(p)(List[T]().asInstanceOf[Rep[List[T]]],
+      {(ls : Rep[List[T]], t: Rep[T]) => ls ++ List(t)}
+    )
 
   def repsep[T:Manifest,U:Manifest](p: => Parser[T], q: =>Parser[U]): Parser[List[T]] =
     rep(p <~  q)
@@ -93,7 +83,7 @@ trait TopDownParsers extends ScalaOpsPkg with GeneratorOps with LiftVariables{
   }
 }
 
-trait CharParsers extends TopDownParsers{
+trait CharParsers extends TopDownParsers with CharOps{
   type Elem = Char
 
   def isLetter(c: Rep[Char]) : Rep[Boolean] =
@@ -103,7 +93,9 @@ trait CharParsers extends TopDownParsers{
     c >= unit('0') && c <= unit('9')
 
   def letter(in:Rep[Input]): Parser[Char] = acceptIf(in, (c: Rep[Char]) => isLetter(c))
-  def digit(in: Rep[Input]): Parser[Char] = acceptIf(in, (c: Rep[Char]) => isDigit(c)) // ^^ { x: Char => (x - '0').toInt }
+  def digit(in: Rep[Input]): Parser[Char] = acceptIf(in, (c: Rep[Char]) => isDigit(c))
+  def digitI(in: Rep[Input]): Parser[Int] = digit(in) ^^ {c: Rep[Char] => (c - unit('0')).toInt}
+
   def accept(in:Rep[Input], e: Rep[Elem]): Parser[Char] = acceptIf(in, (c: Rep[Char]) => c == e)
 
   def acceptIf(in:Rep[Input], p: Rep[Elem] => Rep[Boolean]) = Parser[Char]{ i =>
@@ -129,7 +121,8 @@ trait TokenParsers extends TopDownParsers with CharParsers{
     x : Rep[(Char, List[Char])] => unit("NumericLit(") + (x._1::x._2).mkString + unit(")")
   }
 
-  //def decimalNumber(in: Rep[Input]): Parser[Int]
+  def wholeNumber(in: Rep[Input]): Parser[Int] =
+    repFold(digitI(in))(unit(0), (res:Rep[Int], y: Rep[Int]) => res * unit(10) + y)
 
   def stringLit(in:Rep[Input]) : Parser[String] =
     accept(in, unit('\"')) ~> rep( acceptIf(in, (x:Rep[Char]) => x != unit('\"'))) <~ accept(in, unit('\"')) ^^ {

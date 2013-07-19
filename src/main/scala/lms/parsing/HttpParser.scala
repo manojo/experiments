@@ -8,6 +8,7 @@ import java.io.PrintWriter
 import java.io.StringWriter
 import java.io.FileOutputStream
 
+
 trait HttpParser extends TokenParsers {
 
   val crlf = """\r?\n""".r
@@ -15,12 +16,28 @@ trait HttpParser extends TokenParsers {
   val wildRegex = """[^\r\n]*""".r
   val headerName = """[A-Z][\w-]*""".r
   val hexNumber = """[0-9A-F]+""".r
-
   // 0x23 == '#', 0x74 == 'del'
   val urlChar = """[^\x00-\x20#\?\x7F]""".r
 
- // def status: Parser[Int] =
- //   ("HTTP/"~decimalNumber)~>wholeNumber<~(wildRegex~crlf) ^^ (_.toInt)
+
+  //local whitespaces
+  override def whitespaces(in: Rep[Input]) : Parser[String] =
+    rep(accept(in, unit(' '))) ^^^ {unit("")}
+
+  //just keep the major and minor disctinction
+  def decimalNumber(in: Rep[Input]): Parser[(Int,Int)] =
+    wholeNumber(in)~(accept(in, unit('.'))~>wholeNumber(in))
+
+  def wildChar(in:Rep[Input]) = acceptIf(in, {x: Rep[Char] => x != unit('\n')})
+
+  def wildRegex(in: Rep[Input]) =
+    repFold[Char,String](wildChar(in))(unit(""), (res: Rep[String], c: Rep[Char]) => res + c)
+
+  //TODO: ignoring \r for now
+  def crlf(in:Rep[Input]) = accept(in, unit('\n'))
+
+  def status(in: Rep[Input]): Parser[Int] =
+    (accept(in, "HTTP/")~decimalNumber(in)~whitespaces(in))~>wholeNumber(in)<~(wildRegex(in)~crlf(in))
 
 /*  def header: Parser[Option[(String,Any)]] =  (headerName<~":")~(wildRegex<~crlf) ^^ {
     case hName~prop => collect(hName.toLowerCase, prop)
