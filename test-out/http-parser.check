@@ -1267,3 +1267,284 @@ nVars=2000
 compilation: ok
 (200,16)
 (418,26)
+/*****************************************
+  Emitting Generated Code                  
+*******************************************/
+class headerNameParse extends ((Array[Char])=>(scala.Tuple2[java.lang.String, Int])) {
+def apply(x2062:Array[Char]): scala.Tuple2[java.lang.String, Int] = {
+val x169 = ("",-1)
+var x2063: scala.Tuple2[java.lang.String, Int] = x169
+val x2064 = x2062.length
+val x2065 = 0 >= x2064
+val x2121 = if (x2065) {
+()
+} else {
+val x2066 = x2062(0)
+val x2067 = x2066 >= 'A'
+val x2068 = x2066 <= 'Z'
+val x2069 = x2067 && x2068
+val x2119 = if (x2069) {
+var x2071: java.lang.String = ""
+var x2072: Int = -1
+val x242 = 0 + 1
+var x2073: Int = x242
+val x2109 = while ({val x2074 = x2072
+val x2075 = x2073
+val x2076 = x2074 != x2075
+x2076}) {
+val x2078 = x2073
+x2072 = x2078
+val x2080 = x2078 >= x2064
+val x2099 = if (x2080) {
+()
+} else {
+val x2081 = x2062(x2078)
+val x2082 = x2081 >= 'a'
+val x2083 = x2081 <= 'z'
+val x2084 = x2082 && x2083
+val x2085 = x2081 >= 'A'
+val x2086 = x2081 <= 'Z'
+val x2087 = x2085 && x2086
+val x2088 = x2084 || x2087
+val x2097 = if (x2088) {
+val x2092 = x2071
+val x2093 = x2092+x2081
+x2071 = x2093
+val x2089 = x2078 + 1
+x2073 = x2089
+()
+} else {
+()
+}
+x2097
+}
+val x2107 = if (x2080) {
+()
+} else {
+val x2081 = x2062(x2078)
+val x2091 = x2081 == '-'
+val x2105 = if (x2091) {
+val x2100 = x2071
+val x2101 = x2100+x2081
+x2071 = x2101
+val x2089 = x2078 + 1
+x2073 = x2089
+()
+} else {
+()
+}
+x2105
+}
+x2107
+}
+val x2110 = x2071
+val x2111 = x2073
+val x2115 = x2066+x2110
+val x2116 = (x2115,x2111)
+x2063 = x2116
+()
+} else {
+()
+}
+x2119
+}
+val x2122 = x2063
+x2122
+}
+}
+/*****************************************
+  End of Generated Code                  
+*******************************************/
+compilation: ok
+(Date,4)
+/*****************************************
+  Emitting Generated Code                  
+*******************************************/
+class headerParse extends ((Array[Char])=>(scala.Tuple2[scala.Tuple2[java.lang.String, java.lang.String], Int])) {
+def apply(x2186:Array[Char]): scala.Tuple2[scala.Tuple2[java.lang.String, java.lang.String], Int] = {
+val x2187 = ("","")
+val x2188 = (x2187,-1)
+var x2189: scala.Tuple2[scala.Tuple2[java.lang.String, java.lang.String], Int] = x2188
+val x2190 = x2186.length
+val x2191 = 0 >= x2190
+val x2332 = if (x2191) {
+()
+} else {
+val x2192 = x2186(0)
+val x2193 = x2192 >= 'A'
+val x2194 = x2192 <= 'Z'
+val x2195 = x2193 && x2194
+val x2330 = if (x2195) {
+var x2197: java.lang.String = ""
+var x2198: Int = -1
+val x242 = 0 + 1
+var x2199: Int = x242
+val x2235 = while ({val x2200 = x2198
+val x2201 = x2199
+val x2202 = x2200 != x2201
+x2202}) {
+val x2204 = x2199
+x2198 = x2204
+val x2206 = x2204 >= x2190
+val x2225 = if (x2206) {
+()
+} else {
+val x2207 = x2186(x2204)
+val x2208 = x2207 >= 'a'
+val x2209 = x2207 <= 'z'
+val x2210 = x2208 && x2209
+val x2211 = x2207 >= 'A'
+val x2212 = x2207 <= 'Z'
+val x2213 = x2211 && x2212
+val x2214 = x2210 || x2213
+val x2223 = if (x2214) {
+val x2218 = x2197
+val x2219 = x2218+x2207
+x2197 = x2219
+val x2215 = x2204 + 1
+x2199 = x2215
+()
+} else {
+()
+}
+x2223
+}
+val x2233 = if (x2206) {
+()
+} else {
+val x2207 = x2186(x2204)
+val x2217 = x2207 == '-'
+val x2231 = if (x2217) {
+val x2226 = x2197
+val x2227 = x2226+x2207
+x2197 = x2227
+val x2215 = x2204 + 1
+x2199 = x2215
+()
+} else {
+()
+}
+x2231
+}
+x2233
+}
+val x2236 = x2197
+val x2237 = x2199
+val x651 = List()
+var x2243: scala.collection.immutable.List[Char] = x651
+var x2244: Int = -1
+var x2245: Int = x2237
+val x2267 = while ({val x2246 = x2244
+val x2247 = x2245
+val x2248 = x2246 != x2247
+x2248}) {
+val x2250 = x2245
+x2244 = x2250
+val x2252 = x2250 >= x2190
+val x2265 = if (x2252) {
+()
+} else {
+val x2253 = x2186(x2250)
+val x2254 = x2253 == ' '
+val x2263 = if (x2254) {
+val x2257 = x2243
+val x2258 = List(x2253)
+val x2259 = x2257 ::: x2258
+x2243 = x2259
+val x2255 = x2250 + 1
+x2245 = x2255
+()
+} else {
+()
+}
+x2263
+}
+x2265
+}
+val x2268 = x2243
+val x2269 = x2245
+val x2272 = x2269 >= x2190
+val x2328 = if (x2272) {
+()
+} else {
+val x2273 = x2186(x2269)
+val x2274 = x2273 == ':'
+val x2326 = if (x2274) {
+var x2285: java.lang.String = ""
+var x2286: Int = -1
+val x2275 = x2269 + 1
+var x2287: Int = x2275
+val x2308 = while ({val x2288 = x2286
+val x2289 = x2287
+val x2290 = x2288 != x2289
+x2290}) {
+val x2292 = x2287
+x2286 = x2292
+val x2294 = x2292 >= x2190
+val x2306 = if (x2294) {
+()
+} else {
+val x2295 = x2186(x2292)
+val x2296 = x2295 != '
+'
+val x2304 = if (x2296) {
+val x2299 = x2285
+val x2300 = x2299+x2295
+x2285 = x2300
+val x2297 = x2292 + 1
+x2287 = x2297
+()
+} else {
+()
+}
+x2304
+}
+x2306
+}
+val x2309 = x2285
+val x2310 = x2287
+val x2312 = x2310 >= x2190
+val x2324 = if (x2312) {
+()
+} else {
+val x2313 = x2186(x2310)
+val x2314 = x2313 == '
+'
+val x2322 = if (x2314) {
+val x2315 = x2310 + 1
+val x2241 = x2192+x2236
+val x2318 = (x2241,x2309)
+val x2319 = (x2318,x2315)
+x2189 = x2319
+()
+} else {
+()
+}
+x2322
+}
+x2324
+} else {
+()
+}
+x2326
+}
+x2328
+} else {
+()
+}
+x2330
+}
+val x2333 = x2189
+x2333
+}
+}
+/*****************************************
+  End of Generated Code                  
+*******************************************/
+compilation: ok
+((Date, Mon, 23 May 2005 22:38:34 GMT),36)
+((Server, Apache/1.3.3.7 (Unix) (Red-Hat/Linux)),46)
+((Last-Modified, Wed, 08 Jan 2003 23:11:55 GMT),45)
+((Etag, \"3f80f-1b6-3e1cb03b\"),29)
+((Content-Type, text/html; charset=UTF-8),39)
+((Content-Length, 131),20)

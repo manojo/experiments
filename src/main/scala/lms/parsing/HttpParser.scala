@@ -19,6 +19,11 @@ trait HttpParser extends TokenParsers {
   // 0x23 == '#', 0x74 == 'del'
   val urlChar = """[^\x00-\x20#\?\x7F]""".r
 
+  def capitalLetter(in:Rep[Input]) = {
+    acceptIf(in, {
+      c: Rep[Char] => c >= unit('A') && c <= unit('Z')
+    })
+  }
 
   //local whitespaces
   override def whitespaces(in: Rep[Input]) : Parser[String] =
@@ -28,10 +33,11 @@ trait HttpParser extends TokenParsers {
   def decimalNumber(in: Rep[Input]): Parser[(Int,Int)] =
     wholeNumber(in)~(accept(in, unit('.'))~>wholeNumber(in))
 
-  def wildChar(in:Rep[Input]) = acceptIf(in, {x: Rep[Char] => x != unit('\n')})
+  def wildChar(in:Rep[Input]) = acceptIf(in, {
+    x: Rep[Char] => x != unit('\n')
+  })
 
-  def wildRegex(in: Rep[Input]) =
-    repFold[Char,String](wildChar(in))(unit(""), (res: Rep[String], c: Rep[Char]) => res + c)
+  def wildRegex(in: Rep[Input]) = repToS(wildChar(in))
 
   //TODO: ignoring \r for now
   def crlf(in:Rep[Input]) = accept(in, unit('\n'))
@@ -39,8 +45,17 @@ trait HttpParser extends TokenParsers {
   def status(in: Rep[Input]): Parser[Int] =
     (accept(in, "HTTP/")~decimalNumber(in)~whitespaces(in))~>wholeNumber(in)<~(wildRegex(in)~crlf(in))
 
-/*  def header: Parser[Option[(String,Any)]] =  (headerName<~":")~(wildRegex<~crlf) ^^ {
-    case hName~prop => collect(hName.toLowerCase, prop)
-  }
-*/
+  def headerName(in: Rep[Input]): Parser[String] =
+    capitalLetter(in)~repToS(letter(in) | accept(in, unit('-'))) ^^ {
+      x: Rep[(Char, String)] => x._1 + x._2
+    }
+
+  def header(in: Rep[Input]): Parser[(String, String)] =
+    (headerName(in)<~(whitespaces(in)~accept(in,":")))~(wildRegex(in)<~crlf(in))
+
+
+//  def header: Parser[Option[(String,Any)]] =  (headerName<~":")~(wildRegex<~crlf) ^^ {
+//    case hName~prop => collect(hName.toLowerCase, prop)
+//  }
+
 }

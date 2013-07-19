@@ -82,6 +82,22 @@ trait HttpParserProg extends HttpParser{
     s
   }
 
+  //headerName parse
+  def headerNameParse(in: Rep[Array[Char]]): Rep[(String,Int)] = {
+    var s = make_tuple2(unit(""), unit(-1))
+    val parser = (headerName(in)).apply(unit(0))
+    parser{x: Rep[(String, Int)] => s = x}
+    s
+  }
+
+  //header parse
+  def headerParse(in: Rep[Array[Char]]): Rep[((String, String),Int)] = {
+    var s = make_tuple2(make_tuple2(unit(""),unit("")), unit(-1))
+    val parser = header(in).apply(unit(0))
+    parser{x: Rep[((String,String), Int)] => s = x}
+    s
+  }
+
 }
 
 class TestHttpParser extends FileDiffSuite {
@@ -153,6 +169,37 @@ class TestHttpParser extends FileDiffSuite {
           scala.Console.println(testcStatus(sm.toArray))
         }
 
+        codegen.emitSource(headerNameParse _ , "headerNameParse", new java.io.PrintWriter(System.out))
+        val testcHeaderName = compile(headerNameParse)
+        val resHeaderName = testcHeaderName("Date \n".toArray)
+        scala.Console.println(resHeaderName)
+
+        codegen.emitSource(headerParse _ , "headerParse", new java.io.PrintWriter(System.out))
+        val testcHeader = compile(headerParse)
+
+        val headers = scala.List(
+        """|Date: Mon, 23 May 2005 22:38:34 GMT
+           |""".stripMargin,
+
+        """|Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)
+           |""".stripMargin,
+
+        """|Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT
+           |""".stripMargin,
+
+        """|Etag: \"3f80f-1b6-3e1cb03b\"
+           |""".stripMargin,
+
+        """|Content-Type: text/html; charset=UTF-8
+           |""".stripMargin,
+
+        """|Content-Length: 131
+           |""".stripMargin
+         )
+
+        headers.foreach{h =>
+          scala.Console.println(testcHeader(h.toArray))
+        }
       }
     }
 

@@ -57,3 +57,5 @@ Need to think about fusing the `rep(p){xs => xs.fold}`. `xs` is a
 List produced at runtime, and we do not want to produce a
 Generator. An alternative is to have a repFold combinator, but it
 seems a rather common pattern, so might be useful to fuse it.
+
+Maybe is it good to have repFold as the more general version?

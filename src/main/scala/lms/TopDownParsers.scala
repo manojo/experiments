@@ -87,7 +87,8 @@ trait CharParsers extends TopDownParsers with CharOps{
   type Elem = Char
 
   def isLetter(c: Rep[Char]) : Rep[Boolean] =
-    c >= unit('a') && c <= unit('z')
+    (c >= unit('a') && c <= unit('z')) ||
+    (c >= unit('A') && c <= unit('Z'))
 
   def isDigit(c: Rep[Char]) : Rep[Boolean] =
     c >= unit('0') && c <= unit('9')
@@ -131,6 +132,10 @@ trait TokenParsers extends TopDownParsers with CharParsers{
 
   def whitespaces(in: Rep[Input]) : Parser[String] =
     (rep(accept(in, unit(' ')) | accept(in, unit('\n')))) ^^^ {unit("")}
+
+  def repToS(p: Parser[Char]) : Parser[String] =
+    repFold(p)(unit(""), (res: Rep[String], x: Rep[Char]) => res + x)
+
   /*def token: Parser[Token] =
     ( identChar ~ rep( identChar | digit ) ^^ { case first ~ rest => processIdent(first :: rest mkString "") }
     | digit ~ rep( digit ) ^^ { case first ~ rest => NumericLit(first :: rest mkString "") }
