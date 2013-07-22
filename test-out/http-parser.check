@@ -1548,3 +1548,496 @@ compilation: ok
 ((Etag, \"3f80f-1b6-3e1cb03b\"),29)
 ((Content-Type, text/html; charset=UTF-8),39)
 ((Content-Length, 131),20)
+((,),-1)
+/*****************************************
+  Emitting Generated Code                  
+*******************************************/
+class responseParse extends ((Array[Char])=>(scala.Tuple2[scala.Tuple2[Int, scala.collection.immutable.List[scala.Tuple2[java.lang.String, java.lang.String]]], Int])) {
+def apply(x2482:Array[Char]): scala.Tuple2[scala.Tuple2[Int, scala.collection.immutable.List[scala.Tuple2[java.lang.String, java.lang.String]]], Int] = {
+val x651 = List()
+val x2483 = (0,x651)
+val x2484 = (x2483,-1)
+var x2485: scala.Tuple2[scala.Tuple2[Int, scala.collection.immutable.List[scala.Tuple2[java.lang.String, java.lang.String]]], Int] = x2484
+val x2486 = x2482.length
+val x2487 = 0 >= x2486
+val x2902 = if (x2487) {
+()
+} else {
+val x2488 = x2482(0)
+val x2489 = x2488 == 'H'
+val x2900 = if (x2489) {
+val x242 = 0 + 1
+val x2491 = x242 >= x2486
+val x2898 = if (x2491) {
+()
+} else {
+val x2492 = x2482(x242)
+val x2493 = x2492 == 'T'
+val x2896 = if (x2493) {
+val x367 = x242 + 1
+val x2495 = x367 >= x2486
+val x2894 = if (x2495) {
+()
+} else {
+val x2496 = x2482(x367)
+val x2497 = x2496 == 'T'
+val x2892 = if (x2497) {
+val x372 = x367 + 1
+val x2499 = x372 >= x2486
+val x2890 = if (x2499) {
+()
+} else {
+val x2500 = x2482(x372)
+val x2501 = x2500 == 'P'
+val x2888 = if (x2501) {
+val x377 = x372 + 1
+val x2503 = x377 >= x2486
+val x2886 = if (x2503) {
+()
+} else {
+val x2504 = x2482(x377)
+val x2505 = x2504 == '/'
+val x2884 = if (x2505) {
+var x2527: Int = 0
+var x2528: Int = -1
+val x382 = x377 + 1
+var x2529: Int = x382
+val x2556 = while ({val x2530 = x2528
+val x2531 = x2529
+val x2532 = x2530 != x2531
+x2532}) {
+val x2534 = x2529
+x2528 = x2534
+val x2536 = x2534 >= x2486
+val x2554 = if (x2536) {
+()
+} else {
+val x2537 = x2482(x2534)
+val x2538 = x2537 >= '0'
+val x2539 = x2537 <= '9'
+val x2540 = x2538 && x2539
+val x2552 = if (x2540) {
+val x2546 = x2527
+val x2543 = x2537 - '0'
+val x2544 = x2543.toInt
+val x2547 = x2546 * 10
+val x2548 = x2547 + x2544
+x2527 = x2548
+val x2541 = x2534 + 1
+x2529 = x2541
+()
+} else {
+()
+}
+x2552
+}
+x2554
+}
+val x2557 = x2527
+val x2558 = x2529
+val x2560 = x2558 >= x2486
+val x2882 = if (x2560) {
+()
+} else {
+val x2561 = x2482(x2558)
+val x2562 = x2561 == '.'
+val x2880 = if (x2562) {
+var x2565: Int = 0
+var x2566: Int = -1
+val x2563 = x2558 + 1
+var x2567: Int = x2563
+val x2594 = while ({val x2568 = x2566
+val x2569 = x2567
+val x2570 = x2568 != x2569
+x2570}) {
+val x2572 = x2567
+x2566 = x2572
+val x2574 = x2572 >= x2486
+val x2592 = if (x2574) {
+()
+} else {
+val x2575 = x2482(x2572)
+val x2576 = x2575 >= '0'
+val x2577 = x2575 <= '9'
+val x2578 = x2576 && x2577
+val x2590 = if (x2578) {
+val x2584 = x2565
+val x2581 = x2575 - '0'
+val x2582 = x2581.toInt
+val x2585 = x2584 * 10
+val x2586 = x2585 + x2582
+x2565 = x2586
+val x2579 = x2572 + 1
+x2567 = x2579
+()
+} else {
+()
+}
+x2590
+}
+x2592
+}
+val x2595 = x2565
+val x2596 = x2567
+var x2602: scala.collection.immutable.List[Char] = x651
+var x2603: Int = -1
+var x2604: Int = x2596
+val x2626 = while ({val x2605 = x2603
+val x2606 = x2604
+val x2607 = x2605 != x2606
+x2607}) {
+val x2609 = x2604
+x2603 = x2609
+val x2611 = x2609 >= x2486
+val x2624 = if (x2611) {
+()
+} else {
+val x2612 = x2482(x2609)
+val x2613 = x2612 == ' '
+val x2622 = if (x2613) {
+val x2616 = x2602
+val x2617 = List(x2612)
+val x2618 = x2616 ::: x2617
+x2602 = x2618
+val x2614 = x2609 + 1
+x2604 = x2614
+()
+} else {
+()
+}
+x2622
+}
+x2624
+}
+val x2627 = x2602
+val x2628 = x2604
+var x2633: Int = 0
+var x2634: Int = -1
+var x2635: Int = x2628
+val x2662 = while ({val x2636 = x2634
+val x2637 = x2635
+val x2638 = x2636 != x2637
+x2638}) {
+val x2640 = x2635
+x2634 = x2640
+val x2642 = x2640 >= x2486
+val x2660 = if (x2642) {
+()
+} else {
+val x2643 = x2482(x2640)
+val x2644 = x2643 >= '0'
+val x2645 = x2643 <= '9'
+val x2646 = x2644 && x2645
+val x2658 = if (x2646) {
+val x2652 = x2633
+val x2649 = x2643 - '0'
+val x2650 = x2649.toInt
+val x2653 = x2652 * 10
+val x2654 = x2653 + x2650
+x2633 = x2654
+val x2647 = x2640 + 1
+x2635 = x2647
+()
+} else {
+()
+}
+x2658
+}
+x2660
+}
+val x2663 = x2633
+val x2664 = x2635
+var x2666: java.lang.String = ""
+var x2667: Int = -1
+var x2668: Int = x2664
+val x2689 = while ({val x2669 = x2667
+val x2670 = x2668
+val x2671 = x2669 != x2670
+x2671}) {
+val x2673 = x2668
+x2667 = x2673
+val x2675 = x2673 >= x2486
+val x2687 = if (x2675) {
+()
+} else {
+val x2676 = x2482(x2673)
+val x2677 = x2676 != '
+'
+val x2685 = if (x2677) {
+val x2680 = x2666
+val x2681 = x2680+x2676
+x2666 = x2681
+val x2678 = x2673 + 1
+x2668 = x2678
+()
+} else {
+()
+}
+x2685
+}
+x2687
+}
+val x2690 = x2666
+val x2691 = x2668
+val x2693 = x2691 >= x2486
+val x2878 = if (x2693) {
+()
+} else {
+val x2694 = x2482(x2691)
+val x2695 = x2694 == '
+'
+val x2876 = if (x2695) {
+var x2701: scala.collection.immutable.List[scala.Tuple2[java.lang.String, java.lang.String]] = x651
+var x2702: Int = -1
+val x2696 = x2691 + 1
+var x2703: Int = x2696
+val x2858 = while ({val x2704 = x2702
+val x2705 = x2703
+val x2706 = x2704 != x2705
+x2706}) {
+val x2708 = x2703
+x2702 = x2708
+val x2710 = x2708 >= x2486
+val x2856 = if (x2710) {
+()
+} else {
+val x2711 = x2482(x2708)
+val x2712 = x2711 >= 'A'
+val x2713 = x2711 <= 'Z'
+val x2714 = x2712 && x2713
+val x2854 = if (x2714) {
+var x2717: java.lang.String = ""
+var x2718: Int = -1
+val x2715 = x2708 + 1
+var x2719: Int = x2715
+val x2755 = while ({val x2720 = x2718
+val x2721 = x2719
+val x2722 = x2720 != x2721
+x2722}) {
+val x2724 = x2719
+x2718 = x2724
+val x2726 = x2724 >= x2486
+val x2745 = if (x2726) {
+()
+} else {
+val x2727 = x2482(x2724)
+val x2728 = x2727 >= 'a'
+val x2729 = x2727 <= 'z'
+val x2730 = x2728 && x2729
+val x2731 = x2727 >= 'A'
+val x2732 = x2727 <= 'Z'
+val x2733 = x2731 && x2732
+val x2734 = x2730 || x2733
+val x2743 = if (x2734) {
+val x2738 = x2717
+val x2739 = x2738+x2727
+x2717 = x2739
+val x2735 = x2724 + 1
+x2719 = x2735
+()
+} else {
+()
+}
+x2743
+}
+val x2753 = if (x2726) {
+()
+} else {
+val x2727 = x2482(x2724)
+val x2737 = x2727 == '-'
+val x2751 = if (x2737) {
+val x2746 = x2717
+val x2747 = x2746+x2727
+x2717 = x2747
+val x2735 = x2724 + 1
+x2719 = x2735
+()
+} else {
+()
+}
+x2751
+}
+x2753
+}
+val x2756 = x2717
+val x2757 = x2719
+var x2763: scala.collection.immutable.List[Char] = x651
+var x2764: Int = -1
+var x2765: Int = x2757
+val x2787 = while ({val x2766 = x2764
+val x2767 = x2765
+val x2768 = x2766 != x2767
+x2768}) {
+val x2770 = x2765
+x2764 = x2770
+val x2772 = x2770 >= x2486
+val x2785 = if (x2772) {
+()
+} else {
+val x2773 = x2482(x2770)
+val x2774 = x2773 == ' '
+val x2783 = if (x2774) {
+val x2777 = x2763
+val x2778 = List(x2773)
+val x2779 = x2777 ::: x2778
+x2763 = x2779
+val x2775 = x2770 + 1
+x2765 = x2775
+()
+} else {
+()
+}
+x2783
+}
+x2785
+}
+val x2788 = x2763
+val x2789 = x2765
+val x2792 = x2789 >= x2486
+val x2852 = if (x2792) {
+()
+} else {
+val x2793 = x2482(x2789)
+val x2794 = x2793 == ':'
+val x2850 = if (x2794) {
+var x2805: java.lang.String = ""
+var x2806: Int = -1
+val x2795 = x2789 + 1
+var x2807: Int = x2795
+val x2828 = while ({val x2808 = x2806
+val x2809 = x2807
+val x2810 = x2808 != x2809
+x2810}) {
+val x2812 = x2807
+x2806 = x2812
+val x2814 = x2812 >= x2486
+val x2826 = if (x2814) {
+()
+} else {
+val x2815 = x2482(x2812)
+val x2816 = x2815 != '
+'
+val x2824 = if (x2816) {
+val x2819 = x2805
+val x2820 = x2819+x2815
+x2805 = x2820
+val x2817 = x2812 + 1
+x2807 = x2817
+()
+} else {
+()
+}
+x2824
+}
+x2826
+}
+val x2829 = x2805
+val x2830 = x2807
+val x2832 = x2830 >= x2486
+val x2848 = if (x2832) {
+()
+} else {
+val x2833 = x2482(x2830)
+val x2834 = x2833 == '
+'
+val x2846 = if (x2834) {
+val x2840 = x2701
+val x2761 = x2711+x2756
+val x2838 = (x2761,x2829)
+val x2841 = List(x2838)
+val x2842 = x2840 ::: x2841
+x2701 = x2842
+val x2835 = x2830 + 1
+x2703 = x2835
+()
+} else {
+()
+}
+x2846
+}
+x2848
+} else {
+()
+}
+x2850
+}
+x2852
+} else {
+()
+}
+x2854
+}
+x2856
+}
+val x2859 = x2701
+val x2860 = x2703
+val x2864 = x2860 >= x2486
+val x2874 = if (x2864) {
+()
+} else {
+val x2865 = x2482(x2860)
+val x2866 = x2865 == '
+'
+val x2872 = if (x2866) {
+val x2862 = (x2663,x2859)
+val x2867 = x2860 + 1
+val x2869 = (x2862,x2867)
+x2485 = x2869
+()
+} else {
+()
+}
+x2872
+}
+x2874
+} else {
+()
+}
+x2876
+}
+x2878
+} else {
+()
+}
+x2880
+}
+x2882
+} else {
+()
+}
+x2884
+}
+x2886
+} else {
+()
+}
+x2888
+}
+x2890
+} else {
+()
+}
+x2892
+}
+x2894
+} else {
+()
+}
+x2896
+}
+x2898
+} else {
+()
+}
+x2900
+}
+val x2903 = x2485
+x2903
+}
+}
+/*****************************************
+  End of Generated Code                  
+*******************************************/
+nVars=3000
+compilation: ok
+((200,List((Date, Mon, 23 May 2005 22:38:34 GMT), (Server, Apache/1.3.3.7 (Unix) (Red-Hat/Linux)), (Last-Modified, Wed, 08 Jan 2003 23:11:55 GMT), (Etag, "3f80f-1b6-3e1cb03b"), (Content-Type, text/html; charset=UTF-8), (Content-Length, 131), (Connection, close))),248)

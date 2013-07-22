@@ -50,12 +50,13 @@ trait HttpParser extends TokenParsers {
       x: Rep[(Char, String)] => x._1 + x._2
     }
 
+  //TODO: do filtering based on input. Option[(String,String)]
   def header(in: Rep[Input]): Parser[(String, String)] =
     (headerName(in)<~(whitespaces(in)~accept(in,":")))~(wildRegex(in)<~crlf(in))
 
+  def headers(in: Rep[Input]) = rep(header(in))
 
-//  def header: Parser[Option[(String,Any)]] =  (headerName<~":")~(wildRegex<~crlf) ^^ {
-//    case hName~prop => collect(hName.toLowerCase, prop)
-//  }
+  def response(in: Rep[Input]) = status(in)~headers(in)<~crlf(in)
+
 
 }

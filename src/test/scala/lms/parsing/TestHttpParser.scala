@@ -98,6 +98,14 @@ trait HttpParserProg extends HttpParser{
     s
   }
 
+  //status and message
+  def responseParse(in: Rep[Array[Char]]): Rep[((Int, List[(String,String)]), Int)] = {
+    var s = make_tuple2(make_tuple2(unit(0),List[(String,String)]()), unit(-1))
+    val parser = response(in).apply(unit(0))
+    parser{x: Rep[((Int, List[(String,String)]),Int)] => s = x}
+    s
+  }
+
 }
 
 class TestHttpParser extends FileDiffSuite {
@@ -200,6 +208,28 @@ class TestHttpParser extends FileDiffSuite {
         headers.foreach{h =>
           scala.Console.println(testcHeader(h.toArray))
         }
+
+        //an invalid header
+        scala.Console.println(testcHeader("Date: Mon, 23 May 2005 22:38:34 GMT".toArray))
+
+        //a status and some headers
+        val httpMessage =
+        """|HTTP/1.1 200 OK
+           |Date: Mon, 23 May 2005 22:38:34 GMT
+           |Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)
+           |Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT
+           |Etag: "3f80f-1b6-3e1cb03b"
+           |Content-Type: text/html; charset=UTF-8
+           |Content-Length: 131
+           |Connection: close
+           |
+           |""".stripMargin
+
+        codegen.emitSource(responseParse _ , "responseParse", new java.io.PrintWriter(System.out))
+        val testcResponse = compile(responseParse)
+        val resResponse = testcResponse(httpMessage.toArray)
+        scala.Console.println(resResponse)
+
       }
     }
 
