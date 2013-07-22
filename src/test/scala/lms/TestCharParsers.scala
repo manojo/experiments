@@ -111,16 +111,24 @@ trait CharParsersProg extends TokenParsers{
     s
   }
 
+  //cond
+  def testCond(in: Rep[Array[Char]], n :Rep[Int]): Rep[(Char,Int)] = {
+    var s = make_tuple2(unit('a'), unit(-1))
+    val parser = condP(n < unit(3), accept(in, unit('b')), accept(in, unit('c'))).apply(unit(0))
+    parser{x: Rep[(Char, Int)] => s = x}
+    s
+  }
+
   //bind
   def testBind(in: Rep[Array[Char]]): Rep[(String,Int)] = {
     var s = make_tuple2(unit(""), unit(-1))
     val b = letter(in) >> { x: Rep[Char] =>
-      if(x == unit('a')) accept(in, unit('b')) ^^ { y: Rep[Char] => x+unit(", ")+y}
-      else accept(in, unit('d')) ^^ { y: Rep[Char] => x+unit(", ")+y}
+      condP(x == unit('a'),
+        accept(in, unit('b')) ^^ { y: Rep[Char] => x+unit(", ")+y},
+        accept(in, unit('d')) ^^ { y: Rep[Char] => x+unit(", ")+y}
+      )
     }
-
     val parser = b.apply(unit(0))
-
     parser{x: Rep[(String, Int)] => s = x}
     s
   }
@@ -198,6 +206,11 @@ class TestCharParsers extends FileDiffSuite {
         codegen.emitSource(test11 _ , "test11", new java.io.PrintWriter(System.out))
         val testc11 = compile(test11)
         scala.Console.println(testc11("12345".toArray))
+
+        codegen.emitSource2(testCond _ , "testCond", new java.io.PrintWriter(System.out))
+        val testcCond = compile2(testCond)
+        scala.Console.println(testcCond("b".toArray, 2))
+        scala.Console.println(testcCond("c".toArray, 6))
 
         codegen.emitSource(testBind _ , "testBind", new java.io.PrintWriter(System.out))
         val testcBind = compile(testBind)

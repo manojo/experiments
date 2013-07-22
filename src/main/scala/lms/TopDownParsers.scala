@@ -108,6 +108,11 @@ trait TopDownParsers extends ScalaOpsPkg with GeneratorOps with LiftVariables{
   def repsep[T:Manifest,U:Manifest](p: => Parser[T], q: =>Parser[U]): Parser[List[T]] =
     rep(p <~  q)
 
+  //a 'conditional' parser
+  def condP[A: Manifest](c: Rep[Boolean], a: Parser[A], b: Parser[A]) = Parser[A]{
+    i => cond(c, a(i), b(i))
+  }
+
   def Parser[T:Manifest](f: Rep[Int] => Generator[(T, Int)]) = new Parser[T]{
     def apply(i: Rep[Int]) = f(i)
   }
