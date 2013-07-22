@@ -73,25 +73,29 @@ val x1 = ('a',-1)
 var x59: scala.Tuple2[Char, Int] = x1
 val x60 = x58.length
 val x61 = 0 >= x60
-val x71 = if (x61) {
+val x75 = if (x61) {
 ()
 } else {
 val x62 = x58(0)
 val x63 = x62 >= 'a'
 val x64 = x62 <= 'z'
 val x65 = x63 && x64
-val x69 = if (x65) {
+val x66 = x62 >= 'A'
+val x67 = x62 <= 'Z'
+val x68 = x66 && x67
+val x69 = x65 || x68
+val x73 = if (x69) {
 val x7 = 0 + 1
-val x66 = (x62,x7)
-x59 = x66
+val x70 = (x62,x7)
+x59 = x70
 ()
 } else {
 ()
 }
-x69
+x73
 }
-val x72 = x59
-x72
+val x76 = x59
+x76
 }
 }
 /*****************************************
@@ -103,30 +107,30 @@ compilation: ok
   Emitting Generated Code                  
 *******************************************/
 class test4 extends ((Array[Char])=>(scala.Tuple2[Char, Int])) {
-def apply(x90:Array[Char]): scala.Tuple2[Char, Int] = {
+def apply(x98:Array[Char]): scala.Tuple2[Char, Int] = {
 val x1 = ('a',-1)
-var x91: scala.Tuple2[Char, Int] = x1
-val x92 = x90.length
-val x93 = 0 >= x92
-val x103 = if (x93) {
+var x99: scala.Tuple2[Char, Int] = x1
+val x100 = x98.length
+val x101 = 0 >= x100
+val x111 = if (x101) {
 ()
 } else {
-val x94 = x90(0)
-val x95 = x94 >= '0'
-val x96 = x94 <= '9'
-val x97 = x95 && x96
-val x101 = if (x97) {
+val x102 = x98(0)
+val x103 = x102 >= '0'
+val x104 = x102 <= '9'
+val x105 = x103 && x104
+val x109 = if (x105) {
 val x7 = 0 + 1
-val x98 = (x94,x7)
-x91 = x98
+val x106 = (x102,x7)
+x99 = x106
 ()
 } else {
 ()
 }
-x101
+x109
 }
-val x104 = x91
-x104
+val x112 = x99
+x112
 }
 }
 /*****************************************
@@ -139,48 +143,56 @@ compilation: ok
   Emitting Generated Code                  
 *******************************************/
 class test5 extends ((Array[Char])=>(scala.Tuple2[scala.Tuple2[Char, Char], Int])) {
-def apply(x122:Array[Char]): scala.Tuple2[scala.Tuple2[Char, Char], Int] = {
-val x123 = ('a','a')
-val x124 = (x123,-1)
-var x125: scala.Tuple2[scala.Tuple2[Char, Char], Int] = x124
-val x126 = x122.length
-val x127 = 0 >= x126
-val x150 = if (x127) {
+def apply(x130:Array[Char]): scala.Tuple2[scala.Tuple2[Char, Char], Int] = {
+val x131 = ('a','a')
+val x132 = (x131,-1)
+var x133: scala.Tuple2[scala.Tuple2[Char, Char], Int] = x132
+val x134 = x130.length
+val x135 = 0 >= x134
+val x166 = if (x135) {
 ()
 } else {
-val x128 = x122(0)
-val x129 = x128 >= 'a'
-val x130 = x128 <= 'z'
-val x131 = x129 && x130
-val x148 = if (x131) {
+val x136 = x130(0)
+val x137 = x136 >= 'a'
+val x138 = x136 <= 'z'
+val x139 = x137 && x138
+val x140 = x136 >= 'A'
+val x141 = x136 <= 'Z'
+val x142 = x140 && x141
+val x143 = x139 || x142
+val x164 = if (x143) {
 val x7 = 0 + 1
-val x133 = x7 >= x126
-val x146 = if (x133) {
+val x145 = x7 >= x134
+val x162 = if (x145) {
 ()
 } else {
-val x134 = x122(x7)
-val x135 = x134 >= 'a'
-val x136 = x134 <= 'z'
-val x137 = x135 && x136
-val x144 = if (x137) {
-val x138 = x7 + 1
-val x140 = (x128,x134)
-val x141 = (x140,x138)
-x125 = x141
+val x146 = x130(x7)
+val x147 = x146 >= 'a'
+val x148 = x146 <= 'z'
+val x149 = x147 && x148
+val x150 = x146 >= 'A'
+val x151 = x146 <= 'Z'
+val x152 = x150 && x151
+val x153 = x149 || x152
+val x160 = if (x153) {
+val x154 = x7 + 1
+val x156 = (x136,x146)
+val x157 = (x156,x154)
+x133 = x157
 ()
-} else {
-()
-}
-x144
-}
-x146
 } else {
 ()
 }
-x148
+x160
 }
-val x151 = x125
-x151
+x162
+} else {
+()
+}
+x164
+}
+val x167 = x133
+x167
 }
 }
 /*****************************************
@@ -194,46 +206,54 @@ compilation: ok
   Emitting Generated Code                  
 *******************************************/
 class test6 extends ((Array[Char])=>(scala.Tuple2[Char, Int])) {
-def apply(x181:Array[Char]): scala.Tuple2[Char, Int] = {
+def apply(x205:Array[Char]): scala.Tuple2[Char, Int] = {
 val x1 = ('a',-1)
-var x182: scala.Tuple2[Char, Int] = x1
-val x183 = x181.length
-val x184 = 0 >= x183
-val x204 = if (x184) {
+var x206: scala.Tuple2[Char, Int] = x1
+val x207 = x205.length
+val x208 = 0 >= x207
+val x236 = if (x208) {
 ()
 } else {
-val x185 = x181(0)
-val x186 = x185 >= 'a'
-val x187 = x185 <= 'z'
-val x188 = x186 && x187
-val x202 = if (x188) {
+val x209 = x205(0)
+val x210 = x209 >= 'a'
+val x211 = x209 <= 'z'
+val x212 = x210 && x211
+val x213 = x209 >= 'A'
+val x214 = x209 <= 'Z'
+val x215 = x213 && x214
+val x216 = x212 || x215
+val x234 = if (x216) {
 val x7 = 0 + 1
-val x190 = x7 >= x183
-val x200 = if (x190) {
+val x218 = x7 >= x207
+val x232 = if (x218) {
 ()
 } else {
-val x191 = x181(x7)
-val x192 = x191 >= 'a'
-val x193 = x191 <= 'z'
-val x194 = x192 && x193
-val x198 = if (x194) {
-val x138 = x7 + 1
-val x195 = (x191,x138)
-x182 = x195
+val x219 = x205(x7)
+val x220 = x219 >= 'a'
+val x221 = x219 <= 'z'
+val x222 = x220 && x221
+val x223 = x219 >= 'A'
+val x224 = x219 <= 'Z'
+val x225 = x223 && x224
+val x226 = x222 || x225
+val x230 = if (x226) {
+val x154 = x7 + 1
+val x227 = (x219,x154)
+x206 = x227
 ()
-} else {
-()
-}
-x198
-}
-x200
 } else {
 ()
 }
-x202
+x230
 }
-val x205 = x182
-x205
+x232
+} else {
+()
+}
+x234
+}
+val x237 = x206
+x237
 }
 }
 /*****************************************
@@ -245,46 +265,54 @@ compilation: ok
   Emitting Generated Code                  
 *******************************************/
 class test7 extends ((Array[Char])=>(scala.Tuple2[Char, Int])) {
-def apply(x233:Array[Char]): scala.Tuple2[Char, Int] = {
+def apply(x273:Array[Char]): scala.Tuple2[Char, Int] = {
 val x1 = ('a',-1)
-var x234: scala.Tuple2[Char, Int] = x1
-val x235 = x233.length
-val x236 = 0 >= x235
-val x257 = if (x236) {
+var x274: scala.Tuple2[Char, Int] = x1
+val x275 = x273.length
+val x276 = 0 >= x275
+val x305 = if (x276) {
 ()
 } else {
-val x237 = x233(0)
-val x238 = x237 >= 'a'
-val x239 = x237 <= 'z'
-val x240 = x238 && x239
-val x255 = if (x240) {
+val x277 = x273(0)
+val x278 = x277 >= 'a'
+val x279 = x277 <= 'z'
+val x280 = x278 && x279
+val x281 = x277 >= 'A'
+val x282 = x277 <= 'Z'
+val x283 = x281 && x282
+val x284 = x280 || x283
+val x303 = if (x284) {
 val x7 = 0 + 1
-val x242 = x7 >= x235
-val x253 = if (x242) {
+val x286 = x7 >= x275
+val x301 = if (x286) {
 ()
 } else {
-val x243 = x233(x7)
-val x244 = x243 >= 'a'
-val x245 = x243 <= 'z'
-val x246 = x244 && x245
-val x251 = if (x246) {
-val x138 = x7 + 1
-val x248 = (x237,x138)
-x234 = x248
+val x287 = x273(x7)
+val x288 = x287 >= 'a'
+val x289 = x287 <= 'z'
+val x290 = x288 && x289
+val x291 = x287 >= 'A'
+val x292 = x287 <= 'Z'
+val x293 = x291 && x292
+val x294 = x290 || x293
+val x299 = if (x294) {
+val x154 = x7 + 1
+val x296 = (x277,x154)
+x274 = x296
 ()
-} else {
-()
-}
-x251
-}
-x253
 } else {
 ()
 }
-x255
+x299
 }
-val x258 = x234
-x258
+x301
+} else {
+()
+}
+x303
+}
+val x306 = x274
+x306
 }
 }
 /*****************************************
@@ -296,47 +324,51 @@ compilation: ok
   Emitting Generated Code                  
 *******************************************/
 class test9 extends ((Array[Char])=>(scala.Tuple2[Char, Int])) {
-def apply(x287:Array[Char]): scala.Tuple2[Char, Int] = {
+def apply(x343:Array[Char]): scala.Tuple2[Char, Int] = {
 val x1 = ('a',-1)
-var x288: scala.Tuple2[Char, Int] = x1
-val x289 = x287.length
-val x290 = 0 >= x289
-val x303 = if (x290) {
+var x344: scala.Tuple2[Char, Int] = x1
+val x345 = x343.length
+val x346 = 0 >= x345
+val x363 = if (x346) {
 ()
 } else {
-val x291 = x287(0)
-val x292 = x291 >= 'a'
-val x293 = x291 <= 'z'
-val x294 = x292 && x293
-val x301 = if (x294) {
+val x347 = x343(0)
+val x348 = x347 >= 'a'
+val x349 = x347 <= 'z'
+val x350 = x348 && x349
+val x351 = x347 >= 'A'
+val x352 = x347 <= 'Z'
+val x353 = x351 && x352
+val x354 = x350 || x353
+val x361 = if (x354) {
 val x7 = 0 + 1
-val x295 = (x291,x7)
-x288 = x295
+val x355 = (x347,x7)
+x344 = x355
 ()
 } else {
 ()
 }
-x301
+x361
 }
-val x308 = if (x290) {
+val x368 = if (x346) {
 ()
 } else {
-val x291 = x287(0)
-val x296 = x291 >= '0'
-val x297 = x291 <= '9'
-val x298 = x296 && x297
-val x306 = if (x298) {
+val x347 = x343(0)
+val x356 = x347 >= '0'
+val x357 = x347 <= '9'
+val x358 = x356 && x357
+val x366 = if (x358) {
 val x7 = 0 + 1
-val x295 = (x291,x7)
-x288 = x295
+val x355 = (x347,x7)
+x344 = x355
 ()
 } else {
 ()
 }
-x306
+x366
 }
-val x309 = x288
-x309
+val x369 = x344
+x369
 }
 }
 /*****************************************
@@ -349,50 +381,54 @@ compilation: ok
   Emitting Generated Code                  
 *******************************************/
 class test10 extends ((Array[Char])=>(scala.Tuple2[java.lang.String, Int])) {
-def apply(x335:Array[Char]): scala.Tuple2[java.lang.String, Int] = {
-val x336 = ("",-1)
-var x337: scala.Tuple2[java.lang.String, Int] = x336
-val x338 = List()
-var x339: scala.collection.immutable.List[Char] = x338
-var x340: Int = -1
-var x341: Int = 0
-val x348 = x335.length
-val x366 = while ({val x342 = x340
-val x343 = x341
-val x344 = x342 != x343
-x344}) {
-val x346 = x341
-x340 = x346
-val x349 = x346 >= x348
-val x364 = if (x349) {
+def apply(x399:Array[Char]): scala.Tuple2[java.lang.String, Int] = {
+val x400 = ("",-1)
+var x401: scala.Tuple2[java.lang.String, Int] = x400
+val x402 = List()
+var x403: scala.collection.immutable.List[Char] = x402
+var x404: Int = -1
+var x405: Int = 0
+val x412 = x399.length
+val x434 = while ({val x406 = x404
+val x407 = x405
+val x408 = x406 != x407
+x408}) {
+val x410 = x405
+x404 = x410
+val x413 = x410 >= x412
+val x432 = if (x413) {
 ()
 } else {
-val x350 = x335(x346)
-val x351 = x350 >= 'a'
-val x352 = x350 <= 'z'
-val x353 = x351 && x352
-val x362 = if (x353) {
-val x356 = x339
-val x357 = List(x350)
-val x358 = x356 ::: x357
-x339 = x358
-val x354 = x346 + 1
-x341 = x354
+val x414 = x399(x410)
+val x415 = x414 >= 'a'
+val x416 = x414 <= 'z'
+val x417 = x415 && x416
+val x418 = x414 >= 'A'
+val x419 = x414 <= 'Z'
+val x420 = x418 && x419
+val x421 = x417 || x420
+val x430 = if (x421) {
+val x424 = x403
+val x425 = List(x414)
+val x426 = x424 ::: x425
+x403 = x426
+val x422 = x410 + 1
+x405 = x422
 ()
 } else {
 ()
 }
-x362
+x430
 }
-x364
+x432
 }
-val x367 = x339
-val x368 = x341
-val x370 = x367.mkString
-val x371 = (x370,x368)
-x337 = x371
-val x373 = x337
-x373
+val x435 = x403
+val x436 = x405
+val x438 = x435.mkString
+val x439 = (x438,x436)
+x401 = x439
+val x441 = x401
+x441
 }
 }
 /*****************************************
@@ -404,49 +440,49 @@ compilation: ok
   Emitting Generated Code                  
 *******************************************/
 class test11 extends ((Array[Char])=>(scala.Tuple2[Int, Int])) {
-def apply(x413:Array[Char]): scala.Tuple2[Int, Int] = {
-val x414 = (0,-1)
-var x415: scala.Tuple2[Int, Int] = x414
-var x416: Int = 0
-var x417: Int = -1
-var x418: Int = 0
-val x425 = x413.length
-val x445 = while ({val x419 = x417
-val x420 = x418
-val x421 = x419 != x420
-x421}) {
-val x423 = x418
-x417 = x423
-val x426 = x423 >= x425
-val x443 = if (x426) {
+def apply(x485:Array[Char]): scala.Tuple2[Int, Int] = {
+val x486 = (0,-1)
+var x487: scala.Tuple2[Int, Int] = x486
+var x488: Int = 0
+var x489: Int = -1
+var x490: Int = 0
+val x497 = x485.length
+val x517 = while ({val x491 = x489
+val x492 = x490
+val x493 = x491 != x492
+x493}) {
+val x495 = x490
+x489 = x495
+val x498 = x495 >= x497
+val x515 = if (x498) {
 ()
 } else {
-val x427 = x413(x423)
-val x428 = x427 >= '0'
-val x429 = x427 <= '9'
-val x430 = x428 && x429
-val x441 = if (x430) {
-val x436 = x416
-val x433 = x427 - '0'
-val x434 = x433.toInt
-val x437 = x436 + x434
-x416 = x437
-val x431 = x423 + 1
-x418 = x431
+val x499 = x485(x495)
+val x500 = x499 >= '0'
+val x501 = x499 <= '9'
+val x502 = x500 && x501
+val x513 = if (x502) {
+val x508 = x488
+val x505 = x499 - '0'
+val x506 = x505.toInt
+val x509 = x508 + x506
+x488 = x509
+val x503 = x495 + 1
+x490 = x503
 ()
 } else {
 ()
 }
-x441
+x513
 }
-x443
+x515
 }
-val x446 = x416
-val x447 = x418
-val x448 = (x446,x447)
-x415 = x448
-val x450 = x415
-x450
+val x518 = x488
+val x519 = x490
+val x520 = (x518,x519)
+x487 = x520
+val x522 = x487
+x522
 }
 }
 /*****************************************
@@ -454,3 +490,59 @@ x450
 *******************************************/
 compilation: ok
 (15,5)
+/*****************************************
+  Emitting Generated Code                  
+*******************************************/
+class testBind extends ((Array[Char])=>(scala.Tuple2[java.lang.String, Int])) {
+def apply(x562:Array[Char]): scala.Tuple2[java.lang.String, Int] = {
+val x400 = ("",-1)
+var x563: scala.Tuple2[java.lang.String, Int] = x400
+val x564 = x562.length
+val x565 = 0 >= x564
+val x590 = if (x565) {
+()
+} else {
+val x566 = x562(0)
+val x567 = x566 >= 'a'
+val x568 = x566 <= 'z'
+val x569 = x567 && x568
+val x570 = x566 >= 'A'
+val x571 = x566 <= 'Z'
+val x572 = x570 && x571
+val x573 = x569 || x572
+val x588 = if (x573) {
+val x7 = 0 + 1
+val x575 = x7 >= x564
+val x586 = if (x575) {
+()
+} else {
+val x576 = x562(x7)
+val x577 = x576 == 'd'
+val x584 = if (x577) {
+val x154 = x7 + 1
+val x579 = x566+", "
+val x580 = x579+x576
+val x581 = (x580,x154)
+x563 = x581
+()
+} else {
+()
+}
+x584
+}
+x586
+} else {
+()
+}
+x588
+}
+val x591 = x563
+x591
+}
+}
+/*****************************************
+  End of Generated Code                  
+*******************************************/
+compilation: ok
+(,-1)
+(c, d,2)

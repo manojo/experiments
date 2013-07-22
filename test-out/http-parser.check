@@ -2041,3 +2041,54 @@ x2903
 nVars=3000
 compilation: ok
 ((200,List((Date, Mon, 23 May 2005 22:38:34 GMT), (Server, Apache/1.3.3.7 (Unix) (Red-Hat/Linux)), (Last-Modified, Wed, 08 Jan 2003 23:11:55 GMT), (Etag, "3f80f-1b6-3e1cb03b"), (Content-Type, text/html; charset=UTF-8), (Content-Length, 131), (Connection, close))),248)
+/*****************************************
+  Emitting Generated Code                  
+*******************************************/
+class bodyParse extends ((Array[Char])=>(scala.Tuple2[java.lang.String, Int])) {
+def apply(x3326:Array[Char]): scala.Tuple2[java.lang.String, Int] = {
+val x169 = ("",-1)
+var x3327: scala.Tuple2[java.lang.String, Int] = x169
+var x3328: java.lang.String = ""
+var x3329: Int = -1
+var x3330: Int = 0
+var x3331: Int = 0
+val x3344 = x3326.length
+val x3356 = while ({val x3332 = x3331
+val x3334 = x3329
+val x3335 = x3330
+val x3333 = x3332 < 14
+val x3336 = x3334 != x3335
+val x3337 = x3333 && x3336
+x3337}) {
+val x3339 = x3330
+x3329 = x3339
+val x3341 = x3331
+val x3342 = x3341 + 1
+x3331 = x3342
+val x3345 = x3339 >= x3344
+val x3354 = if (x3345) {
+()
+} else {
+val x3349 = x3328
+val x3346 = x3326(x3339)
+val x3350 = x3349+x3346
+x3328 = x3350
+val x3347 = x3339 + 1
+x3330 = x3347
+()
+}
+x3354
+}
+val x3357 = x3328
+val x3358 = x3330
+val x3359 = (x3357,x3358)
+x3327 = x3359
+val x3361 = x3327
+x3361
+}
+}
+/*****************************************
+  End of Generated Code                  
+*******************************************/
+compilation: ok
+(Make it funky!,14)

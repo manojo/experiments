@@ -98,13 +98,27 @@ trait HttpParserProg extends HttpParser{
     s
   }
 
+  type Response = (Int, List[(String,String)])
+
   //status and message
-  def responseParse(in: Rep[Array[Char]]): Rep[((Int, List[(String,String)]), Int)] = {
+  def responseParse(in: Rep[Array[Char]]): Rep[(Response, Int)] = {
     var s = make_tuple2(make_tuple2(unit(0),List[(String,String)]()), unit(-1))
     val parser = response(in).apply(unit(0))
-    parser{x: Rep[((Int, List[(String,String)]),Int)] => s = x}
+    parser{x: Rep[(Response,Int)] => s = x}
     s
   }
+
+  //body parse
+  def bodyParse(in: Rep[Array[Char]]): Rep[(String, Int)] = {
+    var s = make_tuple2(unit(""), unit(-1))
+    //parsing "make it funky!"
+    val parser = body(in, unit(14)).apply(unit(0))
+    parser{x: Rep[(String,Int)] => s = x}
+    s
+  }
+
+  //response
+  //def respAndMsgParse
 
 }
 
@@ -229,6 +243,11 @@ class TestHttpParser extends FileDiffSuite {
         val testcResponse = compile(responseParse)
         val resResponse = testcResponse(httpMessage.toArray)
         scala.Console.println(resResponse)
+
+        codegen.emitSource(bodyParse _ , "bodyParse", new java.io.PrintWriter(System.out))
+        val testcBody = compile(bodyParse)
+        val resBody= testcBody("Make it funky! -Maceo.".toArray)
+        scala.Console.println(resBody)
 
       }
     }

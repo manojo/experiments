@@ -45,6 +45,16 @@ trait TopDownParsers extends ScalaOpsPkg with GeneratorOps with LiftVariables{
     def | (that: Parser[T]) = Parser[T]{ pos =>
       self(pos) ++ that(pos)
     }
+
+    private def flatMap[U:Manifest](f: Rep[T] => Parser[U]) = Parser[U]{ pos =>
+      self(pos).flatMap{x: Rep[(T, Int)] =>
+        val p2: Parser[U] = f(x._1)
+        p2.apply(x._2)
+      }
+    }
+
+    def >>[U:Manifest](f: Rep[T] => Parser[U]) = flatMap(f)
+
   }
 
   /*def failure = Parser{pos => None}
@@ -60,6 +70,26 @@ trait TopDownParsers extends ScalaOpsPkg with GeneratorOps with LiftVariables{
 
     while(old != cur){
       old = cur
+      p(cur).apply{ x: Rep[(T, Int)] =>
+        s = f(s, x._1)
+        cur = x._2
+      }
+    }
+
+    elGen(make_tuple2(readVar(s), cur))
+  }
+
+  //repN fold. TODO: make sure we do not cross the input length
+  def repNFold[T:Manifest, U:Manifest](p : Parser[T], n:Rep[Int])(z: Rep[U], f: (Rep[U], Rep[T]) => Rep[U]) = Parser[U]{ pos =>
+    var s = z
+    var old = unit(-1)
+    var cur = pos
+    var count = 0
+
+    while(count < n && old != cur){
+      old = cur
+      count = count + 1
+
       p(cur).apply{ x: Rep[(T, Int)] =>
         s = f(s, x._1)
         cur = x._2
@@ -106,6 +136,13 @@ trait CharParsers extends TopDownParsers with CharOps{
         elGen((in(i), i+unit(1))),
         emptyGen[(Char,Int)]()
       )
+    )
+  }
+
+  def acceptAll(in: Rep[Input]) = Parser[Char]{i =>
+    cond(i >= in.length,
+      emptyGen[(Char,Int)](),
+      elGen((in(i)), i+unit(1))
     )
   }
 }

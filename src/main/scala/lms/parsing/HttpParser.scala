@@ -58,5 +58,8 @@ trait HttpParser extends TokenParsers {
 
   def response(in: Rep[Input]) = status(in)~headers(in)<~crlf(in)
 
+  //def body(i:Int) : Parser[String] = ("(?s:.{"+i+"})").r <~ crlf
+  def body(in:Rep[Input], n:Rep[Int]) =
+    repNFold(acceptAll(in), n)(unit(""), (res: Rep[String], c: Rep[Char]) => res + c)
 
 }
