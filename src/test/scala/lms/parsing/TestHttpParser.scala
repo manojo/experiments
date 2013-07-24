@@ -98,11 +98,11 @@ trait HttpParserProg extends HttpParser{
     s
   }
 
-  type Response = (Int, List[(String,String)])
+  //type Response = (Int, List[(String,String)])
 
   //status and message
   def responseParse(in: Rep[Array[Char]]): Rep[(Response, Int)] = {
-    var s = make_tuple2(make_tuple2(unit(0),List[(String,String)]()), unit(-1))
+    var s = make_tuple2(Response(), unit(-1))
     val parser = response(in).apply(unit(0))
     parser{x: Rep[(Response,Int)] => s = x}
     s
@@ -129,10 +129,10 @@ class TestHttpParser extends FileDiffSuite {
   def testHttpParser = {
     withOutFile(prefix+"http-parser"){
        new HttpParserProg with ScalaOpsPkgExp with GeneratorOpsExp
-        with CharOpsExp with MyScalaCompile{self =>
+        with CharOpsExp with StructExpOptCommon with MyScalaCompile{self =>
 
         val codegen = new ScalaCodeGenPkg with ScalaGenGeneratorOps
-         with ScalaGenCharOps{
+         with ScalaGenCharOps with ScalaGenStruct{
           val IR: self.type = self
         }
 
@@ -228,7 +228,7 @@ class TestHttpParser extends FileDiffSuite {
 
         //a status and some headers
         val httpMessage =
-        """|HTTP/1.1 200 OK
+        """|HTTP/1.1 418 I'm a teapot
            |Date: Mon, 23 May 2005 22:38:34 GMT
            |Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)
            |Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT

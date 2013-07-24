@@ -9,7 +9,28 @@ import java.io.StringWriter
 import java.io.FileOutputStream
 
 
-trait HttpParser extends TokenParsers {
+trait HttpParser extends TokenParsers with Structs {
+
+  type Response = Record {
+    val status: Int
+    val contentLength: Int
+    val connection: String
+    val chunked: Boolean
+    val upgrade: Boolean
+
+  }
+
+  def Response(st: Rep[Int] = unit(200), cL: Rep[Int] = unit(0),
+               conn: Rep[String] = unit("close"), ch: Rep[Boolean] = unit(false),
+               up: Rep[Boolean] = unit(false)) : Rep[Response] = new Record{
+    val status = st
+    val contentLength = cL
+    val connection = conn
+    val chunked = ch
+    val upgrade = up
+  }
+
+
 
   val crlf = """\r?\n""".r
 
@@ -52,14 +73,48 @@ trait HttpParser extends TokenParsers {
 
   //TODO: do filtering based on input. Option[(String,String)]
   def header(in: Rep[Input]): Parser[(String, String)] =
-    (headerName(in)<~(whitespaces(in)~accept(in,":")))~(wildRegex(in)<~crlf(in))
+    (headerName(in)<~(whitespaces(in)~accept(in,":")))~(whitespaces(in)~>wildRegex(in)<~crlf(in))
 
-  def headers(in: Rep[Input]) = rep(header(in))
+  def headers(in: Rep[Input]) = repFold(header(in))(Response(),
+    (res: Rep[Response], hds: Rep[(String,String)]) => collect(res, hds._1, hds._2)
+  )
 
-  def response(in: Rep[Input]) = status(in)~headers(in)<~crlf(in)
+  def response(in: Rep[Input]) = status(in)~headers(in)<~crlf(in) ^^{
+    x: Rep[(Int, Response)] => Response(st = x._1, cL = x._2.contentLength, conn = x._2.connection,
+        ch = x._2.chunked, up = x._2.upgrade)
+  }
 
   //def body(i:Int) : Parser[String] = ("(?s:.{"+i+"})").r <~ crlf
   def body(in:Rep[Input], n:Rep[Int]) =
     repNFold(acceptAll(in), n)(unit(""), (res: Rep[String], c: Rep[Char]) => res + c)
+
+  def collect(res: Rep[Response], hName: Rep[String], prop: Rep[String]) : Rep[Response] =
+    if((hName == unit("connection") || hName == unit("proxy-connection"))
+      && (prop == unit("keep-alive") || prop == unit("close"))
+    ){
+      Response(st = res.status, cL = res.contentLength, conn = prop,
+        ch = res.chunked, up = res.upgrade)
+    }else if(hName == unit("Content-Length")){
+      Response(st = res.status, cL = prop.toInt, conn = res.connection,
+        ch = res.chunked, up = res.upgrade)
+    }else if(hName == unit("Transfer-Encoding") && prop == unit("chunked")){
+      Response(st = res.status, cL = res.contentLength, conn = res.connection,
+        ch = unit(true), up = res.upgrade)
+    }else if(hName == unit("upgrade")){
+      Response(st = res.status, cL = res.contentLength, conn = res.connection,
+        ch = res.chunked, up = unit(true))
+      ///*res.upgrade = unit(true);*/ res
+    }else {
+      res
+    }
+
+  /*def collect(res: Rep[Response], hName: Rep[String], prop: Rep[String]) : Rep[Response] = hName match {
+    case "connection" | "proxy-connection"
+      if (prop == "keep-alive" || prop == "close") => res.connection = prop; res
+    case "content-length" => res.contentLength = prop.toInt; res //TODO: deal with numformatexception
+    case "transfer-encoding" if (prop == unit("chunked")) => res.chunked = true; res
+    case "upgrade" => res.upgrade = true; res
+    case _ => res
+  }*/
 
 }
