@@ -8,8 +8,7 @@ import java.io.PrintWriter
 import java.io.StringWriter
 import java.io.FileOutputStream
 
-
-trait HttpParser extends TokenParsers with Structs {
+trait HttpComponents extends Structs{
 
   type Response = Record {
     val status: Int
@@ -30,7 +29,53 @@ trait HttpParser extends TokenParsers with Structs {
     val upgrade = up
   }
 
+  type Url = Record {
+    val schema: String
+    val hostName: String
+    val path: String
+    val queryString: String
+    val fragment: String
+    val port: Int
+  }
 
+  def Url( sch: Rep[String] = unit(""), hName: Rep[String] = unit(""),
+           pth: Rep[String] = unit(""), qString: Rep[String] = unit(""),
+           frag: Rep[String] = unit(""), prt: Rep[Int] = unit(80)
+  ) : Rep[Url] = new Record{
+    val schema = sch
+    val hostName = hName
+    val path = pth
+    val queryString = qString
+    val fragment = frag
+    val port = prt
+  }
+
+  type Request = Record {
+    val requestType: String
+    val uri: Url
+    val contentLength: Int
+    val connection: String
+    val chunked: Boolean
+    val upgrade: Boolean
+  }
+
+  def Request(rType: Rep[String] = unit("get"), url: Rep[Url] = Url(),
+    cL: Rep[Int] = unit(0), conn: Rep[String] = unit("close"),
+    ch: Rep[Boolean] = unit(false), up: Rep[Boolean] = unit(false)
+  ) : Rep[Request] = new Record{
+   val requestType = rType
+   val uri = url
+   val contentLength = cL
+   val connection = conn
+   val chunked = ch
+   val upgrade = up
+
+  }
+
+}
+
+
+trait HttpParser extends TokenParsers with HttpComponents {
 
   val crlf = """\r?\n""".r
 
@@ -116,5 +161,23 @@ trait HttpParser extends TokenParsers with Structs {
     case "upgrade" => res.upgrade = true; res
     case _ => res
   }*/
+
+  def respAndMessage(in: Rep[Input]): Parser[(Response,String)] = response(in) >> { rsp =>
+    body(in, rsp.contentLength) ^^ {txt: Rep[String] => make_tuple2(rsp, txt)}
+  }
+
+  //TODO: chunked parser
+
+
+/*
+    if(rsp.contentLength == 0)  <~ crlf(in)
+      {
+        if(rsp.chunked) chunkedParser
+        else if(rsp.contentLength == 0) ""<~crlf
+        else body(rsp.contentLength)
+        //TODO: other cases to be dealt with
+      } ^^ {(rsp, _)}
+  }
+*/
 
 }

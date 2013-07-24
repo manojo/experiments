@@ -12,7 +12,6 @@ trait TopDownParsers extends ScalaOpsPkg with GeneratorOps with LiftVariables{
   type Input = Array[Char]
   type Pos = Int
 
-
   abstract class Parser[T:Manifest] extends (Rep[Int] => Generator[(T, Int)]){self =>
     def ~ [U:Manifest](that: Parser[U]) = Parser[(T,U)]{ pos =>
       self(pos).flatMap{ x:Rep[(T,Int)] =>

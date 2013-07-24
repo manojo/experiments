@@ -118,7 +118,12 @@ trait HttpParserProg extends HttpParser{
   }
 
   //response
-  //def respAndMsgParse
+  def respAndMessageParse(in: Rep[Array[Char]]): Rep[((Response,String), Int)] = {
+    var s = make_tuple2(make_tuple2(Response(),unit("")), unit(-1))
+    val parser = respAndMessage(in).apply(unit(0))
+    parser{x: Rep[((Response,String),Int)] => s = x}
+    s
+  }
 
 }
 
@@ -249,6 +254,67 @@ class TestHttpParser extends FileDiffSuite {
         val resBody= testcBody("Make it funky! -Maceo.".toArray)
         scala.Console.println(resBody)
 
+        codegen.emitSource(respAndMessageParse _ , "respAndMessageParse", new java.io.PrintWriter(System.out))
+        val testcRespAndMessage = compile(respAndMessageParse)
+
+         val messages = scala.List(
+          """|HTTP/1.1 200 OK
+             |Date: Mon, 23 May 2005 22:38:34 GMT
+             |Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)
+             |Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT
+             |Etag: "3f80f-1b6-3e1cb03b"
+             |Content-Type: text/html; charset=UTF-8
+             |Content-Length: 2
+             |Connection: close
+             |
+             |AA
+             |""".stripMargin,
+
+          """|HTTP/1.1 200 OK
+             |Date: Mon, 23 May 2005 22:38:34 GMT
+             |Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)
+             |Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT
+             |Etag: "3f80f-1b6-3e1cb03b"
+             |Content-Type: text/html; charset=UTF-8
+             |Content-Length: 0
+             |Connection: close
+             |Transfer-Encoding: chunked
+             |
+             |4
+             |Wiki
+             |4
+             |pedi
+             |D
+             |a in
+             |
+             |chunks.
+             |0
+             |
+             |""".stripMargin,
+
+          """HTTP/1.1 200 OK
+            |Date: Mon, 23 May 2005 22:38:34 GMT
+            |Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)
+            |Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT
+            |Etag: "3f80f-1b6-3e1cb03b"
+            |Content-Type: text/html; charset=UTF-8
+            |Content-Length: 129
+            |Connection: close
+            |
+            |<html>
+            |<head>
+            |  <title>An Example Page</title>
+            |</head>
+            |<body>
+            |  Hello World, this is a very simple HTML document.
+            |</body>
+            |</html>
+            |""".stripMargin
+        )
+
+        messages.foreach{msg =>
+          scala.Console.println(testcRespAndMessage(msg.toArray))
+        }
       }
     }
 

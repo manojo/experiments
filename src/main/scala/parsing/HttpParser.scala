@@ -41,7 +41,6 @@ case class Response(
 case class Request(
   //could be an ADT
   requestType: String,
-  //could be a class with separate fields
   url: Url,
   contentLength: Int,
   connection: String,
