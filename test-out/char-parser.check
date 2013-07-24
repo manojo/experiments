@@ -628,3 +628,65 @@ x651
 compilation: ok
 (a, b,2)
 (c, d,2)
+/*****************************************
+  Emitting Generated Code                  
+*******************************************/
+class testLettah extends ((Array[Char], Int)=>(scala.Tuple2[Recordcharchar, Int])) {
+def apply(x0:Array[Char], x1:Int): scala.Tuple2[Recordcharchar, Int] = {
+val x2 = Recordcharchar(left = 'a', right = 'a')
+val x3 = (x2,-1)
+var x4: scala.Tuple2[Recordcharchar, Int] = x3
+val x5 = x0.length
+val x6 = 0 >= x5
+val x40 = if (x6) {
+()
+} else {
+val x7 = x0(0)
+val x8 = x7 >= 'a'
+val x9 = x7 <= 'z'
+val x10 = x8 && x9
+val x11 = x7 >= 'A'
+val x12 = x7 <= 'Z'
+val x13 = x11 && x12
+val x14 = x10 || x13
+val x38 = if (x14) {
+val x15 = 0 + 1
+val x17 = x15 >= x5
+val x36 = if (x17) {
+()
+} else {
+val x18 = x0(x15)
+val x19 = x18 >= 'a'
+val x20 = x18 <= 'z'
+val x21 = x19 && x20
+val x22 = x18 >= 'A'
+val x23 = x18 <= 'Z'
+val x24 = x22 && x23
+val x25 = x21 || x24
+val x34 = if (x25) {
+val x26 = x15 + 1
+val x30 = Recordcharchar(left = x7, right = x18)
+val x31 = (x30,x26)
+x4 = x31
+()
+} else {
+()
+}
+x34
+}
+x36
+} else {
+()
+}
+x38
+}
+val x41 = x4
+x41
+}
+}
+/*****************************************
+  End of Generated Code                  
+*******************************************/
+case class Recordcharchar(left: Char, right: Char)
+compilation: ok
+(Recordcharchar(h,e),2)

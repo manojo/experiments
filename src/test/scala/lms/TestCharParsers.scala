@@ -11,13 +11,6 @@ import java.io.FileOutputStream
 
 trait CharParsersProg extends TokenParsers{
 
-  //some basic structs
-/*  type Lettah = Record { val left: Char; val right: Char }
-  def Lettah(l: Rep[Char], r: Rep[Char]): Rep[Lettah] = new Record {
-    val left = l; val right = r
-  }
-*/
-
   //simple acceptIf filter
   def test1(in: Rep[Array[Char]]): Rep[(Char,Int)] = {
     var s = make_tuple2(unit('a'), unit(-1))
@@ -74,18 +67,6 @@ trait CharParsersProg extends TokenParsers{
     s
   }
 
-  //a simple map
-/*  def test8(in: Rep[Array[Char]], i: Rep[Int]): Rep[(Lettah,Int)] = {
-    val l = Lettah(unit('a'), unit('a'))
-    var s = make_tuple2(l, unit(-1))
-    val parser = (letter(in)~letter(in) ^^ {x: Rep[(Char, Char)] =>
-      Lettah(x._1, x._2)
-    }).apply(unit(0))
-
-    parser{x: Rep[(Lettah, Int)] => s = x}
-    s
-  }
-*/
   //or
   def test9(in: Rep[Array[Char]]): Rep[(Char,Int)] = {
     var s = make_tuple2(unit('a'), unit(-1))
@@ -135,6 +116,25 @@ trait CharParsersProg extends TokenParsers{
 }
 
 
+trait CharStructParser extends TokenParsers with Structs {
+  //a basic struct
+  type Lettah = Record { val left: Char; val right: Char }
+  def Lettah(l: Rep[Char], r: Rep[Char]): Rep[Lettah] = new Record {
+    val left = l; val right = r
+  }
+
+  //a simple map
+  def testLettah(in: Rep[Array[Char]], i: Rep[Int]): Rep[(Lettah,Int)] = {
+    val l = Lettah(unit('a'), unit('a'))
+    var s = make_tuple2(l, unit(-1))
+    val parser = (letter(in)~letter(in) ^^ {x: Rep[(Char, Char)] =>
+      Lettah(x._1, x._2)
+    }).apply(unit(0))
+
+    parser{x: Rep[(Lettah, Int)] => s = x}
+    s
+  }
+}
 
 class TestCharParsers extends FileDiffSuite {
 
@@ -184,16 +184,6 @@ class TestCharParsers extends FileDiffSuite {
         val res7 = testc7("hello".toArray)
         scala.Console.println(res7)
 
-/*
-        val printWriter = new java.io.PrintWriter(System.out)
-        codegen.emitSource2(test8 _, "test8", printWriter)
-        codegen.emitDataStructures(printWriter)
-        val source = new StringWriter
-        codegen.emitDataStructures(new PrintWriter(source))
-        val testc8 = compile2s(test8, source)
-        scala.Console.println(testc8("hello".toArray, 1))
-*/
-
         codegen.emitSource(test9 _ , "test9", new java.io.PrintWriter(System.out))
         val testc9 = compile(test9)
         scala.Console.println(testc9("hello".toArray))
@@ -216,6 +206,23 @@ class TestCharParsers extends FileDiffSuite {
         val testcBind = compile(testBind)
         scala.Console.println(testcBind("ab".toArray))
         scala.Console.println(testcBind("cd".toArray))
+
+      }
+
+      new CharStructParser with ScalaOpsPkgExp with GeneratorOpsExp
+       with CharOpsExp with StructExpOptCommon with MyScalaCompile{self =>
+
+       val codegen = new ScalaCodeGenPkg with ScalaGenGeneratorOps
+         with ScalaGenCharOps with ScalaGenStruct{ val IR: self.type = self }
+
+       val printWriter = new java.io.PrintWriter(System.out)
+
+       codegen.emitSource2(testLettah _, "testLettah", printWriter)
+       codegen.emitDataStructures(printWriter)
+       val source = new StringWriter
+       codegen.emitDataStructures(new PrintWriter(source))
+       val testcLettah = compile2s(testLettah, source)
+       scala.Console.println(testcLettah("hello".toArray, 1))
 
       }
 

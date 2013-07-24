@@ -157,6 +157,11 @@ class HTTP extends JavaTokenParsers {
    *  - upgrade
    *  - proxy-connection
    */
+
+   //have a typeclass for response, which provides a method for empty (keep for later)
+   //have the user provide and object with all fields interested in and default values,
+   //we fill it up progressively.
+
   def headers: Parser[Map[String,Any]] = rep(header) ^^ {
     case xs => xs.foldLeft(Map[String,Any]()){
       case (map, None) => map
