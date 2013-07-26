@@ -46,6 +46,14 @@ trait HttpParserProg extends HttpParser{
     s
   }
 
+  //url
+  def urlCharParse(in: Rep[Array[Char]]): Rep[(Char,Int)] = {
+    var s = make_tuple2(unit('a'), unit(-1))
+    val parser = urlChar(in).apply(unit(0))
+    parser{x: Rep[(Char, Int)] => s = x}
+    s
+  }
+
   //
   def httpNumParse(in: Rep[Array[Char]]): Rep[((Int, Int),Int)] = {
     var s = make_tuple2(make_tuple2(unit(0), unit(0)), unit(-1))
@@ -125,6 +133,14 @@ trait HttpParserProg extends HttpParser{
     s
   }
 
+  def reqTypeParse(in: Rep[Array[Char]]): Rep[(String, Int)] = {
+    var s = make_tuple2(unit(""), unit(-1))
+    val parser = requestType(in).apply(unit(0))
+    parser{x: Rep[(String,Int)] => s = x}
+    s
+  }
+
+
 }
 
 class TestHttpParser extends FileDiffSuite {
@@ -160,6 +176,11 @@ class TestHttpParser extends FileDiffSuite {
         val testcWrc = compile(wildRegexCrlfParse)
         val resWrc = testcWrc("f33l l1ke funkin' it up! (o_^) \\o/ \n".toArray)
         scala.Console.println(resWrc)
+
+        codegen.emitSource(urlCharParse _ , "urlCharParse", new java.io.PrintWriter(System.out))
+        val testcUrlCharParse = compile(urlCharParse)
+        val resUrlCharParse = testcUrlCharParse("\n".toArray)
+        scala.Console.println(resUrlCharParse)
 
         codegen.emitSource(httpNumParse _ , "httpNumParse", new java.io.PrintWriter(System.out))
         val testc3 = compile(httpNumParse)
@@ -319,5 +340,28 @@ class TestHttpParser extends FileDiffSuite {
     }
 
     assertFileEqualsCheck(prefix+"http-parser")
+
+    withOutFile(prefix+"req-parser"){
+       new HttpParserProg with ScalaOpsPkgExp with GeneratorOpsExp
+        with CharOpsExp with StructExpOptCommon with MyScalaCompile{self =>
+
+        val codegen = new ScalaCodeGenPkg with ScalaGenGeneratorOps
+         with ScalaGenCharOps with ScalaGenStruct{
+          val IR: self.type = self
+        }
+
+        codegen.emitSource(reqTypeParse _ , "reqTypeParse", new java.io.PrintWriter(System.out))
+        val testcReqParse = compile(reqTypeParse)
+        requestTypes.foreach{rType =>
+          scala.Console.println(testcReqParse(rType.toArray))
+        }
+        scala.Console.println(testcReqParse("What".toArray))
+      }
+    }
+
+    assertFileEqualsCheck(prefix+"req-parser")
+
   }
+
+
 }

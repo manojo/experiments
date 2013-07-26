@@ -69,8 +69,34 @@ trait HttpComponents extends Structs{
    val connection = conn
    val chunked = ch
    val upgrade = up
-
   }
+
+  val requestTypes = scala.List(
+  "connect",
+  "copy",
+  "checkout",
+  "delete",
+  "get",
+  "head",
+  "lock",
+  "merge",
+  "mkactivity",
+  "mkcol",
+  "move",
+  "msearch",
+  "notify",
+  "options",
+  "post",
+  "propfind",
+  "proppatch",
+  "put",
+  "report",
+  "subscribe",
+  "trace",
+  "unlock",
+  "unsubscribe"
+  )
+
 
 }
 
@@ -168,7 +194,6 @@ trait HttpParser extends TokenParsers with HttpComponents {
 
   //TODO: chunked parser
 
-
 /*
     if(rsp.contentLength == 0)  <~ crlf(in)
       {
@@ -179,5 +204,49 @@ trait HttpParser extends TokenParsers with HttpComponents {
       } ^^ {(rsp, _)}
   }
 */
+  //TODO: make case insensitive
+  def requestType(in: Rep[Input]): Parser[String]
+    = requestTypes.tail.foldLeft(accept(in, requestTypes.head)){
+      case (acc, s) => acc | accept(in, s)
+    }
 
+  //"[a-z]+".r
+  def schema(in: Rep[Input]): Parser[String] = letter(in)~repToS(letter(in)) ^^ {
+    x:Rep[(Char,String)] => x._1 + x._2
+  }
+
+  //"[a-z0-9-.]+".r
+  def hostChar(in: Rep[Input]) = acceptIf(in, {c: Rep[Char] =>
+    isDigit(c) || isLetter(c) || c == unit('-') || c == unit('.')
+  })
+
+  def hostName(in: Rep[Input]): Parser[String] = hostChar(in)~repToS(hostChar(in)) ^^ {
+    x:Rep[(Char,String)] => x._1 + x._2
+  }
+
+/*
+  def host(in: Rep[Input], rsp: Rep[Request]): Parser[Request] =
+    hostName ~ opt(":" ~> wholeNumber) ^^ {
+      case x ~ Some(y) => Map("hostName" -> x, "port" -> y)
+      case x ~ None => Map("hostName" -> x)
+    }
+*/
+  //the toChar is a bit of a hack
+  def urlChar(in: Rep[Input]): Parser[Char] = acceptIf(in, {c: Rep[Char] =>
+    c > unit(32.toChar) && c !=unit('#') && c != unit('?') && c != unit(127.toChar)
+  })
+
+
+  def reqFragment(in: Rep[Input], url: Rep[Url]) : Parser[Url] =
+    //the greediness of the first regex prevents ambiguity
+    repToS(accept(in, unit('#'))) ~> repToS(urlChar(in) | accept(in, unit('?')) | accept(in, unit('#'))) ^^{
+      x: Rep[String] =>
+        Url(sch = url.schema, hName = url.hostName,
+            pth = url.path, qString = url.queryString,
+            frag = x, prt = url.port
+        )
+    }
+
+  //opt("HTTP/"~decimalNumber)
+  def httpInfo(in: Rep[Input]) = accept(in, "HTTP/") ~> decimalNumber(in)
 }

@@ -8,6 +8,19 @@ import lms._
 import scala.virtualization.lms.common._
 import scala.virtualization.lms.internal.Effects
 
+/*
+//only contains success and position for now
+type ParseResult = Record {
+  val success: Boolean
+  val position : Int
+}
+
+def ParseResult(sc: Rep[Boolean], pos: Rep[Int]) : Rep[ParseResult] = new Record{
+  val success = sc
+  val position = pos
+}
+*/
+
 trait TopDownParsers extends ScalaOpsPkg with GeneratorOps with LiftVariables{
   type Input = Array[Char]
   type Pos = Int
@@ -112,6 +125,13 @@ trait TopDownParsers extends ScalaOpsPkg with GeneratorOps with LiftVariables{
     i => cond(c, a(i), b(i))
   }
 
+/*  def opt[T:Manifest](p: Parser[T]) = Parser[(T, Boolean)]{ i =>
+    var passed = unit(false)
+    p(i).apply{ x: Rep[(T, Int)] =>
+      if(x._2 > i) passed =
+    }
+  }
+*/
   def Parser[T:Manifest](f: Rep[Int] => Generator[(T, Int)]) = new Parser[T]{
     def apply(i: Rep[Int]) = f(i)
   }
