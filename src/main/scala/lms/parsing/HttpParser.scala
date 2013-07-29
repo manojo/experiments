@@ -71,6 +71,23 @@ trait HttpComponents extends Structs{
    val upgrade = up
   }
 
+  //option for strings only, so we can get things to work
+  //todo: generalize
+  type Option = Record {
+    val value: String
+    val success: Boolean
+  }
+
+  def Some(aVal: Rep[String]) = new Record{
+    val value = aVal
+    val success = unit(true)
+  }
+
+  def None = new Record{
+    val value = unit("")
+    val success = unit(false)
+  }
+
   val requestTypes = scala.List(
   "connect",
   "copy",
@@ -110,6 +127,16 @@ trait HttpParser extends TokenParsers with HttpComponents {
   val hexNumber = """[0-9A-F]+""".r
   // 0x23 == '#', 0x74 == 'del'
   val urlChar = """[^\x00-\x20#\?\x7F]""".r
+
+  //the opt parser for strings only
+  def opt(p: Parser[String]) = Parser[Option] { pos =>
+    p(pos).flatMap{ x: Rep[(String,Int)] =>
+      cond(x._2 == pos,
+        elGen(None,x._2),
+        elGen(Some(x._1), x._2)
+      )
+    }
+  }
 
   def capitalLetter(in:Rep[Input]) = {
     acceptIf(in, {

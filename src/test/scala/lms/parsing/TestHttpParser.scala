@@ -140,6 +140,12 @@ trait HttpParserProg extends HttpParser{
     s
   }
 
+  def optionParse(in: Rep[Array[Char]]): Rep[(Option, Int)] = {
+    var s = make_tuple2(None, unit(-1))
+    val parser = opt(headerName(in)).apply(unit(0))
+    parser{x: Rep[(Option,Int)] => s = x}
+    s
+  }
 
 }
 
@@ -336,6 +342,11 @@ class TestHttpParser extends FileDiffSuite {
         messages.foreach{msg =>
           scala.Console.println(testcRespAndMessage(msg.toArray))
         }
+
+        codegen.emitSource(optionParse _ , "optionParse", new java.io.PrintWriter(System.out))
+        val testcOptionParse = compile(optionParse)
+        scala.Console.println(testcOptionParse("Header".toArray))
+        scala.Console.println(testcOptionParse("header".toArray))
       }
     }
 

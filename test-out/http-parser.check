@@ -3054,3 +3054,105 @@ compilation: ok
   Hello World, this is a very simple HTML document.
 </body>
 </html>),377)
+/*****************************************
+  Emitting Generated Code                  
+*******************************************/
+class optionParse extends ((Array[Char])=>(scala.Tuple2[RecordStringboolean, Int])) {
+def apply(x4774:Array[Char]): scala.Tuple2[RecordStringboolean, Int] = {
+val x4775 = RecordStringboolean(value = "", success = false)
+val x4776 = (x4775,-1)
+var x4777: scala.Tuple2[RecordStringboolean, Int] = x4776
+val x4778 = x4774.length
+val x4779 = 0 >= x4778
+val x4844 = if (x4779) {
+()
+} else {
+val x4780 = x4774(0)
+val x4781 = x4780 >= 'A'
+val x4782 = x4780 <= 'Z'
+val x4783 = x4781 && x4782
+val x4842 = if (x4783) {
+var x4785: java.lang.String = ""
+var x4786: Int = -1
+val x242 = 0 + 1
+var x4787: Int = x242
+val x4823 = while ({val x4788 = x4786
+val x4789 = x4787
+val x4790 = x4788 != x4789
+x4790}) {
+val x4792 = x4787
+x4786 = x4792
+val x4794 = x4792 >= x4778
+val x4813 = if (x4794) {
+()
+} else {
+val x4795 = x4774(x4792)
+val x4796 = x4795 >= 'a'
+val x4797 = x4795 <= 'z'
+val x4798 = x4796 && x4797
+val x4799 = x4795 >= 'A'
+val x4800 = x4795 <= 'Z'
+val x4801 = x4799 && x4800
+val x4802 = x4798 || x4801
+val x4811 = if (x4802) {
+val x4806 = x4785
+val x4807 = x4806+x4795
+x4785 = x4807
+val x4803 = x4792 + 1
+x4787 = x4803
+()
+} else {
+()
+}
+x4811
+}
+val x4821 = if (x4794) {
+()
+} else {
+val x4795 = x4774(x4792)
+val x4805 = x4795 == '-'
+val x4819 = if (x4805) {
+val x4814 = x4785
+val x4815 = x4814+x4795
+x4785 = x4815
+val x4803 = x4792 + 1
+x4787 = x4803
+()
+} else {
+()
+}
+x4819
+}
+x4821
+}
+val x4824 = x4785
+val x4825 = x4787
+val x4831 = x4825 == 0
+val x4840 = if (x4831) {
+val x4832 = RecordStringboolean(value = "", success = false)
+val x4833 = (x4832,x4825)
+x4777 = x4833
+()
+} else {
+val x4829 = x4780+x4824
+val x4834 = RecordStringboolean(value = x4829, success = true)
+val x4835 = (x4834,x4825)
+x4777 = x4835
+()
+}
+x4840
+} else {
+()
+}
+x4842
+}
+val x4845 = x4777
+x4845
+}
+}
+/*****************************************
+  End of Generated Code                  
+*******************************************/
+compilation: ok
+(RecordStringboolean(Header,true),6)
+(RecordStringboolean(,false),-1)
