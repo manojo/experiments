@@ -59,3 +59,9 @@ Generator. An alternative is to have a repFold combinator, but it
 seems a rather common pattern, so might be useful to fuse it.
 
 Maybe is it good to have repFold as the more general version?
+
+#### 26.07
+
+Using TupleOps from the delite-develop branch, which uses structs internally.
+Reminder: reason it is not in the main branch is because it does not play well
+with compile (if the input or return type is a tuple)

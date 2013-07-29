@@ -8,7 +8,7 @@ import java.io.PrintWriter
 import java.io.StringWriter
 import java.io.FileOutputStream
 
-trait HttpComponents extends Structs{
+trait HttpComponents extends lms.StructOps{
 
   type Response = Record {
     val status: Int
@@ -49,6 +49,8 @@ trait HttpComponents extends Structs{
     val fragment = frag
     val port = prt
   }
+
+//  def copy(resp: Rep[Response],)
 
   type Request = Record {
     val requestType: String
