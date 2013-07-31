@@ -131,7 +131,7 @@ trait HttpParser extends TokenParsers with HttpComponents {
   //the opt parser for strings only
   def opt(p: Parser[String]) = Parser[Option] { pos =>
     p(pos).flatMap{ x: Rep[(String,Int)] =>
-      cond(x._2 == pos,
+      cond(x._2 <= pos,
         elGen(None,x._2),
         elGen(Some(x._1), x._2)
       )
@@ -251,13 +251,15 @@ trait HttpParser extends TokenParsers with HttpComponents {
     x:Rep[(Char,String)] => x._1 + x._2
   }
 
-/*
-  def host(in: Rep[Input], rsp: Rep[Request]): Parser[Request] =
-    hostName ~ opt(":" ~> wholeNumber) ^^ {
-      case x ~ Some(y) => Map("hostName" -> x, "port" -> y)
-      case x ~ None => Map("hostName" -> x)
+
+  def host(in: Rep[Input], url: Rep[Url]): Parser[Url] =
+    hostName(in) ~ opt(accept(in, unit(':')) ~> numeric(in)) ^^ {x: Rep[(String, Option)] =>
+      Url( sch = url.schema, hName = x._1,
+           pth = url.path, qString = url.queryString,
+           frag = url.fragment, prt = if(x._2.success) x._2.value.toInt else url.port
+      )
     }
-*/
+
   //the toChar is a bit of a hack
   def urlChar(in: Rep[Input]): Parser[Char] = acceptIf(in, {c: Rep[Char] =>
     c > unit(32.toChar) && c !=unit('#') && c != unit('?') && c != unit(127.toChar)

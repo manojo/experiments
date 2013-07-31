@@ -109,7 +109,7 @@ trait GeneratorProg extends GeneratorOps with NumericOps
    s
   }
 
-  //stream fusion intro example
+  //intro example from stream fusion paper
   def test10(n: Rep[Int]) = {
     val f = for (k <- range(unit(1), n);
          m <- range(unit(1), k)
@@ -118,6 +118,16 @@ trait GeneratorProg extends GeneratorOps with NumericOps
     var s = unit(0)
     f{ x: Rep[Int] => s = s+x}
     s
+  }
+
+  def testEmptyGen(n: Rep[Int]) = {
+    val myGen = emptyGen[Int]()
+
+    var s = unit(0)
+    myGen.apply{i : Rep[Int] =>
+      s = i
+    }
+
   }
 }
 

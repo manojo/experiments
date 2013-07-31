@@ -179,9 +179,10 @@ trait TokenParsers extends TopDownParsers with CharParsers{
     x : Rep[(Char, List[Char])] => processIdent((x._1 :: x._2).mkString)
   }
 
-  def numeric(in:Rep[Input]) : Parser[String] = digit(in) ~ rep(digit(in)) ^^ {
-    x : Rep[(Char, List[Char])] => unit("NumericLit(") + (x._1::x._2).mkString + unit(")")
-  }
+  def numeric(in:Rep[Input]) : Parser[String] =
+    digit(in) ~ repToS(digit(in)) ^^ {
+      x : Rep[(Char, String)] => (x._1 + x._2)
+    }
 
   def wholeNumber(in: Rep[Input]): Parser[Int] =
     repFold(digitI(in))(unit(0), (res:Rep[Int], y: Rep[Int]) => res * unit(10) + y)

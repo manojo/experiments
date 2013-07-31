@@ -147,6 +147,24 @@ trait HttpParserProg extends HttpParser{
     s
   }
 
+  def optionParse2(in: Rep[Array[Char]]): Rep[((Char,Option), Int)] = {
+    var s = make_tuple2(make_tuple2(unit('z'), None), unit(-1))
+    val parser = (letter(in) ~ opt(numeric(in))).apply(unit(0))
+    parser{x: Rep[((Char,Option),Int)] => s = x}
+    s
+  }
+
+  def hostParse(in: Rep[Array[Char]]): Rep[((String, Option), Int)] = {
+    val url = make_tuple2(unit(""), None)
+    var s = make_tuple2(url, unit(-1))
+    val parser = ((hostName(in) ~ opt(accept(in, unit(':')) ~> numeric(in))) ^^{
+      x: Rep[(String, Option)] => println(x._1); x
+    }).apply(unit(0))
+
+    parser{x: Rep[((String,Option),Int)] => s = x}
+    s
+  }
+
 }
 
 class TestHttpParser extends FileDiffSuite {
@@ -347,6 +365,7 @@ class TestHttpParser extends FileDiffSuite {
         val testcOptionParse = compile(optionParse)
         scala.Console.println(testcOptionParse("Header".toArray))
         scala.Console.println(testcOptionParse("header".toArray))
+
       }
     }
 
@@ -367,6 +386,11 @@ class TestHttpParser extends FileDiffSuite {
           scala.Console.println(testcReqParse(rType.toArray))
         }
         scala.Console.println(testcReqParse("What".toArray))
+
+        codegen.emitSource(optionParse2 _ , "optionParse2", new java.io.PrintWriter(System.out))
+        val testcOptionParse2 = compile(optionParse2)
+        scala.Console.println(testcOptionParse2("a1".toArray))
+        scala.Console.println(testcOptionParse2("ab".toArray))
       }
     }
 
