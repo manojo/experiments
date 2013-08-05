@@ -10,7 +10,7 @@ import java.io.PrintWriter
  * Taken char-for-char from the delite-develop branch of lms
  */
 
-trait OptionOps extends Base with IfThenElse{
+trait OptionOps extends Base with IfThenElse with BooleanOps{
 
 //  implicit def varToOptionOps[T:Manifest](x: Var[Option[T]]) = new OptionOpsCls(readVar(x)) // FIXME: dep on var is not nice
   implicit def repToOptionOps[T:Manifest](a: Rep[Option[T]]) = new OptionOpsCls(a)
@@ -22,7 +22,7 @@ trait OptionOps extends Base with IfThenElse{
     def isDefined: Rep[Boolean] = option_isDefined(o)
     def get: Rep[A] = option_get(o)
     def flatMap[B : Manifest](f: Rep[A] => Rep[Option[B]]) = option_flatMap(o,f)
-//    def filter(f: Rep[A] => Rep[Boolean]) = list_filter(l, f)
+    def filter(f: Rep[A] => Rep[Boolean]) = option_filter(o, f)
 //    def sortBy[B:Manifest:Ordering](f: Rep[A] => Rep[B]) = list_sortby(l,f)
 //    def ::(e: Rep[A]) = list_prepend(l,e)
 //    def ++ (l2: Rep[List[A]]) = list_concat(l, l2)
@@ -40,12 +40,15 @@ trait OptionOps extends Base with IfThenElse{
   def option_flatMap[A:Manifest, B:Manifest](o:Rep[Option[A]], f: Rep[A] => Rep[Option[B]]) : Rep[Option[B]] =
     if(o.isDefined) f(o.get) else None.asInstanceOf[Option[Rep[B]]]
 
+  def option_filter[A:Manifest](o: Rep[Option[A]], p: Rep[A] => Rep[Boolean]) : Rep[Option[A]] =
+    if(o.isDefined && p(o.get)) o else None.asInstanceOf[Option[Rep[A]]]
+
 //  implicit def back_to_opt[A:Manifest](o: Rep[Option[A]])(implicit pos: SourceContext) =
 //      if (infix_isDefined(o)) Some(o.get) else None
 
 }
 
-trait OptionOpsExp extends OptionOps with IfThenElseExp with StructOpsExpOpt with CastingOpsExp{
+trait OptionOpsExp extends OptionOps with IfThenElseExp with BooleanOpsExp with StructOpsExpOpt with CastingOpsExp{
 
   implicit def make_opt[A:Manifest](o: Option[Rep[A]])(implicit pos: SourceContext): Exp[Option[A]]
     = struct(classTag[Option[A]], "value" -> o.getOrElse(rep_asinstanceof(unit(null), manifest[Null], manifest[A])), "defined" -> unit(o.isDefined))

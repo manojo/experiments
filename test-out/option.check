@@ -62,3 +62,48 @@ x33
 *******************************************/
 compilation: ok
 OptionInt(0,false)
+/*****************************************
+  Emitting Generated Code                  
+*******************************************/
+class testFilter extends ((Int)=>(Unit)) {
+def apply(x38:Int): Unit = {
+val x40 = x38 == 3
+val x41 = true && x40
+val x42 = if (x41) {
+x38
+} else {
+val x13 = null.asInstanceOf[Int]
+x13
+}
+val x43 = if (x41) {
+true
+} else {
+false
+}
+val x44 = new OptionInt(x42,x43)
+val x45 = println(x44)
+x45
+}
+}
+/*****************************************
+  End of Generated Code                  
+*******************************************/
+compilation: ok
+OptionInt(3,true)
+OptionInt(0,false)
+/*****************************************
+  Emitting Generated Code                  
+*******************************************/
+class testFilterNone extends ((Int)=>(Unit)) {
+def apply(x56:Int): Unit = {
+val x13 = null.asInstanceOf[Int]
+val x14 = new OptionInt(x13,false)
+val x57 = println(x14)
+x57
+}
+}
+/*****************************************
+  End of Generated Code                  
+*******************************************/
+compilation: ok
+OptionInt(0,false)

@@ -20,6 +20,7 @@ trait OptionProg extends OptionOps with MyScalaOpsPkg{
 
   //map on None
   def test2(in: Rep[Int]): Rep[Unit] = {
+    //option[rep[int]] is implicitly converted to rep[option[int]]
     val s = None.asInstanceOf[Option[Rep[Int]]]
     val t = s.map(x => x * unit(2))
     println(t)
@@ -36,6 +37,20 @@ trait OptionProg extends OptionOps with MyScalaOpsPkg{
   def test4(in: Rep[Int]): Rep[Unit] = {
     val s = None.asInstanceOf[Option[Rep[Int]]]
     val t = s.flatMap(x => Some(x * unit(2)))
+    println(t)
+  }
+
+  //filter
+  def testFilter(in: Rep[Int]): Rep[Unit] = {
+    val s: Rep[Option[Int]] = Some(in)
+    val t = s.filter{x:Rep[Int] => x == unit(3)}
+    println(t)
+  }
+
+  //filter on None
+  def testFilterNone(in: Rep[Int]): Rep[Unit] = {
+    val s = None.asInstanceOf[Option[Rep[Int]]]
+    val t = s.filter(x => x == unit(2))
     println(t)
   }
 
@@ -70,6 +85,15 @@ class TestOptionOps extends FileDiffSuite {
         codegen.emitSource(test4 _ , "test4", new java.io.PrintWriter(System.out))
         val testc4 = compile(test4)
         testc4(3)
+
+        codegen.emitSource(testFilter _ , "testFilter", new java.io.PrintWriter(System.out))
+        val testcFilter = compile(testFilter)
+        testcFilter(3)
+        testcFilter(2)
+
+        codegen.emitSource(testFilterNone _ , "testFilterNone", new java.io.PrintWriter(System.out))
+        val testcFilterNone = compile(testFilterNone)
+        testcFilterNone(3)
 
       }
     }
