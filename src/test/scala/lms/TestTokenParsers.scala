@@ -1,4 +1,4 @@
-package lms
+/*package lms
 
 import lms._
 import scala.virtualization.lms.common._
@@ -106,3 +106,4 @@ class TestTokenParsers extends FileDiffSuite {
     assertFileEqualsCheck(prefix+"token-parser")
   }
 }
+*/

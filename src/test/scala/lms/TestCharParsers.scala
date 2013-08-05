@@ -9,35 +9,32 @@ import java.io.StringWriter
 import java.io.FileOutputStream
 
 
-trait CharParsersProg extends TokenParsers{
+trait CharParsersProg extends CharParsers /*TokenParsers*/{
 
   //simple acceptIf filter
   def test1(in: Rep[Array[Char]]): Rep[Unit] = {
-    var s = make_tuple2(unit('a'), ParseResult(unit(false), unit(-1)))
+    var s = Failure[Char](unit(-1))
     val parser = acceptIf(in, x => x == unit('h')).apply(unit(0))
-    parser{x: Rep[(Char, ParseResult)] => s = x}
-    println("Result: "+readVar(s)._1)
-    println("("+readVar(s)._2.position+","+readVar(s)._2.success+")")
+    parser{x: Rep[ParseResult[Char]] => s = x}
+    println(s)
   }
 
   //accept function: generates the exact same code as test1
   def test2(in: Rep[Array[Char]]): Rep[Unit] = {
-    var s = make_tuple2(unit('a'), ParseResult(unit(false), unit(-1)))
+    var s = Failure[Char](unit(-1))
     val parser = accept(in, unit('h')).apply(unit(0))
-    parser{x: Rep[(Char, ParseResult)] => s = x}
-    println("Result: "+readVar(s)._1)
-    println("("+readVar(s)._2.position+","+readVar(s)._2.success+")")
+    parser{x: Rep[ParseResult[Char]] => s = x}
+    println(s)
   }
 
   //parsing a single lowercase letter
   def test3(in: Rep[Array[Char]]): Rep[Unit] = {
-    var s = make_tuple2(unit('a'), ParseResult(unit(false), unit(-1)))
+    var s = Failure[Char](unit(-1))
     val parser = letter(in).apply(unit(0))
-    parser{x: Rep[(Char, ParseResult)] => s = x}
-    println("Result: "+readVar(s)._1)
-    println("("+readVar(s)._2.position+","+readVar(s)._2.success+")")
+    parser{x: Rep[ParseResult[Char]] => s = x}
+    println(s)
   }
-
+/*
   //parsing a single digit
   def test4(in: Rep[Array[Char]]): Rep[Unit] = {
     var s = make_tuple2(unit('a'), ParseResult(unit(false), unit(-1)))
@@ -46,16 +43,15 @@ trait CharParsersProg extends TokenParsers{
     println("Result: "+readVar(s)._1)
     println("("+readVar(s)._2.position+","+readVar(s)._2.success+")")
   }
-
+*/
   //two letters
   def test5(in: Rep[Array[Char]]): Rep[Unit] = {
-    var s = make_tuple2(make_tuple2(unit('a'), unit('a')), ParseResult(unit(false), unit(-1)))
+    var s = Failure[(Char,Char)](unit(-1))
     val parser = (letter(in)~letter(in)).apply(unit(0))
-    parser{x: Rep[((Char, Char), ParseResult)] => s = x}
-    println("Result: "+readVar(s)._1)
-    println("("+readVar(s)._2.position+","+readVar(s)._2.success+")")
+    parser{x: Rep[ParseResult[(Char,Char)]] => s = x}
+    println(s)
   }
-
+/*
   //ignoring left result
   def test6(in: Rep[Array[Char]]): Rep[Unit] = {
     var s = make_tuple2(unit('a'), ParseResult(unit(false), unit(-1)))
@@ -125,9 +121,10 @@ trait CharParsersProg extends TokenParsers{
     println("Result: "+readVar(s)._1)
     println("("+readVar(s)._2.position+","+readVar(s)._2.success+")")
   }
+ */
 }
 
-
+/*
 trait CharStructParser extends TokenParsers {
   //a basic struct
   type Lettah = Record { val left: Char; val right: Char }
@@ -149,6 +146,7 @@ trait CharStructParser extends TokenParsers {
   }
 
 }
+*/
 
 class TestCharParsers extends FileDiffSuite {
 
@@ -157,10 +155,13 @@ class TestCharParsers extends FileDiffSuite {
   def testSimpleParsers = {
     withOutFile(prefix+"char-parser"){
        new CharParsersProg with MyScalaOpsPkgExp with GeneratorOpsExp
-        with CharOpsExp with IfThenElseExpOpt with lms.StructOpsExpOptCommon with MyScalaCompile{self =>
+        with CharOpsExp with IfThenElseExpOpt with StructOpsExpOptCommon
+        with ParseResultOpsExp with MyScalaCompile{self =>
 
         val codegen = new MyScalaCodeGenPkg with ScalaGenGeneratorOps
-          with ScalaGenCharOps with lms.ScalaGenStructOps{ val IR: self.type = self }
+          with ScalaGenCharOps with ScalaGenParseResultOps with ScalaGenStructOps{
+            val IR: self.type = self
+        }
 
         codegen.emitSource(test1 _ , "test1", new java.io.PrintWriter(System.out))
         val testc1 = compile(test1)
@@ -173,18 +174,18 @@ class TestCharParsers extends FileDiffSuite {
         codegen.emitSource(test3 _ , "test3", new java.io.PrintWriter(System.out))
         val testc3 = compile(test3)
         testc3("hello".toArray)
-
+/*
         codegen.emitSource(test4 _ , "test4", new java.io.PrintWriter(System.out))
         val testc4 = compile(test4)
         testc4("hello".toArray)
         testc4("12".toArray)
-
+*/
         codegen.emitSource(test5 _ , "test5", new java.io.PrintWriter(System.out))
         val testc5 = compile(test5)
         testc5("hello".toArray) //succeeding a ~ b
         testc5("1ello".toArray) //failing left
         testc5("h2llo".toArray) //failing right
-
+/*
         codegen.emitSource(test6 _ , "test6", new java.io.PrintWriter(System.out))
         val testc6 = compile(test6)
         testc6("hello".toArray)
@@ -215,9 +216,9 @@ class TestCharParsers extends FileDiffSuite {
         val testcBind = compile(testBind)
         testcBind("ab".toArray)
         testcBind("cd".toArray)
-
+*/
       }
-
+/*
       new CharStructParser with MyScalaOpsPkgExp with GeneratorOpsExp
        with CharOpsExp with StructOpsExpOptCommon
        with IfThenElseExpOpt with MyScalaCompile{self =>
@@ -235,7 +236,7 @@ class TestCharParsers extends FileDiffSuite {
        testcLettah("hello".toArray, 1)
 
       }
-
+*/
     }
 
     assertFileEqualsCheck(prefix+"char-parser")

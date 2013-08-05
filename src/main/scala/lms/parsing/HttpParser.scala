@@ -1,4 +1,4 @@
-package lms.parsing
+/*package lms.parsing
 
 import lms._
 import scala.virtualization.lms.common._
@@ -252,3 +252,4 @@ trait HttpParser extends TokenParsers with HttpComponents {
   //opt("HTTP/"~decimalNumber)
   def httpInfo(in: Rep[Input]) = accept(in, "HTTP/") ~> decimalNumber(in)
 }
+*/

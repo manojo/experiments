@@ -13,3 +13,65 @@ x2
 *******************************************/
 compilation: ok
 ParseResultInt(3,false,10)
+/*****************************************
+  Emitting Generated Code                  
+*******************************************/
+class testMap extends ((Int)=>(Unit)) {
+def apply(x8:Int): Unit = {
+val x10 = x8 * 2
+val x11 = new ParseResultInt(x10,false,10)
+val x12 = println(x11)
+x12
+}
+}
+/*****************************************
+  End of Generated Code                  
+*******************************************/
+compilation: ok
+ParseResultInt(6,false,10)
+/*****************************************
+  Emitting Generated Code                  
+*******************************************/
+class testMapFail extends ((Int)=>(Unit)) {
+def apply(x20:Int): Unit = {
+val x21 = null.asInstanceOf[Int]
+val x22 = new ParseResultInt(x21,true,x20)
+val x23 = println(x22)
+x23
+}
+}
+/*****************************************
+  End of Generated Code                  
+*******************************************/
+compilation: ok
+ParseResultInt(0,true,3)
+/*****************************************
+  Emitting Generated Code                  
+*******************************************/
+class testOrElseLeft extends ((Int)=>(Unit)) {
+def apply(x29:Int): Unit = {
+val x31 = new ParseResultInt(2,false,x29)
+val x32 = println(x31)
+x32
+}
+}
+/*****************************************
+  End of Generated Code                  
+*******************************************/
+compilation: ok
+ParseResultInt(2,false,3)
+/*****************************************
+  Emitting Generated Code                  
+*******************************************/
+class testOrElseRight extends ((Int)=>(Unit)) {
+def apply(x39:Int): Unit = {
+val x40 = new ParseResultInt(x39,false,10)
+val x42 = println(x40)
+x42
+}
+}
+/*****************************************
+  End of Generated Code                  
+*******************************************/
+compilation: ok
+ParseResultInt(3,false,10)

@@ -9,30 +9,43 @@ import scala.virtualization.lms.common._
 import scala.virtualization.lms.internal.Effects
 
 
-trait TopDownParsers extends MyScalaOpsPkg with GeneratorOps with LiftVariables with lms.StructOps{
+trait TopDownParsers extends MyScalaOpsPkg with GeneratorOps with LiftVariables with StructOps with ParseResultOps{
   type Input = Array[Char]
   type Pos = Int
 
-  //only contains success and position for now
-  type ParseResult = Record {
-    val success: Boolean
-    val position : Int
-  }
+  abstract class Parser[T:Manifest] extends (Rep[Int] => Generator[ParseResult[T]]){self =>
 
-  def ParseResult(sc: Rep[Boolean], pos: Rep[Int]) : Rep[ParseResult] = new Record{
-    val success = sc
-    val position = pos
-  }
+    private def flatMap[U:Manifest](f: Rep[T] => Parser[U]) = Parser[U]{ pos =>
+      self(pos).flatMap{x: Rep[ParseResult[T]] =>
+        cond(x.isEmpty, elGen(Failure[U](pos)), f(x.get).apply(x.next))
+      }
+    }
 
-  abstract class Parser[T:Manifest] extends (Rep[Int] => Generator[(T, ParseResult)]){self =>
-    def ~ [U:Manifest](that: Parser[U]) = Parser[(T,U)]{ pos =>
-      self(pos).flatMap{ x:Rep[(T,ParseResult)] =>
+    def ~[U: Manifest](that: Parser[U]) = Parser[(T,U)]{pos =>
+      self(pos).flatMap{x: Rep[ParseResult[T]] =>
+        cond(x.isEmpty, elGen(Failure[(T,U)](pos)),
+          that(x.next).map{y: Rep[ParseResult[U]] =>
+            if(y.isEmpty) Failure[(T,U)](pos)
+            else Success(make_tuple2(x.get, y.get), y.next)
+          }
+        )
+      }
+    }
+/*    def ~ [U:Manifest](that: Parser[U]) = Parser[(T,U)]{ pos =>
+      for(
+        x: Rep[ParseResult[T]] <- self(pos);
+        y: Rep[ParseResult[U]] <- that(x.next)
+      )
+*/
+/*      self(pos).flatMap{ x:Rep[(T,ParseResult)] =>
         that(x._2.position).map{ y:Rep[(U,ParseResult)] =>
           (make_tuple2(x._1, y._1), y._2)
         }
       }
+ */
     }
 
+/*
     def ~> [U:Manifest](that: => Parser[U]) = Parser[U]{pos =>
       self(pos).flatMap{x: Rep[(T,ParseResult)] => that(x._2.position)}
     }
@@ -62,23 +75,17 @@ trait TopDownParsers extends MyScalaOpsPkg with GeneratorOps with LiftVariables 
       }// ++ that(pos)
     }
 
-    private def flatMap[U:Manifest](f: Rep[T] => Parser[U]) = Parser[U]{ pos =>
-      self(pos).flatMap{x: Rep[(T, ParseResult)] =>
-        val p2: Parser[U] = f(x._1)
-        p2.apply(x._2.position)
-      }
-    }
 
     def >>[U:Manifest](f: Rep[T] => Parser[U]) = flatMap(f)
 
   }
-
+*/
   /*def failure = Parser{pos => None}
   def debuggable[T](p : => Parser[T]) = Parser{pos =>
     println("we be as position : " + pos)
     p(pos)
   }*/
-
+/*
   def repFold[T:Manifest, U:Manifest](p : Parser[T])(z: Rep[U], f: (Rep[U], Rep[T]) => Rep[U]) = Parser[U]{ pos =>
     var s = z
     var old = unit(-1)
@@ -139,11 +146,12 @@ trait TopDownParsers extends MyScalaOpsPkg with GeneratorOps with LiftVariables 
     }
   }
 */
-  def Parser[T:Manifest](f: Rep[Int] => Generator[(T, ParseResult)]) = new Parser[T]{
+*/
+  def Parser[T:Manifest](f: Rep[Int] => Generator[ParseResult[T]]) = new Parser[T]{
     def apply(i: Rep[Int]) = f(i)
   }
-}
 
+}
 
 trait CharParsers extends TopDownParsers with CharOps{
   type Elem = Char
@@ -157,30 +165,33 @@ trait CharParsers extends TopDownParsers with CharOps{
 
   def letter(in:Rep[Input]): Parser[Char] = acceptIf(in, (c: Rep[Char]) => isLetter(c))
   def digit(in: Rep[Input]): Parser[Char] = acceptIf(in, (c: Rep[Char]) => isDigit(c))
-  def digitI(in: Rep[Input]): Parser[Int] = digit(in) ^^ {c: Rep[Char] => (c - unit('0')).toInt}
+//  def digitI(in: Rep[Input]): Parser[Int] = digit(in) ^^ {c: Rep[Char] => (c - unit('0')).toInt}
 
   def accept(in:Rep[Input], e: Rep[Elem]): Parser[Char] = acceptIf(in, (c: Rep[Char]) => c == e)
 
   def acceptIf(in:Rep[Input], p: Rep[Elem] => Rep[Boolean]) = Parser[Char]{ i =>
     cond(i >= in.length,
-      emptyGen[(Char,ParseResult)](),
+      elGen(Failure[Char](i)),
       cond(p(in(i)),
-        elGen(make_tuple2(in(i), ParseResult(unit(true), i+unit(1)))),
+        elGen(Success(in(i), i+unit(1))),
         //TODO: default value
         //emptyGen[(Char,ParseResult)]()
-        elGen(make_tuple2(unit(0.toChar), ParseResult(unit(false), i)))
+        elGen(Failure[Char](i))
       )
     )
   }
 
+/*
   def acceptAll(in: Rep[Input]) = Parser[Char]{i =>
     cond(i >= in.length,
       emptyGen[(Char,ParseResult)](),
       elGen((in(i)), ParseResult(unit(true),i+unit(1)))
     )
   }
+*/
 }
 
+/*
 trait TokenParsers extends TopDownParsers with CharParsers{
 
   def processIdent(s: Rep[String]) = if(s == unit("true"+0.toChar) || s == unit("null") || s == unit("false")) unit("Keyword(") + s + unit(")") else unit("NoToken")
@@ -242,3 +253,4 @@ trait TokenParsers extends TopDownParsers with CharParsers{
 
   def accept(in: Rep[Input], s: String): Parser[String] = accept(in, s.toList.map{c => unit(c)})
 }
+*/

@@ -1,4 +1,4 @@
-package lms
+/*package lms
 
 import lms._
 import scala.virtualization.lms.common._
@@ -117,4 +117,5 @@ trait RecParsersProg extends TokenParsers with Functions {
     assertFileEqualsCheck(prefix+"gen-topdown-rec")
 
   }
+*/
 */
