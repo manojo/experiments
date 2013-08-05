@@ -1,0 +1,64 @@
+/*****************************************
+  Emitting Generated Code                  
+*******************************************/
+class test1 extends ((Int)=>(Unit)) {
+def apply(x0:Int): Unit = {
+val x2 = x0 * 2
+val x3 = new OptionInt(x2,true)
+val x4 = println(x3)
+x4
+}
+}
+/*****************************************
+  End of Generated Code                  
+*******************************************/
+compilation: ok
+OptionInt(6,true)
+/*****************************************
+  Emitting Generated Code                  
+*******************************************/
+class test2 extends ((Int)=>(Unit)) {
+def apply(x12:Int): Unit = {
+val x13 = null.asInstanceOf[Int]
+val x14 = new OptionInt(x13,false)
+val x15 = println(x14)
+x15
+}
+}
+/*****************************************
+  End of Generated Code                  
+*******************************************/
+compilation: ok
+OptionInt(0,false)
+/*****************************************
+  Emitting Generated Code                  
+*******************************************/
+class test3 extends ((Int)=>(Unit)) {
+def apply(x20:Int): Unit = {
+val x22 = x20 * 2
+val x23 = new OptionInt(x22,true)
+val x24 = println(x23)
+x24
+}
+}
+/*****************************************
+  End of Generated Code                  
+*******************************************/
+compilation: ok
+OptionInt(6,true)
+/*****************************************
+  Emitting Generated Code                  
+*******************************************/
+class test4 extends ((Int)=>(Unit)) {
+def apply(x32:Int): Unit = {
+val x13 = null.asInstanceOf[Int]
+val x14 = new OptionInt(x13,false)
+val x33 = println(x14)
+x33
+}
+}
+/*****************************************
+  End of Generated Code                  
+*******************************************/
+compilation: ok
+OptionInt(0,false)

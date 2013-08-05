@@ -167,8 +167,8 @@ trait CharParsers extends TopDownParsers with CharOps{
       cond(p(in(i)),
         elGen(make_tuple2(in(i), ParseResult(unit(true), i+unit(1)))),
         //TODO: default value
-        emptyGen[(Char,ParseResult)]()
-        //elGen(make_tuple2(unit(0.toChar), ParseResult(unit(false), i)))
+        //emptyGen[(Char,ParseResult)]()
+        elGen(make_tuple2(unit(0.toChar), ParseResult(unit(false), i)))
       )
     )
   }
