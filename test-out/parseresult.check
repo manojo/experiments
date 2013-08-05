@@ -1,0 +1,15 @@
+/*****************************************
+  Emitting Generated Code                  
+*******************************************/
+class test1 extends ((Int)=>(Unit)) {
+def apply(x0:Int): Unit = {
+val x1 = new ParseResultInt(x0,false,10)
+val x2 = println(x1)
+x2
+}
+}
+/*****************************************
+  End of Generated Code                  
+*******************************************/
+compilation: ok
+ParseResultInt(3,false,10)
