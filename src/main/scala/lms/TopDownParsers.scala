@@ -17,18 +17,18 @@ trait TopDownParsers extends MyScalaOpsPkg with GeneratorOps with LiftVariables 
 
     private def flatMap[U:Manifest](f: Rep[T] => Parser[U]) = Parser[U]{ pos =>
       self(pos).flatMap{x: Rep[ParseResult[T]] =>
-        cond(x.isEmpty, elGen(Failure[U](pos)), f(x.get).apply(x.next))
+        if(x.isEmpty) elGen(Failure[U](pos)) else f(x.get).apply(x.next)
       }
     }
 
     def ~[U: Manifest](that: Parser[U]) = Parser[(T,U)]{pos =>
+      //for(x <- self(pos); left: Rep[ParseResult[T]] <- x)
       self(pos).flatMap{x: Rep[ParseResult[T]] =>
-        cond(x.isEmpty, elGen(Failure[(T,U)](pos)),
-          that(x.next).map{y: Rep[ParseResult[U]] =>
-            if(y.isEmpty) Failure[(T,U)](pos)
-            else Success(make_tuple2(x.get, y.get), y.next)
-          }
-        )
+        if(x.isEmpty) elGen(Failure[(T,U)](pos))
+        else that(x.next).map{ y: Rep[ParseResult[U]] =>
+          if(y.isEmpty) Failure[(T,U)](pos)
+          else Success(make_tuple2(x.get, y.get), y.next)
+        }
       }
     }
 /*    def ~ [U:Manifest](that: Parser[U]) = Parser[(T,U)]{ pos =>

@@ -57,7 +57,7 @@ trait GeneratorOps extends Variables with While with LiftVariables
         f(i)
       }
     }
-    cond((start < end), tmp, emptyGen())
+    if(start < end) tmp else emptyGen[Int]()
   }
 
   def fromSeq[A:Manifest](xs: Seq[Rep[A]]): Generator[A] =
@@ -79,6 +79,9 @@ trait GeneratorOps extends Variables with While with LiftVariables
   def cond[A:Manifest](cond: Rep[Boolean], a: Generator[A], b: Generator[A]) = Generator[A]{
     f => if(cond) a(f) else b(f)
   }
+
+  def __ifThenElse[T:Manifest](c: Rep[Boolean], thenp: => Generator[T], elsep: => Generator[T]) : Generator[T] =
+    cond(c, thenp, elsep)
 }
 
 trait GeneratorOpsExp extends GeneratorOps with EffectExp with VariablesExp
