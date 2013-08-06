@@ -74,63 +74,55 @@ trait CharParsersProg extends CharParsers /*TokenParsers*/{
     parser{x: Rep[ParseResult[Int]] => s = x}
     println(s)
   }
-/*
+
   //or
   def test9(in: Rep[Array[Char]]): Rep[Unit] = {
-    var s = make_tuple2(unit('a'), ParseResult(unit(false), unit(-1)))
+    var s = Failure[Char](unit(-1))
     val parser = (letter(in) | digit(in)).apply(unit(0))
-    parser{x: Rep[(Char, ParseResult)] => s = x}
-    println("Result: "+readVar(s)._1)
-    println("("+readVar(s)._2.position+","+readVar(s)._2.success+")")
+    parser{x: Rep[ParseResult[Char]] => s = x}
+    println(s)
   }
 
   //rep
   def test10(in: Rep[Array[Char]]): Rep[Unit] = {
-    var s = make_tuple2(unit(""), ParseResult(unit(false), unit(-1)))
+    var s = Failure[String](unit(-1))
     val parser = (rep(letter(in)) ^^ {x: Rep[List[Char]] => x.mkString}).apply(unit(0))
-    parser{x: Rep[(String, ParseResult)] => s = x}
-    println("Result: "+readVar(s)._1)
-    println("("+readVar(s)._2.position+","+readVar(s)._2.success+")")
+    parser{x: Rep[ParseResult[String]] => s = x}
+    println(s)
   }
 
   //repFold
   def test11(in: Rep[Array[Char]]): Rep[Unit] = {
-    var s = make_tuple2(unit(0), ParseResult(unit(false), unit(-1)))
-    val digitP : Parser[Int] =  digit(in) ^^ {x: Rep[Char] => char_toint(x - unit('0'))}
-    val parser = repFold(digitP)(unit(0), (x: Rep[Int], y :Rep[Int]) => x + y) .apply(unit(0))
-    parser{x: Rep[(Int, ParseResult)] => s = x}
-    println("Result: "+readVar(s)._1)
-    println("("+readVar(s)._2.position+","+readVar(s)._2.success+")")
+    var s = Failure[Int](unit(-1))
+    val parser = repFold(digitI(in))(unit(0), (x: Rep[Int], y :Rep[Int]) => x + y) .apply(unit(0))
+    parser{x: Rep[ParseResult[Int]] => s = x}
+    println(s)
   }
 
   //cond
   def testCond(in: Rep[Array[Char]], n :Rep[Int]): Rep[Unit] = {
-    var s = make_tuple2(unit('a'), ParseResult(unit(false), unit(-1)))
-    val parser = condP(n < unit(3), accept(in, unit('b')), accept(in, unit('c'))).apply(unit(0))
-    parser{x: Rep[(Char, ParseResult)] => s = x}
-    println("Result: "+readVar(s)._1)
-    println("("+readVar(s)._2.position+","+readVar(s)._2.success+")")
+    var s = Failure[Char](unit(-1))
+    val parser: Parser[Char] = if(n < unit(3)) accept(in, unit('b')) else accept(in, unit('c'))
+    parser(unit(0)).apply{x: Rep[ParseResult[Char]] => s = x}
+    println(s)
   }
+
 
   //bind
   def testBind(in: Rep[Array[Char]]): Rep[Unit] = {
-    var s = make_tuple2(unit(""), ParseResult(unit(false), unit(-1)))
-    val b = letter(in) >> { x: Rep[Char] =>
-      condP(x == unit('a'),
-        accept(in, unit('b')) ^^ { y: Rep[Char] => x+unit(", ")+y},
-        accept(in, unit('d')) ^^ { y: Rep[Char] => x+unit(", ")+y}
-      )
+    var s = Failure[String](unit(-1))
+    val parser = letter(in) >> { x: Rep[Char] =>
+      if(x == unit('a')) accept(in, unit('b')) ^^ { y: Rep[Char] => x+unit(", ")+y}
+      else accept(in, unit('d')) ^^ { y: Rep[Char] => x+unit(", ")+y}
     }
-    val parser = b.apply(unit(0))
-    parser{x: Rep[(String, ParseResult)] => s = x}
-    println("Result: "+readVar(s)._1)
-    println("("+readVar(s)._2.position+","+readVar(s)._2.success+")")
+
+    parser(unit(0)).apply{x: Rep[ParseResult[String]] => s = x}
+    println(s)
   }
- */
 }
 
-/*
-trait CharStructParser extends TokenParsers {
+
+trait CharStructParser extends CharParsers {
   //a basic struct
   type Lettah = Record { val left: Char; val right: Char }
   def Lettah(l: Rep[Char], r: Rep[Char]): Rep[Lettah] = new Record {
@@ -139,19 +131,16 @@ trait CharStructParser extends TokenParsers {
 
   //a simple map
   def testLettah(in: Rep[Array[Char]], i: Rep[Int]): Rep[Unit] = {
-    val l = Lettah(unit('a'), unit('a'))
-    var s = make_tuple2(l, ParseResult(unit(false), unit(-1)))
+    var s = Failure[Lettah](unit(-1))
     val parser = (letter(in)~letter(in) ^^ {x: Rep[(Char, Char)] =>
       Lettah(x._1, x._2)
     }).apply(unit(0))
 
-    parser{x: Rep[(Lettah, ParseResult)] => s = x}
-    println("Result: "+readVar(s)._1)
-    println("("+readVar(s)._2.position+","+readVar(s)._2.success+")")
+    parser{x: Rep[ParseResult[Lettah]] => s = x}
+    println(s)
   }
 
 }
-*/
 
 class TestCharParsers extends FileDiffSuite {
 
@@ -206,11 +195,12 @@ class TestCharParsers extends FileDiffSuite {
         val testc8 = compile(test8)
         testc8("1ello".toArray)
         testc8("hello".toArray)
-/*
+
         codegen.emitSource(test9 _ , "test9", new java.io.PrintWriter(System.out))
         val testc9 = compile(test9)
         testc9("hello".toArray)
         testc9("12".toArray)
+        testc9(":".toArray)
 
         codegen.emitSource(test10 _ , "test10", new java.io.PrintWriter(System.out))
         val testc10 = compile(test10)
@@ -219,25 +209,36 @@ class TestCharParsers extends FileDiffSuite {
         codegen.emitSource(test11 _ , "test11", new java.io.PrintWriter(System.out))
         val testc11 = compile(test11)
         testc11("12345".toArray)
+        testc11("asd".toArray)
+        testc11("".toArray)
 
-        codegen.emitSource2(testCond _ , "testCond", new java.io.PrintWriter(System.out))
-        val testcCond = compile2(testCond)
+        val printWriter = new java.io.PrintWriter(System.out)
+        codegen.emitSource2(testCond _, "testCond", printWriter)
+        codegen.emitDataStructures(printWriter)
+
+        val source = new StringWriter
+        codegen.emitDataStructures(new PrintWriter(source))
+        val testcCond = compile2s(testCond, source)
         testcCond("b".toArray, 2)
         testcCond("c".toArray, 6)
 
         codegen.emitSource(testBind _ , "testBind", new java.io.PrintWriter(System.out))
         val testcBind = compile(testBind)
-        testcBind("ab".toArray)
-        testcBind("cd".toArray)
-*/
+        testcBind("ab".toArray) //successful
+        testcBind("ac".toArray) //fail
+        testcBind("cd".toArray) //successful
+        testcBind("ca".toArray) //fail
+
       }
-/*
+
       new CharStructParser with MyScalaOpsPkgExp with GeneratorOpsExp
-       with CharOpsExp with StructOpsExpOptCommon
+       with CharOpsExp with StructOpsExpOptCommon  with ParseResultOpsExp
        with IfThenElseExpOpt with MyScalaCompile{self =>
 
        val codegen = new MyScalaCodeGenPkg with ScalaGenGeneratorOps
-         with ScalaGenCharOps with ScalaGenStructOps{ val IR: self.type = self }
+         with ScalaGenCharOps with ScalaGenStructOps with ScalaGenParseResultOps{
+          val IR: self.type = self
+       }
 
        val printWriter = new java.io.PrintWriter(System.out)
 
@@ -249,7 +250,7 @@ class TestCharParsers extends FileDiffSuite {
        testcLettah("hello".toArray, 1)
 
       }
-*/
+
     }
 
     assertFileEqualsCheck(prefix+"char-parser")

@@ -7,7 +7,7 @@ import scala.reflect.SourceContext
 import java.io.PrintWriter
 
 /**
- * Taken char-for-char from the delite-develop branch of lms
+ * Inspired from TupleOps is the delite-develop branch
  */
 
 trait OptionOps extends Base with IfThenElse with BooleanOps{
@@ -43,9 +43,6 @@ trait OptionOps extends Base with IfThenElse with BooleanOps{
   def option_filter[A:Manifest](o: Rep[Option[A]], p: Rep[A] => Rep[Boolean]) : Rep[Option[A]] =
     if(o.isDefined && p(o.get)) o else None.asInstanceOf[Option[Rep[A]]]
 
-//  implicit def back_to_opt[A:Manifest](o: Rep[Option[A]])(implicit pos: SourceContext) =
-//      if (infix_isDefined(o)) Some(o.get) else None
-
 }
 
 trait OptionOpsExp extends OptionOps with IfThenElseExp with BooleanOpsExp with StructOpsExpOpt with CastingOpsExp{
@@ -55,9 +52,6 @@ trait OptionOpsExp extends OptionOps with IfThenElseExp with BooleanOpsExp with 
 
   def option_isDefined[A:Manifest](o:Rep[Option[A]])(implicit pos: SourceContext) : Rep[Boolean] = field[Boolean](o, "defined")
   def option_get[A:Manifest](o:Rep[Option[A]])(implicit pos: SourceContext):Rep[A] = field[A](o, "value")
-
-  //  implicit def make_tuple2[A:Manifest,B:Manifest](t: (Exp[A],Exp[B]))(implicit pos: SourceContext) : Exp[(A,B)] = struct(classTag[(A,B)], "_1" -> t._1, "_2" -> t._2)
-
 }
 
 trait OptionGenBase extends GenericCodegen with BaseGenStructOps with ScalaGenCastingOps{

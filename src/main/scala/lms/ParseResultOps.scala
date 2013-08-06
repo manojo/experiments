@@ -7,30 +7,18 @@ import scala.reflect.SourceContext
 import java.io.PrintWriter
 
 /**
- * Taken char-for-char from the delite-develop branch of lms
+ * Inspired from TupleOps on delite-develop branch
  */
 trait ParseResultOps extends Base with IfThenElse with BooleanOps with CastingOps{
 
   /**A mini implementation of a parseresult
-   * Attention: next is a Rep[Int] here, because we are providing the value from
-   * outside. This is a bit of a mixed way or representing a parseresult, it is
-   * probably nicer to have a representation with reps only
+   *
    */
   abstract class ParseResult[T:Manifest]{
     def isEmpty: Rep[Boolean]
     def next: Rep[Int]
     def res: Rep[T]
   }
-
-/*  case class Success[T:Manifest](override val res: Rep[T], override val next: Rep[Int]) extends ParseResult[T]{
-    def isEmpty = unit(false)
-  }
-
-  case class Failure[T:Manifest](override val next: Rep[Int]) extends ParseResult[T]{
-    def isEmpty = unit(true)
-    def res = rep_asinstanceof(unit(null), manifest[Null], manifest[T]) //null.AsInstanceOf[Rep[T]]
-  }
- */
 
   def Success[T:Manifest](res: Rep[T], next:Rep[Int]) : Rep[ParseResult[T]]
   def Failure[T:Manifest](next: Rep[Int]): Rep[ParseResult[T]]

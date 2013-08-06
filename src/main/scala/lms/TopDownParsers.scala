@@ -17,14 +17,14 @@ trait TopDownParsers extends MyScalaOpsPkg with GeneratorOps with LiftVariables 
 
     private def flatMap[U:Manifest](f: Rep[T] => Parser[U]) = Parser[U]{ pos =>
       self(pos).flatMap{x: Rep[ParseResult[T]] =>
-        if(x.isEmpty) elGen(Failure[U](pos)) else f(x.get).apply(x.next)
+        if(x.isEmpty) elGen(Failure[U](pos))
+        else f(x.get).apply(x.next).map{x => if(x.isEmpty) Failure[U](pos) else x}
       }
     }
 
     def >>[U:Manifest](f: Rep[T] => Parser[U]) = flatMap(f)
 
     def ~[U: Manifest](that: Parser[U]) = Parser[(T,U)]{pos =>
-      //for(x <- self(pos); left: Rep[ParseResult[T]] <- x)
       self(pos).flatMap{x: Rep[ParseResult[T]] =>
         if(x.isEmpty) elGen(Failure[(T,U)](pos))
         else that(x.next).map{ y: Rep[ParseResult[U]] =>
@@ -56,62 +56,58 @@ trait TopDownParsers extends MyScalaOpsPkg with GeneratorOps with LiftVariables 
 
     def ^^[U:Manifest](f: Rep[T] => Rep[U]) = self.map(f)
     def ^^^[U:Manifest](u: Rep[U]) = self.map(x => u)
-  }
 
-/*    //TODO: this or is neither backtracking, nor an actual or
+
+    //TODO: this or is neither backtracking, nor an actual or
     def | (that: Parser[T]) = Parser[T]{ pos =>
-      self(pos).flatMap{ x: Rep[(T, ParseResult)] =>
-        cond(x._2.success,
-          elGen(x),
-          that(pos)
-        )
-      }// ++ that(pos)
+      self(pos).flatMap{ x =>
+        if(x.isEmpty) that(pos) else elGen(x)
+      }
     }
   }
-*/
+
   /*def failure = Parser{pos => None}
   def debuggable[T](p : => Parser[T]) = Parser{pos =>
     println("we be as position : " + pos)
     p(pos)
   }*/
-/*
+
   def repFold[T:Manifest, U:Manifest](p : Parser[T])(z: Rep[U], f: (Rep[U], Rep[T]) => Rep[U]) = Parser[U]{ pos =>
-    var s = z
+    var s = Success[U](z, pos)
+
     var old = unit(-1)
-    var sc = unit(true)
+    var continue = unit(true)
     var cur = pos
 
-    /*old != cur*/
-    while(sc && old != cur){
+    while(continue && old != cur){
       old = cur
-      p(cur).apply{ x: Rep[(T, ParseResult)] =>
-        s = f(s, x._1)
-        sc = x._2.success
-        cur = x._2.position
+      p(cur).apply{ x: Rep[ParseResult[T]] =>
+        if(x.isEmpty) continue = unit(false)
+        else{s = Success(f(readVar(s).get, x.get), x.next); cur = x.next}
       }
     }
 
-    elGen(make_tuple2(readVar(s), ParseResult(unit(true), cur)))
+    elGen(s)
   }
 
   //repN fold. TODO: make sure we do not cross the input length
   def repNFold[T:Manifest, U:Manifest](p : Parser[T], n:Rep[Int])(z: Rep[U], f: (Rep[U], Rep[T]) => Rep[U]) = Parser[U]{ pos =>
-    var s = z
+    var s = Success[U](z, pos)
+
     var old = unit(-1)
+    var continue = unit(true)
     var cur = pos
-    var count = 0
+    var count = unit(0)
 
-    while(count < n && old != cur){
+    while(count < n && old != cur && continue){
       old = cur
-      count = count + 1
-
-      p(cur).apply{ x: Rep[(T, ParseResult)] =>
-        s = f(s, x._1)
-        cur = x._2.position
+      p(cur).apply{ x: Rep[ParseResult[T]] =>
+        if(x.isEmpty) continue = unit(false)
+        else{s = Success(f(readVar(s).get, x.get), x.next); cur = x.next; count = count+unit(1)}
       }
     }
 
-    elGen(make_tuple2(readVar(s), ParseResult(unit(true), cur)))
+    elGen(s)
   }
 
   //rep can be expressed as a fold
@@ -124,8 +120,8 @@ trait TopDownParsers extends MyScalaOpsPkg with GeneratorOps with LiftVariables 
     rep(p <~  q)
 
   //a 'conditional' parser
-  def condP[A: Manifest](c: Rep[Boolean], a: Parser[A], b: Parser[A]) = Parser[A]{
-    i => cond(c, a(i), b(i))
+  def __ifThenElse[A: Manifest](cond: Rep[Boolean], thenp: => Parser[A], elsep: => Parser[A]): Parser[A] = Parser[A]{
+    i => if(cond) thenp(i) else elsep(i)
   }
 
 /*  def opt[T:Manifest](p: Parser[T]) = Parser[(T, Boolean)]{ i =>
@@ -135,7 +131,7 @@ trait TopDownParsers extends MyScalaOpsPkg with GeneratorOps with LiftVariables 
     }
   }
 */
-*/
+
   def Parser[T:Manifest](f: Rep[Int] => Generator[ParseResult[T]]) = new Parser[T]{
     def apply(i: Rep[Int]) = f(i)
   }
@@ -164,14 +160,10 @@ trait CharParsers extends TopDownParsers with CharOps{
     else elGen(Failure[Char](i))
   }
 
-/*
   def acceptAll(in: Rep[Input]) = Parser[Char]{i =>
-    cond(i >= in.length,
-      emptyGen[(Char,ParseResult)](),
-      elGen((in(i)), ParseResult(unit(true),i+unit(1)))
-    )
+    if(i >= in.length) elGen(Failure[Char](i))
+    else elGen(Success[Char](in(i), i+unit(1)))
   }
-*/
 }
 
 /*
