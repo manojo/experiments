@@ -27,23 +27,22 @@ trait CharParsersProg extends CharParsers /*TokenParsers*/{
     println(s)
   }
 
-  //parsing a single lowercase letter
+  //parsing a single letter
   def test3(in: Rep[Array[Char]]): Rep[Unit] = {
     var s = Failure[Char](unit(-1))
     val parser = letter(in).apply(unit(0))
     parser{x: Rep[ParseResult[Char]] => s = x}
     println(s)
   }
-/*
+
   //parsing a single digit
   def test4(in: Rep[Array[Char]]): Rep[Unit] = {
-    var s = make_tuple2(unit('a'), ParseResult(unit(false), unit(-1)))
+    var s = Failure[Char](unit(-1))
     val parser = digit(in).apply(unit(0))
-    parser{x: Rep[(Char, ParseResult)] => s = x}
-    println("Result: "+readVar(s)._1)
-    println("("+readVar(s)._2.position+","+readVar(s)._2.success+")")
+    parser{x: Rep[ParseResult[Char]] => s = x}
+    println(s)
   }
-*/
+
   //two letters
   def test5(in: Rep[Array[Char]]): Rep[Unit] = {
     var s = Failure[(Char,Char)](unit(-1))
@@ -51,25 +50,31 @@ trait CharParsersProg extends CharParsers /*TokenParsers*/{
     parser{x: Rep[ParseResult[(Char,Char)]] => s = x}
     println(s)
   }
-/*
+
   //ignoring left result
   def test6(in: Rep[Array[Char]]): Rep[Unit] = {
-    var s = make_tuple2(unit('a'), ParseResult(unit(false), unit(-1)))
+    var s = Failure[Char](unit(-1))
     val parser = (letter(in)~>letter(in)).apply(unit(0))
-    parser{x: Rep[(Char, ParseResult)] => s = x}
-    println("Result: "+readVar(s)._1)
-    println("("+readVar(s)._2.position+","+readVar(s)._2.success+")")
+    parser{x: Rep[ParseResult[Char]] => s = x}
+    println(s)
   }
 
   //ignoring right result
   def test7(in: Rep[Array[Char]]): Rep[Unit] = {
-    var s = make_tuple2(unit('a'), ParseResult(unit(false), unit(-1)))
+    var s = Failure[Char](unit(-1))
     val parser = (letter(in)<~letter(in)).apply(unit(0))
-    parser{x: Rep[(Char, ParseResult)] => s = x}
-    println("Result: "+readVar(s)._1)
-    println("("+readVar(s)._2.position+","+readVar(s)._2.success+")")
+    parser{x: Rep[ParseResult[Char]] => s = x}
+    println(s)
   }
 
+  //digit to int
+  def test8(in: Rep[Array[Char]]): Rep[Unit] = {
+    var s = Failure[Int](unit(-1))
+    val parser = digitI(in).apply(unit(0))
+    parser{x: Rep[ParseResult[Int]] => s = x}
+    println(s)
+  }
+/*
   //or
   def test9(in: Rep[Array[Char]]): Rep[Unit] = {
     var s = make_tuple2(unit('a'), ParseResult(unit(false), unit(-1)))
@@ -170,22 +175,24 @@ class TestCharParsers extends FileDiffSuite {
         codegen.emitSource(test2 _ , "test2", new java.io.PrintWriter(System.out))
         val testc2 = compile(test2)
         testc2("hello".toArray)
+        testc2("1".toArray)
 
         codegen.emitSource(test3 _ , "test3", new java.io.PrintWriter(System.out))
         val testc3 = compile(test3)
         testc3("hello".toArray)
-/*
+        testc2("1".toArray)
+
         codegen.emitSource(test4 _ , "test4", new java.io.PrintWriter(System.out))
         val testc4 = compile(test4)
-        testc4("hello".toArray)
         testc4("12".toArray)
-*/
+        testc4("hello".toArray)
+
         codegen.emitSource(test5 _ , "test5", new java.io.PrintWriter(System.out))
         val testc5 = compile(test5)
         testc5("hello".toArray) //succeeding a ~ b
         testc5("1ello".toArray) //failing left
         testc5("h2llo".toArray) //failing right
-/*
+
         codegen.emitSource(test6 _ , "test6", new java.io.PrintWriter(System.out))
         val testc6 = compile(test6)
         testc6("hello".toArray)
@@ -194,6 +201,12 @@ class TestCharParsers extends FileDiffSuite {
         val testc7 = compile(test7)
         testc7("hello".toArray)
 
+        //digitI
+        codegen.emitSource(test8 _ , "test8", new java.io.PrintWriter(System.out))
+        val testc8 = compile(test8)
+        testc8("1ello".toArray)
+        testc8("hello".toArray)
+/*
         codegen.emitSource(test9 _ , "test9", new java.io.PrintWriter(System.out))
         val testc9 = compile(test9)
         testc9("hello".toArray)
