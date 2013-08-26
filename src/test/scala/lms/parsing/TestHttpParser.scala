@@ -371,10 +371,11 @@ class TestReqParser extends FileDiffSuite {
     withOutFile(prefix+"req-parser"){
       new HttpParserProg with MyScalaOpsPkgExp with GeneratorOpsExp
         with CharOpsExp with MyIfThenElseExpOpt with StructOpsExpOptCommon
-        with ParseResultOpsExp with MyScalaCompile{self =>
+        with ParseResultOpsExp with SetOpsExp with MyScalaCompile{self =>
 
         val codegen = new MyScalaCodeGenPkg with ScalaGenGeneratorOps
-         with ScalaGenCharOps with ScalaGenParseResultOps with ScalaGenStructOps{
+         with ScalaGenCharOps with ScalaGenParseResultOps with ScalaGenStructOps
+         with ScalaGenSetOps{
           val IR: self.type = self
         }
 
@@ -389,7 +390,7 @@ class TestReqParser extends FileDiffSuite {
 
         codegen.emitSource(reqTypeParse _ , "reqTypeParse", new java.io.PrintWriter(System.out))
         val testcReqParse = compile(reqTypeParse)
-        requestTypes.foreach{rType =>
+        requestTypesUnRepped.foreach{rType =>
           testcReqParse(rType.toArray)
         }
 

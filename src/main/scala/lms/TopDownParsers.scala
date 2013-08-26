@@ -67,6 +67,14 @@ trait TopDownParsers extends MyScalaOpsPkg with GeneratorOps with LiftVariables
         if(x.isEmpty) tmpThat(pos) else elGen(x)
       }
     }
+
+    def filter(p: Rep[T] => Rep[Boolean]) = Parser[T]{pos =>
+      self(pos).map{ x =>
+        if(x.isEmpty) x
+        else if (p(x.get)) x
+        else Failure[T](x.next)
+      }
+    }
   }
 
   /*def failure = Parser{pos => None}
@@ -220,6 +228,8 @@ trait TokenParsers extends TopDownParsers with CharParsers{
 
   def repToS(p: Parser[Char]) : Parser[String] =
     repFold(p)(unit(""), (res: Rep[String], x: Rep[Char]) => res + x)
+
+  def word(in:Rep[Input]) : Parser[String] = repToS(letter(in))
 
   /*def token: Parser[Token] =
     ( identChar ~ rep( identChar | digit ) ^^ { case first ~ rest => processIdent(first :: rest mkString "") }

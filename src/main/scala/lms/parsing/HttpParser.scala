@@ -8,7 +8,7 @@ import java.io.PrintWriter
 import java.io.StringWriter
 import java.io.FileOutputStream
 
-trait HttpComponents extends lms.StructOps{
+trait HttpComponents extends lms.StructOps with SetOps{
 
   type Response = Record {
     val status: Int
@@ -73,33 +73,59 @@ trait HttpComponents extends lms.StructOps{
    val upgrade = up
   }
 
-  val requestTypes = scala.List(
-  "connect",
-  "copy",
-  "checkout",
-  "delete",
-  "get",
-  "head",
-  "lock",
-  "merge",
-  "mkactivity",
-  "mkcol",
-  "move",
-  "msearch",
-  "notify",
-  "options",
-  "post",
-  "propfind",
-  "proppatch",
-  "put",
-  "report",
-  "subscribe",
-  "trace",
-  "unlock",
-  "unsubscribe"
+  //a def because we want to create the node only when required
+  def requestTypes = Set(
+    unit("connect"),
+    unit("copy"),
+    unit("checkout"),
+    unit("delete"),
+    unit("get"),
+    unit("head"),
+    unit("lock"),
+    unit("merge"),
+    unit("mkactivity"),
+    unit("mkcol"),
+    unit("move"),
+    unit("msearch"),
+    unit("notify"),
+    unit("options"),
+    unit("post"),
+    unit("propfind"),
+    unit("proppatch"),
+    unit("put"),
+    unit("report"),
+    unit("subscribe"),
+    unit("trace"),
+    unit("unlock"),
+    unit("unsubscribe")
   )
 
-
+  //code duplication oO
+  val requestTypesUnRepped = scala.List(
+    "connect",
+    "copy",
+    "checkout",
+    "delete",
+    "get",
+    "head",
+    "lock",
+    "merge",
+    "mkactivity",
+    "mkcol",
+    "move",
+    "msearch",
+    "notify",
+    "options",
+    "post",
+    "propfind",
+    "proppatch",
+    "put",
+    "report",
+    "subscribe",
+    "trace",
+    "unlock",
+    "unsubscribe"
+  )
 }
 
 
@@ -198,10 +224,8 @@ trait HttpParser extends TokenParsers with HttpComponents {
   }
 */
   //TODO: make case insensitive
-  def requestType(in: Rep[Input]): Parser[String]
-    = requestTypes.tail.foldLeft(accept(in, requestTypes.head)){
-      case (acc, s) => acc | accept(in, s)
-    }
+  def requestType(in: Rep[Input]): Parser[String] =
+    word(in).filter{s => requestTypes.contains(s)}
 
   //"[a-z]+".r
   def schema(in: Rep[Input]): Parser[String] = letter(in)~repToS(letter(in)) ^^ {
