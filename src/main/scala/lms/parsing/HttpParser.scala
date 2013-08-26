@@ -1,4 +1,4 @@
-/*package lms.parsing
+package lms.parsing
 
 import lms._
 import scala.virtualization.lms.common._
@@ -181,15 +181,6 @@ trait HttpParser extends TokenParsers with HttpComponents {
       res
     }
 
-  /*def collect(res: Rep[Response], hName: Rep[String], prop: Rep[String]) : Rep[Response] = hName match {
-    case "connection" | "proxy-connection"
-      if (prop == "keep-alive" || prop == "close") => res.connection = prop; res
-    case "content-length" => res.contentLength = prop.toInt; res //TODO: deal with numformatexception
-    case "transfer-encoding" if (prop == unit("chunked")) => res.chunked = true; res
-    case "upgrade" => res.upgrade = true; res
-    case _ => res
-  }*/
-
   def respAndMessage(in: Rep[Input]): Parser[(Response,String)] = response(in) >> { rsp =>
     body(in, rsp.contentLength) ^^ {txt: Rep[String] => make_tuple2(rsp, txt)}
   }
@@ -252,4 +243,3 @@ trait HttpParser extends TokenParsers with HttpComponents {
   //opt("HTTP/"~decimalNumber)
   def httpInfo(in: Rep[Input]) = accept(in, "HTTP/") ~> decimalNumber(in)
 }
-*/

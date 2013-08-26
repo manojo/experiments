@@ -82,6 +82,8 @@ trait GeneratorOps extends Variables with While with LiftVariables
 
   def __ifThenElse[T:Manifest](c: Rep[Boolean], thenp: => Generator[T], elsep: => Generator[T]) : Generator[T] =
     cond(c, thenp, elsep)
+
+  abstract class TupleGenerator[T:Manifest,U:Manifest] extends Generator[(T,U)]
 }
 
 trait GeneratorOpsExp extends GeneratorOps with EffectExp with VariablesExp

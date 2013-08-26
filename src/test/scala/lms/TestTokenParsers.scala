@@ -1,4 +1,4 @@
-/*package lms
+package lms
 
 import lms._
 import scala.virtualization.lms.common._
@@ -13,48 +13,34 @@ trait TokenParsersProg extends TokenParsers{
 
   //keyword parse
   def keywordParse(in: Rep[Array[Char]]): Rep[Unit] = {
-    var s = make_tuple2(unit(""), ParseResult(unit(false), unit(-1)))
-    val parser = (keyword(in)).apply(unit(0))
-    parser{x: Rep[(String, ParseResult)] => s = x}
-    println("Result: "+readVar(s)._1)
-    println("("+readVar(s)._2+")")
-    //println("("+readVar(s)._2.position +","+readVar(s)._2.success +")")
+    var s = Failure[String](unit(-1))
+    val parser = keyword(in).apply(unit(0))
+    parser{x => s = x}
+    println(s)
   }
 
   //two word parse
   def twoWordParse(in: Rep[Array[Char]]): Rep[Unit] = {
-    var s = make_tuple2(make_tuple2(unit(""), unit("")), ParseResult(unit(false), unit(-1)))
+    var s = Failure[(String, String)](unit(-1))
     val parser = ((stringLit(in) <~ whitespaces(in)) ~ stringLit(in)).apply(unit(0))
-    parser{x: Rep[((String, String), ParseResult)] => s = x}
-    println("Result: "+readVar(s)._1)
-    println("("+readVar(s)._2.position+","+readVar(s)._2.success+")")
-  }
-
-  //parse list of chars
-  def parseListofChars(in: Rep[Array[Char]]): Rep[Unit] = {
-    var s = make_tuple2(unit(""), ParseResult(unit(false), unit(-1)))
-    val parser = accept(in, "hello".toList.map{c => unit(c)}).apply(unit(0))
-    parser{x: Rep[(String, ParseResult)] => s = x}
-    println("Result: "+readVar(s)._1)
-    println("("+readVar(s)._2.position+","+readVar(s)._2.success+")")
+    parser{x => s = x}
+    println(s)
   }
 
   //parse string
   def parseString(in: Rep[Array[Char]]): Rep[Unit] = {
-    var s = make_tuple2(unit(""), ParseResult(unit(false), unit(-1)))
+    var s = Failure[String](unit(-1))
     val parser = accept(in, "hello").apply(unit(0))
-    parser{x: Rep[(String, ParseResult)] => s = x}
-    println("Result: "+readVar(s)._1)
-    println("("+readVar(s)._2.position+","+readVar(s)._2.success+")")
+    parser{x => s = x}
+    println(s)
   }
 
   //wholeNumber
   def parseWholeNumber(in: Rep[Array[Char]]): Rep[Unit] = {
-    var s = make_tuple2(unit(0), ParseResult(unit(false), unit(-1)))
+    var s = Failure[Int](unit(-1))
     val parser = wholeNumber(in).apply(unit(0))
-    parser{x: Rep[(Int, ParseResult)] => s = x}
-    println("Result: "+readVar(s)._1)
-    println("("+readVar(s)._2.position+","+readVar(s)._2.success+")")
+    parser{x => s = x}
+    println(s)
   }
 
 }
@@ -66,30 +52,27 @@ class TestTokenParsers extends FileDiffSuite {
   def testTokenParsers = {
     withOutFile(prefix+"token-parser"){
        new TokenParsersProg with MyScalaOpsPkgExp with GeneratorOpsExp
-        with CharOpsExp with MyScalaCompile{self =>
+        with CharOpsExp with MyIfThenElseExpOpt with StructOpsExpOptCommon
+        with ParseResultOpsExp with MyScalaCompile{self =>
 
         //dumpGeneratedCode = true
 
         val codegen = new MyScalaCodeGenPkg with ScalaGenGeneratorOps
-         with ScalaGenCharOps{
+         with ScalaGenCharOps with ScalaGenParseResultOps with ScalaGenStructOps{
           val IR: self.type = self
         }
 
         val printWriter = new java.io.PrintWriter(System.out)
 
         codegen.emitSource(keywordParse _ , "keywordParse", printWriter)
-        codegen.emitDataStructures(printWriter)
         val testc1 = compile(keywordParse)
-        testc1("true false".toArray)
-
+        testc1("true false".toArray)//successful
+        testc1("bla".toArray)//fail
 
         codegen.emitSource(twoWordParse _ , "twoWordParse", new java.io.PrintWriter(System.out))
         val testc2 = compile(twoWordParse)
         testc2("\"hello\" \"carol\"".toArray)
-/*
-        codegen.emitSource(parseListofChars _ , "parseListofChars", new java.io.PrintWriter(System.out))
-        val testc3 = compile(parseListofChars)
-        testc3("hello21".toArray)
+        testc2("\"hello\" ".toArray)
 
         codegen.emitSource(parseString _ , "parseString", new java.io.PrintWriter(System.out))
         val testc4 = compile(parseString)
@@ -98,7 +81,7 @@ class TestTokenParsers extends FileDiffSuite {
         codegen.emitSource(parseWholeNumber _ , "parseWholeNumber", new java.io.PrintWriter(System.out))
         val testc5 = compile(parseWholeNumber)
         testc5("1234a".toArray)
-*/
+
       }
 
     }
@@ -106,4 +89,3 @@ class TestTokenParsers extends FileDiffSuite {
     assertFileEqualsCheck(prefix+"token-parser")
   }
 }
-*/

@@ -1,4 +1,4 @@
-/*package lms.parsing
+package lms.parsing
 
 import lms._
 import scala.virtualization.lms.common._
@@ -12,135 +12,147 @@ import java.io.FileOutputStream
 trait HttpParserProg extends HttpParser{
 
   //decimal number
-  def decimalParse(in: Rep[Array[Char]]): Rep[((Int,Int),Int)] = {
-    var s = make_tuple2(make_tuple2(unit(0), unit(0)), unit(-1))
+  def decimalParse(in: Rep[Array[Char]]): Rep[Unit] = {
+    var s = Failure[(Int,Int)](unit(-1))
     val parser = (decimalNumber(in)).apply(unit(0))
-    parser{x: Rep[((Int,Int), Int)] => s = x}
-    s
+    parser{x => s = x}
+    println(s)
   }
 
   //wildRegex
-  def wildRegexParse(in: Rep[Array[Char]]): Rep[(String,Int)] = {
-    var s = make_tuple2(unit(""), unit(-1))
+  def wildRegexParse(in: Rep[Array[Char]]): Rep[Unit] = {
+    var s = Failure[String](unit(-1))
     val parser = (wildRegex(in)).apply(unit(0))
-    parser{x: Rep[(String, Int)] => s = x}
-    s
+    parser{x => s = x}
+    println(s)
   }
 
   //crlf
-  def crlfParse(in: Rep[Array[Char]]): Rep[(Char,Int)] = {
-    var s = make_tuple2(unit('a'), unit(-1))
+  def crlfParse(in: Rep[Array[Char]]): Rep[Unit] = {
+    var s = Failure[Char](unit(-1))
     val parser = crlf(in).apply(unit(0))
-    parser{x: Rep[(Char, Int)] => s = x}
-    s
+    parser{x => s = x}
+    println(s)
   }
 
   //wildRegexCrlf
-  def wildRegexCrlfParse(in: Rep[Array[Char]]): Rep[(String,Int)] = {
-    var s = make_tuple2(unit(""), unit(-1))
+  def wildRegexCrlfParse(in: Rep[Array[Char]]): Rep[Unit] = {
+    var s = Failure[String](unit(-1))
     val parser = ((wildRegex(in)~crlf(in))^^{
       x: Rep[(String, Char)] => x._1 + x._2
     }).apply(unit(0))
 
-    parser{x: Rep[(String, Int)] => s = x}
-    s
+    parser{x => s = x}
+    println(s)
   }
 
   //url
-  def urlCharParse(in: Rep[Array[Char]]): Rep[(Char,Int)] = {
-    var s = make_tuple2(unit('a'), unit(-1))
+  def urlCharParse(in: Rep[Array[Char]]): Rep[Unit] = {
+    var s = Failure[Char](unit(-1))
     val parser = urlChar(in).apply(unit(0))
-    parser{x: Rep[(Char, Int)] => s = x}
-    s
+    parser{x => s = x}
+    println(s)
   }
 
   //
-  def httpNumParse(in: Rep[Array[Char]]): Rep[((Int, Int),Int)] = {
-    var s = make_tuple2(make_tuple2(unit(0), unit(0)), unit(-1))
+  def httpNumParse(in: Rep[Array[Char]]): Rep[Unit] = {
+    var s = Failure[(Int,Int)](unit(0))
     val parser = (accept(in, "HTTP/")~>decimalNumber(in)).apply(unit(0))
-    parser{x: Rep[((Int, Int), Int)] => s = x}
-    s
+    parser{x => s = x}
+    println(s)
   }
 
-  def httpNumStatusParse(in: Rep[Array[Char]]): Rep[(Int,Int)] = {
-    var s = make_tuple2(unit(0), unit(-1))
+  def httpNumStatusParse(in: Rep[Array[Char]]): Rep[Unit] = {
+    var s = Failure[Int](unit(-1))
     val parser =
       ((accept(in, "HTTP/")~decimalNumber(in)~whitespaces(in))~>wholeNumber(in)).apply(unit(0))
-    parser{x: Rep[(Int, Int)] => s = x}
-    s
+    parser{x => s = x}
+    println(s)
   }
 
   //status parse temp
-  def statusParseTemp(in: Rep[Array[Char]]): Rep[((Int,String),Int)] = {
-    var s = make_tuple2(make_tuple2(unit(0),unit("")), unit(-1))
+  def statusParseTemp(in: Rep[Array[Char]]): Rep[Unit] = {
+    var s = Failure[(Int,String)](unit(-1))
 
     val statusTemp: Parser[(Int,String)] =
       (accept(in, "HTTP/")~decimalNumber(in)~whitespaces(in))~>wholeNumber(in)~(wildRegex(in)<~crlf(in))
 
     val parser = statusTemp.apply(unit(0))
-    parser{x: Rep[((Int, String), Int)] => s = x}
-    s
+    parser{x => s = x}
+    println(s)
   }
 
   //status parse
-  def statusParse(in: Rep[Array[Char]]): Rep[(Int,Int)] = {
-    var s = make_tuple2(unit(0), unit(-1))
+  def statusParse(in: Rep[Array[Char]]): Rep[Unit] = {
+    var s = Failure[Int](unit(-1))
     val parser = (status(in)).apply(unit(0))
-    parser{x: Rep[(Int, Int)] => s = x}
-    s
+    parser{x => s = x}
+    println(s)
   }
 
   //headerName parse
-  def headerNameParse(in: Rep[Array[Char]]): Rep[(String,Int)] = {
-    var s = make_tuple2(unit(""), unit(-1))
+  def headerNameParse(in: Rep[Array[Char]]): Rep[Unit] = {
+    var s = Failure[String](unit(-1))
     val parser = (headerName(in)).apply(unit(0))
-    parser{x: Rep[(String, Int)] => s = x}
-    s
+    parser{x => s = x}
+    println(s)
   }
 
   //header parse
-  def headerParse(in: Rep[Array[Char]]): Rep[((String, String),Int)] = {
-    var s = make_tuple2(make_tuple2(unit(""),unit("")), unit(-1))
+  def headerParse(in: Rep[Array[Char]]): Rep[Unit] = {
+    var s = Failure[(String, String)](unit(-1))
     val parser = header(in).apply(unit(0))
-    parser{x: Rep[((String,String), Int)] => s = x}
-    s
+    parser{x => s = x}
+    println(s)
   }
 
-  //type Response = (Int, List[(String,String)])
+  //headers parse
+  def headersParse(in: Rep[Array[Char]]): Rep[Unit] = {
+    var s = Failure[Response](unit(-1))
+    val parser = headers(in).apply(unit(0))
+    parser{x => s = x}
+    println(s)
+  }
 
   //status and message
-  def responseParse(in: Rep[Array[Char]]): Rep[(Response, Int)] = {
-    var s = make_tuple2(Response(), unit(-1))
+  def responseParse(in: Rep[Array[Char]]): Rep[Unit] = {
+    var s = Failure[Response](unit(-1))
     val parser = response(in).apply(unit(0))
-    parser{x: Rep[(Response,Int)] => s = x}
-    s
+    parser{x => s = x}
+    println(s)
   }
 
   //body parse
-  def bodyParse(in: Rep[Array[Char]]): Rep[(String, Int)] = {
-    var s = make_tuple2(unit(""), unit(-1))
+  def bodyParse(in: Rep[Array[Char]]): Rep[Unit] = {
+    var s = Failure[String](unit(-1))
     //parsing "make it funky!"
     val parser = body(in, unit(14)).apply(unit(0))
-    parser{x: Rep[(String,Int)] => s = x}
-    s
+    parser{x => s = x}
+    println(s)
   }
 
   //response
-  def respAndMessageParse(in: Rep[Array[Char]]): Rep[((Response,String), Int)] = {
-    var s = make_tuple2(make_tuple2(Response(),unit("")), unit(-1))
+  def respAndMessageParse(in: Rep[Array[Char]]): Rep[Unit] = {
+    var s = Failure[(Response,String)](unit(-1))
     val parser = respAndMessage(in).apply(unit(0))
-    parser{x: Rep[((Response,String),Int)] => s = x}
-    s
+    parser{x => s = x}
+    println(s)
   }
 
-  def reqTypeParse(in: Rep[Array[Char]]): Rep[(String, Int)] = {
-    var s = make_tuple2(unit(""), unit(-1))
+  def orStringParse(in: Rep[Array[Char]]): Rep[Unit] = {
+    var s = Failure[String](unit(-1))
+    val parser = (accept(in, "get") | accept(in, "connect")).apply(unit(0))
+    parser{x => s = x}
+    println(s)
+  }
+
+  //
+  def reqTypeParse(in: Rep[Array[Char]]): Rep[Unit] = {
+    var s = Failure[String](unit(-1))
     val parser = requestType(in).apply(unit(0))
-    parser{x: Rep[(String,Int)] => s = x}
-    s
+    parser{x => s = x}
+    println(s)
   }
-
-
 }
 
 class TestHttpParser extends FileDiffSuite {
@@ -149,59 +161,64 @@ class TestHttpParser extends FileDiffSuite {
 
   def testHttpParser = {
     withOutFile(prefix+"http-parser"){
-       new HttpParserProg with MyScalaOpsPkgExp with GeneratorOpsExp
-        with CharOpsExp with StructExpOptCommon with MyScalaCompile{self =>
+      new HttpParserProg with MyScalaOpsPkgExp with GeneratorOpsExp
+        with CharOpsExp with MyIfThenElseExpOpt with StructOpsExpOptCommon
+        with ParseResultOpsExp with MyScalaCompile{self =>
 
         val codegen = new MyScalaCodeGenPkg with ScalaGenGeneratorOps
-         with ScalaGenCharOps with ScalaGenStruct{
+         with ScalaGenCharOps with ScalaGenParseResultOps with ScalaGenStructOps{
           val IR: self.type = self
         }
 
         codegen.emitSource(decimalParse _ , "decimalParse", new java.io.PrintWriter(System.out))
         val testc1 = compile(decimalParse)
-        val res1 = testc1("12.34".toArray)
-        scala.Console.println(res1)
+        testc1("12.34".toArray)
 
         codegen.emitSource(wildRegexParse _ , "wildRegexParse", new java.io.PrintWriter(System.out))
         val testc2 = compile(wildRegexParse)
-        val res2 = testc2("f33l l1ke funkin' it up! (o_^) \\o/ \n".toArray)
-        scala.Console.println(res2)
+        testc2("f33l l1ke funkin' it up! (o_^) \\o/ \n".toArray)
 
         codegen.emitSource(crlfParse _ , "crlfParse", new java.io.PrintWriter(System.out))
         val testcCrlf = compile(crlfParse)
-        val resCrlf = testcCrlf("\n".toArray)
-        scala.Console.println(resCrlf)
+        testcCrlf("\n".toArray)
 
         codegen.emitSource(wildRegexCrlfParse _ , "wildRegexCrlfParse", new java.io.PrintWriter(System.out))
         val testcWrc = compile(wildRegexCrlfParse)
-        val resWrc = testcWrc("f33l l1ke funkin' it up! (o_^) \\o/ \n".toArray)
-        scala.Console.println(resWrc)
+        testcWrc("f33l l1ke funkin' it up! (o_^) \\o/ \n".toArray)
 
         codegen.emitSource(urlCharParse _ , "urlCharParse", new java.io.PrintWriter(System.out))
         val testcUrlCharParse = compile(urlCharParse)
-        val resUrlCharParse = testcUrlCharParse("\n".toArray)
-        scala.Console.println(resUrlCharParse)
+        testcUrlCharParse("\n".toArray)
 
         codegen.emitSource(httpNumParse _ , "httpNumParse", new java.io.PrintWriter(System.out))
         val testc3 = compile(httpNumParse)
-        val res3 = testc3("HTTP/1.1 200".toArray)
-        scala.Console.println(res3)
+        testc3("HTTP/1.1 200".toArray)
 
         codegen.emitSource(httpNumStatusParse _ , "httpNumStatusParse", new java.io.PrintWriter(System.out))
         val testc4 = compile(httpNumStatusParse)
-        val res4 = testc4("HTTP/1.1 200".toArray)
-        scala.Console.println(res4)
+        testc4("HTTP/1.1 200".toArray)
 
         codegen.emitSource(statusParseTemp _ , "statusParseTemp", new java.io.PrintWriter(System.out))
         val testcstpTemp = compile(statusParseTemp)
-        val rescstpTemp = testcstpTemp("HTTP/1.1 200 ok \n".toArray)
-        scala.Console.println(rescstpTemp)
+        testcstpTemp("HTTP/1.1 200 ok \n".toArray)
 
-/*        codegen.emitSource(statusParse _ , "statusParse", new java.io.PrintWriter(System.out))
-        val testcStatus = compile(statusParse)
-        val rescStatus = testcStatus("HTTP/1.1 200 ok \n".toArray)
-        scala.Console.println(rescStatus)
-*/
+      }
+    }
+
+    assertFileEqualsCheck(prefix+"http-parser")
+  }
+
+  def testRespParser = {
+    withOutFile(prefix+"resp-parser"){
+      new HttpParserProg with MyScalaOpsPkgExp with GeneratorOpsExp
+        with CharOpsExp with MyIfThenElseExpOpt with StructOpsExpOptCommon
+        with ParseResultOpsExp with MyScalaCompile{self =>
+
+        val codegen = new MyScalaCodeGenPkg with ScalaGenGeneratorOps
+         with ScalaGenCharOps with ScalaGenParseResultOps with ScalaGenStructOps{
+          val IR: self.type = self
+        }
+
         codegen.emitSource(statusParse _ , "statusParse", new java.io.PrintWriter(System.out))
         val testcStatus = compile(statusParse)
 
@@ -214,13 +231,12 @@ class TestHttpParser extends FileDiffSuite {
         )
 
         statusMessages.foreach{sm =>
-          scala.Console.println(testcStatus(sm.toArray))
+          testcStatus(sm.toArray)
         }
 
         codegen.emitSource(headerNameParse _ , "headerNameParse", new java.io.PrintWriter(System.out))
         val testcHeaderName = compile(headerNameParse)
-        val resHeaderName = testcHeaderName("Date \n".toArray)
-        scala.Console.println(resHeaderName)
+        testcHeaderName("Date \n".toArray)
 
         codegen.emitSource(headerParse _ , "headerParse", new java.io.PrintWriter(System.out))
         val testcHeader = compile(headerParse)
@@ -243,18 +259,23 @@ class TestHttpParser extends FileDiffSuite {
 
         """|Content-Length: 131
            |""".stripMargin
-         )
+        )
 
         headers.foreach{h =>
-          scala.Console.println(testcHeader(h.toArray))
+          testcHeader(h.toArray)
         }
 
         //an invalid header
-        scala.Console.println(testcHeader("Date: Mon, 23 May 2005 22:38:34 GMT".toArray))
+        testcHeader("Date: Mon, 23 May 2005 22:38:34 GMT".toArray)
+
+        val allHeaders = headers.mkString
+        codegen.emitSource(headersParse _, "headersParse", new java.io.PrintWriter(System.out))
+        val testcHeaders = compile(headersParse)
+        testcHeaders(allHeaders.toArray)
 
         //a status and some headers
         val httpMessage =
-        """|HTTP/1.1 418 I'm a teapot
+      """|HTTP/1.1 418 I'm a teapot
            |Date: Mon, 23 May 2005 22:38:34 GMT
            |Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)
            |Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT
@@ -267,18 +288,16 @@ class TestHttpParser extends FileDiffSuite {
 
         codegen.emitSource(responseParse _ , "responseParse", new java.io.PrintWriter(System.out))
         val testcResponse = compile(responseParse)
-        val resResponse = testcResponse(httpMessage.toArray)
-        scala.Console.println(resResponse)
+        testcResponse(httpMessage.toArray)
 
         codegen.emitSource(bodyParse _ , "bodyParse", new java.io.PrintWriter(System.out))
         val testcBody = compile(bodyParse)
-        val resBody= testcBody("Make it funky! -Maceo.".toArray)
-        scala.Console.println(resBody)
+        testcBody("Make it funky! -Maceo.".toArray)
 
         codegen.emitSource(respAndMessageParse _ , "respAndMessageParse", new java.io.PrintWriter(System.out))
         val testcRespAndMessage = compile(respAndMessageParse)
 
-         val messages = scala.List(
+        val messages = scala.List(
           """|HTTP/1.1 200 OK
              |Date: Mon, 23 May 2005 22:38:34 GMT
              |Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)
@@ -334,35 +353,52 @@ class TestHttpParser extends FileDiffSuite {
         )
 
         messages.foreach{msg =>
-          scala.Console.println(testcRespAndMessage(msg.toArray))
+          testcRespAndMessage(msg.toArray)
         }
       }
     }
 
-    assertFileEqualsCheck(prefix+"http-parser")
+    assertFileEqualsCheck(prefix+"resp-parser")
+  }
+}
+
+class TestReqParser extends FileDiffSuite {
+
+  val prefix = "test-out/"
+
+  def testReqParser = {
 
     withOutFile(prefix+"req-parser"){
-       new HttpParserProg with MyScalaOpsPkgExp with GeneratorOpsExp
-        with CharOpsExp with StructExpOptCommon with MyScalaCompile{self =>
+      new HttpParserProg with MyScalaOpsPkgExp with GeneratorOpsExp
+        with CharOpsExp with MyIfThenElseExpOpt with StructOpsExpOptCommon
+        with ParseResultOpsExp with MyScalaCompile{self =>
 
         val codegen = new MyScalaCodeGenPkg with ScalaGenGeneratorOps
-         with ScalaGenCharOps with ScalaGenStruct{
+         with ScalaGenCharOps with ScalaGenParseResultOps with ScalaGenStructOps{
           val IR: self.type = self
         }
+
+/*
+        codegen.emitSource(orStringParse _ , "orStringParse", new java.io.PrintWriter(System.out))
+        val testcOrStringParse = compile(orStringParse)
+        testcOrStringParse("get".toArray)
+        testcOrStringParse("connect".toArray)
+        //failure case
+        testcOrStringParse("What".toArray)
+*/
 
         codegen.emitSource(reqTypeParse _ , "reqTypeParse", new java.io.PrintWriter(System.out))
         val testcReqParse = compile(reqTypeParse)
         requestTypes.foreach{rType =>
-          scala.Console.println(testcReqParse(rType.toArray))
+          testcReqParse(rType.toArray)
         }
-        scala.Console.println(testcReqParse("What".toArray))
+
+        //failure case
+        testcReqParse("What".toArray)
+
       }
+
     }
-
     assertFileEqualsCheck(prefix+"req-parser")
-
   }
-
-
 }
-*/

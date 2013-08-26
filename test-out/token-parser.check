@@ -1,526 +1,649 @@
 /*****************************************
   Emitting Generated Code                  
 *******************************************/
-class keywordParse extends ((Array[Char])=>(scala.Tuple2[java.lang.String, Int])) {
-def apply(x0:Array[Char]): scala.Tuple2[java.lang.String, Int] = {
-val x1 = ("",-1)
-var x2: scala.Tuple2[java.lang.String, Int] = x1
-val x4 = x0.length
-val x5 = 0 >= x4
-val x59 = if (x5) {
+class keywordParse extends ((Array[Char])=>(Unit)) {
+def apply(x0:Array[Char]): Unit = {
+val x1 = null.asInstanceOf[java.lang.String]
+var x3: java.lang.String = x1
+var x4: Boolean = true
+var x5: Int = -1
+val x7 = x0.length
+val x8 = 0 >= x7
+val x113 = if (x8) {
+x3 = x1
+x4 = true
+x5 = 0
 ()
 } else {
-val x6 = x0(0)
-val x7 = x6 >= 'a'
-val x8 = x6 <= 'z'
-val x9 = x7 && x8
-val x57 = if (x9) {
-val x3 = List()
-var x12: scala.collection.immutable.List[Char] = x3
-var x13: Int = -1
-val x10 = 0 + 1
-var x14: Int = x10
-val x38 = while ({val x15 = x13
-val x16 = x14
-val x17 = x15 != x16
-x17}) {
-val x19 = x14
-x13 = x19
-val x21 = x19 >= x4
-val x36 = if (x21) {
+val x11 = x0(0)
+val x12 = x11 >= 'a'
+val x13 = x11 <= 'z'
+val x14 = x12 && x13
+val x15 = x11 >= 'A'
+val x16 = x11 <= 'Z'
+val x17 = x15 && x16
+val x18 = x14 || x17
+val x111 = if (x18) {
+var x29: java.lang.String = ""
+var x30: Boolean = false
+val x19 = 0 + 1
+var x31: Int = x19
+var x33: Int = -1
+var x34: Boolean = true
+var x35: Int = x19
+val x75 = while ({val x36 = x34
+val x37 = x33
+val x38 = x35
+val x39 = x37 != x38
+val x40 = x36 && x39
+x40}) {
+val x42 = x35
+x33 = x42
+val x44 = x42 >= x7
+val x73 = if (x44) {
+x34 = false
 ()
 } else {
-val x22 = x0(x19)
-val x23 = x22 >= 'a'
-val x24 = x22 <= 'z'
-val x25 = x23 && x24
-val x34 = if (x25) {
-val x28 = x12
-val x29 = List(x22)
-val x30 = x28 ::: x29
-x12 = x30
-val x26 = x19 + 1
-x14 = x26
+val x46 = x0(x42)
+val x47 = x46 >= 'a'
+val x48 = x46 <= 'z'
+val x49 = x47 && x48
+val x50 = x46 >= 'A'
+val x51 = x46 <= 'Z'
+val x52 = x50 && x51
+val x53 = x49 || x52
+val x71 = if (x53) {
+val x58 = x29
+val x59 = x30
+val x60 = x31
+val x62 = x58+x46
+x29 = x62
+x30 = false
+val x54 = x42 + 1
+x31 = x54
+x35 = x54
 ()
 } else {
+x34 = false
 ()
 }
-x34
+x71
 }
-x36
+x73
 }
-val x39 = x12
-val x40 = x14
-val x44 = x6 :: x39
-val x45 = x44.mkString
-val x46 = x45 == "true"
-val x47 = x45 == "null"
-val x48 = x46 || x47
-val x49 = x45 == "false"
-val x50 = x48 || x49
-val x53 = if (x50) {
-val x51 = "Keyword("+x45
-val x52 = x51+")"
-x52
+val x76 = x29
+val x77 = x30
+val x78 = x31
+val x83 = if (x77) {
+true
+} else {
+false
+}
+val x99 = if (x83) {
+x1
+} else {
+val x82 = if (x77) {
+val x21 = null.asInstanceOf[Tuple2CharString]
+x21
+} else {
+val x80 = new Tuple2CharString(x11,x76)
+x80
+}
+val x87 = x82._1
+val x88 = x82._2
+val x89 = x87+x88
+val x90 = x89 == "true"
+val x91 = x89 == "null"
+val x92 = x90 || x91
+val x93 = x89 == "false"
+val x94 = x92 || x93
+val x97 = if (x94) {
+val x95 = "Keyword("+x89
+val x96 = x95+")"
+x96
 } else {
 "NoToken"
 }
-val x54 = (x53,x40)
-x2 = x54
+x97
+}
+x3 = x99
+val x100 = if (x83) {
+true
+} else {
+false
+}
+x4 = x100
+val x84 = if (x77) {
+0
+} else {
+x78
+}
+val x101 = if (x83) {
+x84
+} else {
+x84
+}
+x5 = x101
 ()
 } else {
+x3 = x1
+x4 = true
+x5 = 0
 ()
 }
-x57
+x111
 }
-val x60 = x2
-x60
+val x114 = x3
+val x115 = x4
+val x116 = x5
+val x117 = new ParseResultString(x114,x115,x116)
+val x118 = println(x117)
+x118
 }
 }
 /*****************************************
   End of Generated Code                  
 *******************************************/
 compilation: ok
-(Keyword(true),4)
+ParseResultString(Keyword(true),false,4)
+ParseResultString(NoToken,false,3)
 /*****************************************
   Emitting Generated Code                  
 *******************************************/
-class twoWordParse extends ((Array[Char])=>(scala.Tuple2[scala.Tuple2[java.lang.String, java.lang.String], Int])) {
-def apply(x121:Array[Char]): scala.Tuple2[scala.Tuple2[java.lang.String, java.lang.String], Int] = {
-val x122 = ("","")
-val x123 = (x122,-1)
-var x124: scala.Tuple2[scala.Tuple2[java.lang.String, java.lang.String], Int] = x123
-val x125 = x121.length
-val x126 = 0 >= x125
-val x268 = if (x126) {
+class twoWordParse extends ((Array[Char])=>(Unit)) {
+def apply(x231:Array[Char]): Unit = {
+val x232 = null.asInstanceOf[Tuple2StringString]
+var x234: Tuple2StringString = x232
+var x235: Boolean = true
+var x236: Int = -1
+val x238 = x231.length
+val x239 = 0 >= x238
+val x495 = if (x239) {
+x234 = x232
+x235 = true
+x236 = 0
 ()
 } else {
-val x127 = x121(0)
-val x128 = x127 == '"'
-val x266 = if (x128) {
-val x3 = List()
-var x130: scala.collection.immutable.List[Char] = x3
-var x131: Int = -1
-val x10 = 0 + 1
-var x132: Int = x10
-val x154 = while ({val x133 = x131
-val x134 = x132
-val x135 = x133 != x134
-x135}) {
-val x137 = x132
-x131 = x137
-val x139 = x137 >= x125
-val x152 = if (x139) {
+val x240 = x231(0)
+val x241 = x240 == '"'
+val x493 = if (x241) {
+var x248: java.lang.String = ""
+var x249: Boolean = false
+val x19 = 0 + 1
+var x250: Int = x19
+var x252: Int = -1
+var x253: Boolean = true
+var x254: Int = x19
+val x289 = while ({val x255 = x253
+val x256 = x252
+val x257 = x254
+val x258 = x256 != x257
+val x259 = x255 && x258
+x259}) {
+val x261 = x254
+x252 = x261
+val x263 = x261 >= x238
+val x287 = if (x263) {
+x253 = false
 ()
 } else {
-val x140 = x121(x137)
-val x141 = x140 != '"'
-val x150 = if (x141) {
-val x144 = x130
-val x145 = List(x140)
-val x146 = x144 ::: x145
-x130 = x146
-val x142 = x137 + 1
-x132 = x142
+val x265 = x231(x261)
+val x271 = x265 == '"'
+val x285 = if (x271) {
+x253 = false
 ()
 } else {
+val x274 = x248
+val x275 = x249
+val x276 = x250
+val x278 = x274+x265
+x248 = x278
+x249 = false
+val x267 = x261 + 1
+x250 = x267
+x254 = x267
 ()
 }
-x150
+x285
 }
-x152
+x287
 }
-val x155 = x130
-val x156 = x132
-val x158 = x156 >= x125
-val x264 = if (x158) {
+val x290 = x248
+val x291 = x249
+val x292 = x250
+val x487 = if (x291) {
+x234 = x232
+x235 = true
+x236 = 0
 ()
 } else {
-val x159 = x121(x156)
-val x160 = x159 == '"'
-val x262 = if (x160) {
-var x168: scala.collection.immutable.List[Char] = x3
-var x169: Int = -1
-val x161 = x156 + 1
-var x170: Int = x161
-val x201 = while ({val x171 = x169
-val x172 = x170
-val x173 = x171 != x172
-x173}) {
-val x175 = x170
-x169 = x175
-val x177 = x175 >= x125
-val x191 = if (x177) {
+val x294 = x292 >= x238
+val x485 = if (x294) {
+x234 = x232
+x235 = true
+x236 = 0
 ()
 } else {
-val x178 = x121(x175)
-val x179 = x178 == ' '
-val x189 = if (x179) {
-val x183 = x168
-val x184 = List(x178)
-val x185 = x183 ::: x184
-x168 = x185
-val x180 = x175 + 1
-x170 = x180
+val x296 = x231(x292)
+val x297 = x296 == '"'
+val x483 = if (x297) {
+var x314: java.lang.String = ""
+var x315: Boolean = false
+val x298 = x292 + 1
+var x316: Int = x298
+var x318: Int = -1
+var x319: Boolean = true
+var x320: Int = x298
+val x356 = while ({val x321 = x319
+val x322 = x318
+val x323 = x320
+val x324 = x322 != x323
+val x325 = x321 && x324
+x325}) {
+val x327 = x320
+x318 = x327
+val x329 = x327 >= x238
+val x354 = if (x329) {
+x319 = false
 ()
 } else {
-()
-}
-x189
-}
-val x199 = if (x177) {
-()
-} else {
-val x178 = x121(x175)
-val x182 = x178 == '
+val x331 = x231(x327)
+val x332 = x331 == ' '
+val x333 = x331 == '
 '
-val x197 = if (x182) {
-val x192 = x168
-val x184 = List(x178)
-val x193 = x192 ::: x184
-x168 = x193
-val x180 = x175 + 1
-x170 = x180
+val x334 = x332 || x333
+val x352 = if (x334) {
+val x339 = x314
+val x340 = x315
+val x341 = x316
+val x343 = x339+x331
+x314 = x343
+x315 = false
+val x335 = x327 + 1
+x316 = x335
+x320 = x335
 ()
 } else {
+x319 = false
 ()
 }
-x197
+x352
 }
-x199
+x354
 }
-val x202 = x168
-val x203 = x170
-val x207 = x203 >= x125
-val x260 = if (x207) {
+val x357 = x314
+val x358 = x315
+val x359 = x316
+val x364 = if (x358) {
+true
+} else {
+false
+}
+val x369 = if (x364) {
+true
+} else {
+false
+}
+val x477 = if (x369) {
+x234 = x232
+x235 = true
+x236 = 0
 ()
 } else {
-val x208 = x121(x203)
-val x209 = x208 == '"'
-val x258 = if (x209) {
-var x212: scala.collection.immutable.List[Char] = x3
-var x213: Int = -1
-val x210 = x203 + 1
-var x214: Int = x210
-val x236 = while ({val x215 = x213
-val x216 = x214
-val x217 = x215 != x216
-x217}) {
-val x219 = x214
-x213 = x219
-val x221 = x219 >= x125
-val x234 = if (x221) {
+val x370 = if (x364) {
+0
+} else {
+val x365 = if (x358) {
+x359
+} else {
+x359
+}
+x365
+}
+val x372 = x370 >= x238
+val x475 = if (x372) {
+x234 = x232
+x235 = true
+x236 = 0
 ()
 } else {
-val x222 = x121(x219)
-val x223 = x222 != '"'
-val x232 = if (x223) {
-val x226 = x212
-val x227 = List(x222)
-val x228 = x226 ::: x227
-x212 = x228
-val x224 = x219 + 1
-x214 = x224
+val x374 = x231(x370)
+val x375 = x374 == '"'
+val x473 = if (x375) {
+var x388: java.lang.String = ""
+var x389: Boolean = false
+val x376 = x370 + 1
+var x390: Int = x376
+var x392: Int = -1
+var x393: Boolean = true
+var x394: Int = x376
+val x429 = while ({val x395 = x393
+val x396 = x392
+val x397 = x394
+val x398 = x396 != x397
+val x399 = x395 && x398
+x399}) {
+val x401 = x394
+x392 = x401
+val x403 = x401 >= x238
+val x427 = if (x403) {
+x393 = false
 ()
 } else {
-()
-}
-x232
-}
-x234
-}
-val x237 = x212
-val x238 = x214
-val x240 = x238 >= x125
-val x256 = if (x240) {
+val x405 = x231(x401)
+val x411 = x405 == '"'
+val x425 = if (x411) {
+x393 = false
 ()
 } else {
-val x241 = x121(x238)
-val x242 = x241 == '"'
-val x254 = if (x242) {
-val x243 = x238 + 1
-val x164 = x155.mkString
-val x165 = "StringLit("+x164
-val x166 = x165+")"
-val x246 = x237.mkString
-val x247 = "StringLit("+x246
-val x248 = x247+")"
-val x250 = (x166,x248)
-val x251 = (x250,x243)
-x124 = x251
+val x414 = x388
+val x415 = x389
+val x416 = x390
+val x418 = x414+x405
+x388 = x418
+x389 = false
+val x407 = x401 + 1
+x390 = x407
+x394 = x407
+()
+}
+x425
+}
+x427
+}
+val x430 = x388
+val x431 = x389
+val x432 = x390
+val x467 = if (x431) {
+x234 = x232
+x235 = true
+x236 = 0
 ()
 } else {
-()
-}
-x254
-}
-x256
-} else {
-()
-}
-x258
-}
-x260
-} else {
-()
-}
-x262
-}
-x264
-} else {
-()
-}
-x266
-}
-val x269 = x124
-x269
-}
-}
-/*****************************************
-  End of Generated Code                  
-*******************************************/
-compilation: ok
-((StringLit(hello),StringLit(carol)),15)
-/*****************************************
-  Emitting Generated Code                  
-*******************************************/
-class parseListofChars extends ((Array[Char])=>(scala.Tuple2[java.lang.String, Int])) {
-def apply(x419:Array[Char]): scala.Tuple2[java.lang.String, Int] = {
-val x1 = ("",-1)
-var x420: scala.Tuple2[java.lang.String, Int] = x1
-val x421 = x419.length
-val x422 = 0 >= x421
-val x487 = if (x422) {
+val x434 = x432 >= x238
+val x465 = if (x434) {
+x234 = x232
+x235 = true
+x236 = 0
 ()
 } else {
-val x423 = x419(0)
-val x424 = x423 == 'h'
-val x485 = if (x424) {
-val x10 = 0 + 1
-val x426 = x10 >= x421
-val x483 = if (x426) {
+val x436 = x231(x432)
+val x437 = x436 == '"'
+val x463 = if (x437) {
+val x368 = if (x364) {
+val x1 = null.asInstanceOf[java.lang.String]
+x1
+} else {
+val x310 = "StringLit("+x290
+val x311 = x310+")"
+x311
+}
+val x450 = "StringLit("+x430
+val x451 = x450+")"
+val x453 = new Tuple2StringString(x368,x451)
+x234 = x453
+x235 = false
+val x438 = x432 + 1
+x236 = x438
 ()
 } else {
-val x427 = x419(x10)
-val x428 = x427 == 'e'
-val x481 = if (x428) {
-val x429 = x10 + 1
-val x431 = x429 >= x421
-val x479 = if (x431) {
-()
-} else {
-val x432 = x419(x429)
-val x433 = x432 == 'l'
-val x477 = if (x433) {
-val x434 = x429 + 1
-val x436 = x434 >= x421
-val x475 = if (x436) {
-()
-} else {
-val x437 = x419(x434)
-val x438 = x437 == 'l'
-val x473 = if (x438) {
-val x439 = x434 + 1
-val x441 = x439 >= x421
-val x471 = if (x441) {
-()
-} else {
-val x442 = x419(x439)
-val x443 = x442 == 'o'
-val x469 = if (x443) {
-val x444 = x439 + 1
-val x449 = x442+""
-val x453 = x437+x449
-val x457 = x432+x453
-val x461 = x427+x457
-val x465 = x423+x461
-val x466 = (x465,x444)
-x420 = x466
-()
-} else {
+x234 = x232
+x235 = true
+x236 = 0
 ()
 }
-x469
+x463
 }
-x471
+x465
+}
+x467
 } else {
+x234 = x232
+x235 = true
+x236 = 0
 ()
 }
 x473
 }
 x475
-} else {
-()
 }
 x477
-}
-x479
 } else {
+x234 = x232
+x235 = true
+x236 = 0
 ()
-}
-x481
 }
 x483
-} else {
-()
 }
 x485
 }
-val x488 = x420
-x488
+x487
+} else {
+x234 = x232
+x235 = true
+x236 = 0
+()
+}
+x493
+}
+val x496 = x234
+val x497 = x235
+val x498 = x236
+val x499 = new ParseResultTuple2StringString(x496,x497,x498)
+val x500 = println(x499)
+x500
 }
 }
 /*****************************************
   End of Generated Code                  
 *******************************************/
 compilation: ok
-(hello,5)
+ParseResultTuple2StringString(Tuple2StringString(StringLit(hello),StringLit(carol)),false,15)
+ParseResultTuple2StringString(null,true,0)
 /*****************************************
   Emitting Generated Code                  
 *******************************************/
-class parseString extends ((Array[Char])=>(scala.Tuple2[java.lang.String, Int])) {
-def apply(x556:Array[Char]): scala.Tuple2[java.lang.String, Int] = {
-val x1 = ("",-1)
-var x557: scala.Tuple2[java.lang.String, Int] = x1
-val x558 = x556.length
-val x559 = 0 >= x558
-val x619 = if (x559) {
+class parseString extends ((Array[Char])=>(Unit)) {
+def apply(x770:Array[Char]): Unit = {
+val x1 = null.asInstanceOf[java.lang.String]
+var x771: java.lang.String = x1
+var x772: Boolean = true
+var x773: Int = -1
+val x775 = x770.length
+val x776 = 0 >= x775
+val x899 = if (x776) {
+x771 = x1
+x772 = true
+x773 = 0
 ()
 } else {
-val x560 = x556(0)
-val x561 = x560 == 'h'
-val x617 = if (x561) {
-val x10 = 0 + 1
-val x563 = x10 >= x558
-val x615 = if (x563) {
+val x777 = x770(0)
+val x778 = x777 == 'h'
+val x897 = if (x778) {
+val x19 = 0 + 1
+val x785 = x19 >= x775
+val x891 = if (x785) {
+x771 = x1
+x772 = true
+x773 = 0
 ()
 } else {
-val x564 = x556(x10)
-val x565 = x564 == 'e'
-val x613 = if (x565) {
-val x429 = x10 + 1
-val x567 = x429 >= x558
-val x611 = if (x567) {
+val x787 = x770(x19)
+val x788 = x787 == 'e'
+val x889 = if (x788) {
+val x789 = x19 + 1
+val x798 = x789 >= x775
+val x883 = if (x798) {
+x771 = x1
+x772 = true
+x773 = 0
 ()
 } else {
-val x568 = x556(x429)
-val x569 = x568 == 'l'
-val x609 = if (x569) {
-val x434 = x429 + 1
-val x571 = x434 >= x558
-val x607 = if (x571) {
+val x800 = x770(x789)
+val x801 = x800 == 'l'
+val x881 = if (x801) {
+val x802 = x789 + 1
+val x810 = x802 >= x775
+val x875 = if (x810) {
+x771 = x1
+x772 = true
+x773 = 0
 ()
 } else {
-val x572 = x556(x434)
-val x573 = x572 == 'l'
-val x605 = if (x573) {
-val x439 = x434 + 1
-val x575 = x439 >= x558
-val x603 = if (x575) {
+val x812 = x770(x802)
+val x813 = x812 == 'l'
+val x873 = if (x813) {
+val x814 = x802 + 1
+val x823 = x814 >= x775
+val x867 = if (x823) {
+x771 = x1
+x772 = true
+x773 = 0
 ()
 } else {
-val x576 = x556(x439)
-val x577 = x576 == 'o'
-val x601 = if (x577) {
-val x444 = x439 + 1
-val x581 = x576+""
-val x585 = x572+x581
-val x589 = x568+x585
-val x593 = x564+x589
-val x597 = x560+x593
-val x598 = (x597,x444)
-x557 = x598
+val x825 = x770(x814)
+val x826 = x825 == 'o'
+val x865 = if (x826) {
+val x839 = x825+""
+val x843 = x812+x839
+val x847 = x800+x843
+val x851 = x787+x847
+val x855 = x777+x851
+x771 = x855
+x772 = false
+val x827 = x814 + 1
+x773 = x827
 ()
 } else {
+x771 = x1
+x772 = true
+x773 = 0
 ()
 }
-x601
+x865
 }
-x603
+x867
 } else {
+x771 = x1
+x772 = true
+x773 = 0
 ()
 }
-x605
+x873
 }
-x607
+x875
 } else {
+x771 = x1
+x772 = true
+x773 = 0
 ()
 }
-x609
+x881
 }
-x611
+x883
 } else {
+x771 = x1
+x772 = true
+x773 = 0
 ()
 }
-x613
+x889
 }
-x615
+x891
 } else {
+x771 = x1
+x772 = true
+x773 = 0
 ()
 }
-x617
+x897
 }
-val x620 = x557
-x620
+val x900 = x771
+val x901 = x772
+val x902 = x773
+val x903 = new ParseResultString(x900,x901,x902)
+val x904 = println(x903)
+x904
 }
 }
 /*****************************************
   End of Generated Code                  
 *******************************************/
+nVars=1000
 compilation: ok
-(hello,5)
+ParseResultString(hello,false,5)
 /*****************************************
   Emitting Generated Code                  
 *******************************************/
-class parseWholeNumber extends ((Array[Char])=>(scala.Tuple2[Int, Int])) {
-def apply(x688:Array[Char]): scala.Tuple2[Int, Int] = {
-val x689 = (0,-1)
-var x690: scala.Tuple2[Int, Int] = x689
-var x691: Int = 0
-var x692: Int = -1
-var x693: Int = 0
-val x700 = x688.length
-val x721 = while ({val x694 = x692
-val x695 = x693
-val x696 = x694 != x695
-x696}) {
-val x698 = x693
-x692 = x698
-val x701 = x698 >= x700
-val x719 = if (x701) {
+class parseWholeNumber extends ((Array[Char])=>(Unit)) {
+def apply(x1024:Array[Char]): Unit = {
+val x1025 = null.asInstanceOf[Int]
+var x1027: Int = x1025
+var x1028: Boolean = true
+var x1029: Int = -1
+var x1032: Int = 0
+var x1033: Boolean = false
+var x1034: Int = 0
+var x1036: Int = -1
+var x1037: Boolean = true
+var x1038: Int = 0
+val x1047 = x1024.length
+val x1080 = while ({val x1039 = x1037
+val x1040 = x1036
+val x1041 = x1038
+val x1042 = x1040 != x1041
+val x1043 = x1039 && x1042
+x1043}) {
+val x1045 = x1038
+x1036 = x1045
+val x1048 = x1045 >= x1047
+val x1078 = if (x1048) {
+x1037 = false
 ()
 } else {
-val x702 = x688(x698)
-val x703 = x702 >= '0'
-val x704 = x702 <= '9'
-val x705 = x703 && x704
-val x717 = if (x705) {
-val x711 = x691
-val x708 = x702 - '0'
-val x709 = x708.toInt
-val x712 = x711 * 10
-val x713 = x712 + x709
-x691 = x713
-val x706 = x698 + 1
-x693 = x706
+val x1050 = x1024(x1045)
+val x1051 = x1050 >= '0'
+val x1052 = x1050 <= '9'
+val x1053 = x1051 && x1052
+val x1076 = if (x1053) {
+val x1062 = x1032
+val x1063 = x1033
+val x1064 = x1034
+val x1059 = x1050 - '0'
+val x1060 = x1059.toInt
+val x1066 = x1062 * 10
+val x1067 = x1066 + x1060
+x1032 = x1067
+x1033 = false
+val x1054 = x1045 + 1
+x1034 = x1054
+x1038 = x1054
 ()
 } else {
+x1037 = false
 ()
 }
-x717
+x1076
 }
-x719
+x1078
 }
-val x722 = x691
-val x723 = x693
-val x724 = (x722,x723)
-x690 = x724
-val x726 = x690
-x726
+val x1081 = x1032
+val x1082 = x1033
+val x1083 = x1034
+x1027 = x1081
+x1028 = x1082
+x1029 = x1083
+val x1088 = x1027
+val x1089 = x1028
+val x1090 = x1029
+val x1091 = new ParseResultInt(x1088,x1089,x1090)
+val x1092 = println(x1091)
+x1092
 }
 }
 /*****************************************
   End of Generated Code                  
 *******************************************/
 compilation: ok
-(1234,4)
+ParseResultInt(1234,false,4)
