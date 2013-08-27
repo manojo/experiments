@@ -288,10 +288,33 @@ trait HttpParser extends TokenParsers with HttpComponents {
   def queryString(in: Rep[Input], url: Rep[Url]) =
     ((repToS(accept(in, unit('?'))) ~> repToS(acceptIf(in, c => isQChar(c))))
     ~ opt(accept(in,unit('#')) ~> reqFragment(in, url))) ^^ { x =>
-      if(x._2.isDefined) copyUrl(url)(qString = x._1)
-      else copyUrl(x._2.get)(qString = x._1 + unit("#") + x._2.get.fragment)
+      if(x._2.isDefined) copyUrl(x._2.get)(qString = x._1)
+      else copyUrl(url)(qString = x._1)
     }
-  /*def reqPath(in: Rep[Input], url: Rep[Url]) =
-    reptoS(urlChar(in)) ~ opt
-  */
+
+  def reqPath(in: Rep[Input], url: Rep[Url]) =
+    (repToS(urlChar(in)) ~ opt(
+      (accept(in, unit('?')) ~> queryString(in, url)) |
+      (accept(in, unit('#')) ~> reqFragment(in, url))
+    ) <~ httpInfo(in)) ^^ { x =>
+      if(x._2.isDefined) copyUrl(x._2.get)(pth = unit("/")+x._1)
+      else copyUrl(url)(pth = unit("/") + x._1)
+    }
+
+  def url(in: Rep[Input], init: Rep[Url]) : Parser[Url] =
+    ((schema(in) <~ (accept(in,"://")) | acceptIf(in, c => isDigit(c) || c == unit('.')) ^^{x => unit("")+x})
+      ~ opt(host(in, init))
+      ~ ((accept(in,unit('/')) ~> reqPath(in,init)) |
+         (accept(in,unit('?')) ~> queryString(in, init)) //|
+          //("/|*".r ~> reqPath)
+        )
+    ) ^^
+    { x =>
+      //long live lifted pattern matching! hopefully happening soon
+      //in a compiler near you.
+      if(x._1._2.isDefined)
+        copyUrl(x._2)(sch = x._1._1, hName = x._1._2.get.hostName)
+      else copyUrl(x._2)(sch = x._1._1)
+    }
+
 }

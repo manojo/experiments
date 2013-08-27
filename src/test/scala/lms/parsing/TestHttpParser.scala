@@ -162,6 +162,30 @@ trait HttpParserProg extends HttpParser{
     parser{x => s = x}
     println(s)
   }
+
+  //queryString
+  def qStringParse(in: Rep[Array[Char]]): Rep[Unit] = {
+    var s = Failure[Url](unit(-1))
+    val parser = queryString(in, Url()).apply(unit(0))
+    parser{x => s = x}
+    println(s)
+  }
+
+  //reqPath
+  def reqPathParse(in: Rep[Array[Char]]): Rep[Unit] = {
+    var s = Failure[Url](unit(-1))
+    val parser = reqPath(in, Url()).apply(unit(0))
+    parser{x => s = x}
+    println(s)
+  }
+
+  //url
+  def urlParse(in: Rep[Array[Char]]): Rep[Unit] = {
+    var s = Failure[Url](unit(-1))
+    val parser = url(in, Url()).apply(unit(0))
+    parser{x => s = x}
+    println(s)
+  }
 }
 
 class TestHttpParser extends FileDiffSuite {
@@ -411,6 +435,33 @@ class TestReqParser extends FileDiffSuite {
         testcReqFragmentParse("##3asfd#adf".toArray)
         testcReqFragmentParse("asdf".toArray)
 
+        codegen.emitSource(qStringParse _ , "qStringParse", new java.io.PrintWriter(System.out))
+        val testcQStringParse = compile(qStringParse)
+        testcQStringParse("???asdf#sadf".toArray)
+        testcQStringParse("???asdf?adsf#asdf".toArray)
+        testcQStringParse("???asdf?adsf".toArray)
+        testcQStringParse("asd".toArray)
+
+        codegen.emitSource(reqPathParse _ , "reqPathParse", new java.io.PrintWriter(System.out))
+        val testcReqPathParse = compile(reqPathParse)
+        testcReqPathParse("???asdf#sadf".toArray)
+        testcReqPathParse("##asdfadsf".toArray)
+        testcReqPathParse("adsfasd.html???asdf#adsf".toArray)
+        testcReqPathParse("asd".toArray)
+
+        codegen.emitSource(urlParse _ , "urlParse", new java.io.PrintWriter(System.out))
+        val testcUrlParse = compile(urlParse)
+
+        val urls = scala.List(
+          "http://en.wikipedia.org/wiki/URI_scheme",
+          "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions?redirectlocale=en-US&redirectslug=JavaScript%2FGuide%2FRegular_Expressions",
+          "http://en.wikipedia.org/wiki/List_of_HTTP_headers#Responses",
+          "ldap://ldap1.example.net:6666/o=University%20of%20Michigan, c=US??sub?(cn=Babs%20Jensen)"
+        )
+
+        urls.foreach{url =>
+          testcUrlParse(url.toArray)
+        }
 
       }
 

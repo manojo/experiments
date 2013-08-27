@@ -230,8 +230,8 @@ class HTTP extends JavaTokenParsers {
     }
 
   def requestStatus: Parser[Any] = requestType ~ url <~ crlf
-
   def request: Parser[Any] = requestStatus~headers<~crlf
+
 
 
   /**** Utility functions ****/
