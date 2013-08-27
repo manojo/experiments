@@ -17,6 +17,8 @@ trait OptionOps extends Base with IfThenElse with BooleanOps{
   //implicit def optionToOptionOps[T:Manifest](a: Option[T]) = new ListOpsCls(unit(a))
   implicit def make_opt[A:Manifest](o: Option[Rep[A]])(implicit pos: SourceContext): Rep[Option[A]]
 
+  def none[T:Manifest](): Rep[Option[T]]
+
   class OptionOpsCls[A:Manifest](o: Rep[Option[A]]) {
     def map[B:Manifest](f: Rep[A] => Rep[B]) = option_map(o,f)
     def isDefined: Rep[Boolean] = option_isDefined(o)
@@ -52,6 +54,9 @@ trait OptionOpsExp extends OptionOps with IfThenElseExp with BooleanOpsExp with 
 
   def option_isDefined[A:Manifest](o:Rep[Option[A]])(implicit pos: SourceContext) : Rep[Boolean] = field[Boolean](o, "defined")
   def option_get[A:Manifest](o:Rep[Option[A]])(implicit pos: SourceContext):Rep[A] = field[A](o, "value")
+
+  def none[T:Manifest](): Rep[Option[T]] =
+    struct(classTag[Option[T]], "value" -> rep_asinstanceof(unit(null), manifest[Null], manifest[T]), "defined" -> unit(false))
 }
 
 trait OptionGenBase extends GenericCodegen with BaseGenStructOps with ScalaGenCastingOps{

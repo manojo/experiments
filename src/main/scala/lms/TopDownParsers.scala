@@ -10,7 +10,7 @@ import scala.virtualization.lms.internal.Effects
 
 
 trait TopDownParsers extends MyScalaOpsPkg with GeneratorOps with LiftVariables
-  with StructOps with ParseResultOps with Functions{
+  with StructOps with ParseResultOps with OptionOps with Functions{
   type Input = Array[Char]
   type Pos = Int
 
@@ -141,18 +141,16 @@ trait TopDownParsers extends MyScalaOpsPkg with GeneratorOps with LiftVariables
     i => if(cond) thenp(i) else elsep(i)
   }
 
-/*  def opt[T:Manifest](p: Parser[T]) = Parser[(T, Boolean)]{ i =>
-    var passed = unit(false)
-    p(i).apply{ x: Rep[(T, Int)] =>
-      if(x._2 > i) passed =
+  def opt[T:Manifest](p: Parser[T]) = Parser[Option[T]]{pos =>
+    p(pos).map{x =>
+      if(x.isEmpty) Success(none[T](), x.next)
+      else Success(Some(x.get), x.next)
     }
   }
-*/
 
   def Parser[T:Manifest](f: Rep[Int] => Generator[ParseResult[T]]) = new Parser[T]{
     def apply(i: Rep[Int]) = f(i)
   }
-
 
   //making a function of a parser
   private def toplevel[T:Manifest](p: Parser[T]) : Parser[T] = {

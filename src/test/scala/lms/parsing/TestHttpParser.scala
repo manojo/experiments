@@ -139,17 +139,26 @@ trait HttpParserProg extends HttpParser{
     println(s)
   }
 
-  def orStringParse(in: Rep[Array[Char]]): Rep[Unit] = {
+  //request Type
+  def reqTypeParse(in: Rep[Array[Char]]): Rep[Unit] = {
     var s = Failure[String](unit(-1))
-    val parser = (accept(in, "get") | accept(in, "connect")).apply(unit(0))
+    val parser = requestType(in).apply(unit(0))
     parser{x => s = x}
     println(s)
   }
 
-  //
-  def reqTypeParse(in: Rep[Array[Char]]): Rep[Unit] = {
-    var s = Failure[String](unit(-1))
-    val parser = requestType(in).apply(unit(0))
+  //host
+  def hostParse(in: Rep[Array[Char]]): Rep[Unit] = {
+    var s = Failure[Url](unit(-1))
+    val parser = host(in, Url()).apply(unit(0))
+    parser{x => s = x}
+    println(s)
+  }
+
+  //request fragment
+  def reqFragmentParse(in: Rep[Array[Char]]): Rep[Unit] = {
+    var s = Failure[Url](unit(-1))
+    val parser = reqFragment(in, Url()).apply(unit(0))
     parser{x => s = x}
     println(s)
   }
@@ -163,10 +172,11 @@ class TestHttpParser extends FileDiffSuite {
     withOutFile(prefix+"http-parser"){
       new HttpParserProg with MyScalaOpsPkgExp with GeneratorOpsExp
         with CharOpsExp with MyIfThenElseExpOpt with StructOpsExpOptCommon
-        with ParseResultOpsExp with MyScalaCompile{self =>
+        with ParseResultOpsExp with OptionOpsExp with MyScalaCompile{self =>
 
         val codegen = new MyScalaCodeGenPkg with ScalaGenGeneratorOps
-         with ScalaGenCharOps with ScalaGenParseResultOps with ScalaGenStructOps{
+         with ScalaGenCharOps with ScalaGenParseResultOps with ScalaGenStructOps
+         with ScalaGenOptionOps{
           val IR: self.type = self
         }
 
@@ -212,10 +222,11 @@ class TestHttpParser extends FileDiffSuite {
     withOutFile(prefix+"resp-parser"){
       new HttpParserProg with MyScalaOpsPkgExp with GeneratorOpsExp
         with CharOpsExp with MyIfThenElseExpOpt with StructOpsExpOptCommon
-        with ParseResultOpsExp with MyScalaCompile{self =>
+        with ParseResultOpsExp with OptionOpsExp with MyScalaCompile{self =>
 
         val codegen = new MyScalaCodeGenPkg with ScalaGenGeneratorOps
-         with ScalaGenCharOps with ScalaGenParseResultOps with ScalaGenStructOps{
+         with ScalaGenCharOps with ScalaGenParseResultOps with ScalaGenStructOps
+         with ScalaGenOptionOps{
           val IR: self.type = self
         }
 
@@ -371,31 +382,35 @@ class TestReqParser extends FileDiffSuite {
     withOutFile(prefix+"req-parser"){
       new HttpParserProg with MyScalaOpsPkgExp with GeneratorOpsExp
         with CharOpsExp with MyIfThenElseExpOpt with StructOpsExpOptCommon
-        with ParseResultOpsExp with SetOpsExp with MyScalaCompile{self =>
+        with ParseResultOpsExp with SetOpsExp with OptionOpsExp
+        with MyScalaCompile{self =>
 
         val codegen = new MyScalaCodeGenPkg with ScalaGenGeneratorOps
          with ScalaGenCharOps with ScalaGenParseResultOps with ScalaGenStructOps
-         with ScalaGenSetOps{
+         with ScalaGenSetOps with ScalaGenOptionOps{
           val IR: self.type = self
         }
-
-/*
-        codegen.emitSource(orStringParse _ , "orStringParse", new java.io.PrintWriter(System.out))
-        val testcOrStringParse = compile(orStringParse)
-        testcOrStringParse("get".toArray)
-        testcOrStringParse("connect".toArray)
-        //failure case
-        testcOrStringParse("What".toArray)
-*/
 
         codegen.emitSource(reqTypeParse _ , "reqTypeParse", new java.io.PrintWriter(System.out))
         val testcReqParse = compile(reqTypeParse)
         requestTypesUnRepped.foreach{rType =>
           testcReqParse(rType.toArray)
         }
+        testcReqParse("What".toArray) //failure case
 
-        //failure case
-        testcReqParse("What".toArray)
+        codegen.emitSource(hostParse _ , "hostParse", new java.io.PrintWriter(System.out))
+        val testcHostParse = compile(hostParse)
+        testcHostParse("123..asdf3.adf:90".toArray)
+        testcHostParse("123..asdf3.adf".toArray)
+        testcHostParse(" asd2".toArray) //failure case
+        testcHostParse("123..asdf3.adf:a0".toArray) //failure case
+
+        codegen.emitSource(reqFragmentParse _ , "reqFragmentParse", new java.io.PrintWriter(System.out))
+        val testcReqFragmentParse = compile(reqFragmentParse)
+        testcReqFragmentParse("##3adsfd.html".toArray)
+        testcReqFragmentParse("##3asfd#adf".toArray)
+        testcReqFragmentParse("asdf".toArray)
+
 
       }
 

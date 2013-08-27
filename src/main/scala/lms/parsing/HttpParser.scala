@@ -50,6 +50,11 @@ trait HttpComponents extends lms.StructOps with SetOps{
     val port = prt
   }
 
+  def copyUrl(url: Rep[Url])(sch: Rep[String] = url.schema, hName: Rep[String] = url.hostName,
+           pth: Rep[String] = url.path, qString: Rep[String] = url.queryString,
+           frag: Rep[String] = url.fragment, prt: Rep[Int] = url.port
+  ) = Url(sch, hName, pth, qString, frag, prt)
+
 //  def copy(resp: Rep[Response],)
 
   type Request = Record {
@@ -72,6 +77,11 @@ trait HttpComponents extends lms.StructOps with SetOps{
    val chunked = ch
    val upgrade = up
   }
+
+  def copyRequest(req: Rep[Request])(rType: Rep[String] = req.requestType, url: Rep[Url] = req.uri,
+           cL: Rep[Int] = req.contentLength, conn: Rep[String] = req.connection,
+           ch: Rep[Boolean] = req.chunked, up: Rep[Boolean] = req.upgrade
+  ) = Request(rType, url, cL, conn, ch, up)
 
   //a def because we want to create the node only when required
   def requestTypes = Set(
@@ -126,6 +136,7 @@ trait HttpComponents extends lms.StructOps with SetOps{
     "unlock",
     "unsubscribe"
   )
+
 }
 
 
@@ -241,29 +252,46 @@ trait HttpParser extends TokenParsers with HttpComponents {
     x:Rep[(Char,String)] => x._1 + x._2
   }
 
-/*
-  def host(in: Rep[Input], rsp: Rep[Request]): Parser[Request] =
-    hostName ~ opt(":" ~> wholeNumber) ^^ {
-      case x ~ Some(y) => Map("hostName" -> x, "port" -> y)
-      case x ~ None => Map("hostName" -> x)
+  def host(in: Rep[Input], url: Rep[Url]): Parser[Url] =
+    hostName(in) ~ opt(accept(in,unit(':')) ~> wholeNumber(in)) ^^ { x: Rep[(String, Option[Int])] =>
+      if(x._2.isDefined) copyUrl(url)(hName = x._1, prt = x._2.get)
+      else copyUrl(url)(hName = x._1)
     }
-*/
-  //the toChar is a bit of a hack
-  def urlChar(in: Rep[Input]): Parser[Char] = acceptIf(in, {c: Rep[Char] =>
-    c > unit(32.toChar) && c !=unit('#') && c != unit('?') && c != unit(127.toChar)
-  })
 
+  //======predicates ===========//
+  // defining them here because it helps in generating better code
+  // than using the "or" combinator for parsers
+  // in the vanilla version we are using regexes, so it's equivalent
+
+  def isUrlChar(c:Rep[Char]) =
+    c > unit(32.toChar) && c !=unit('#') && c != unit('?') && c != unit(127.toChar)
+
+  def isFragmentChar(c: Rep[Char]) =
+    c > unit(32.toChar) && c != unit(127.toChar)
+
+  def isQChar(c : Rep[Char]) =
+    c > unit(32.toChar) && c !=unit('#') && c != unit(127.toChar)
+
+
+  //the toChar is a bit of a hack
+  def urlChar(in: Rep[Input]): Parser[Char] = acceptIf(in, c => isUrlChar(c))
 
   def reqFragment(in: Rep[Input], url: Rep[Url]) : Parser[Url] =
     //the greediness of the first regex prevents ambiguity
-    repToS(accept(in, unit('#'))) ~> repToS(urlChar(in) | accept(in, unit('?')) | accept(in, unit('#'))) ^^{
-      x: Rep[String] =>
-        Url(sch = url.schema, hName = url.hostName,
-            pth = url.path, qString = url.queryString,
-            frag = x, prt = url.port
-        )
+    repToS(accept(in, unit('#'))) ~> repToS(acceptIf(in, c => isFragmentChar(c))) ^^{
+      x: Rep[String] => copyUrl(url)(frag = x)
     }
 
   //opt("HTTP/"~decimalNumber)
-  def httpInfo(in: Rep[Input]) = accept(in, "HTTP/") ~> decimalNumber(in)
+  def httpInfo(in: Rep[Input]) = opt(accept(in, "HTTP/") ~> decimalNumber(in))
+
+  def queryString(in: Rep[Input], url: Rep[Url]) =
+    ((repToS(accept(in, unit('?'))) ~> repToS(acceptIf(in, c => isQChar(c))))
+    ~ opt(accept(in,unit('#')) ~> reqFragment(in, url))) ^^ { x =>
+      if(x._2.isDefined) copyUrl(url)(qString = x._1)
+      else copyUrl(x._2.get)(qString = x._1 + unit("#") + x._2.get.fragment)
+    }
+  /*def reqPath(in: Rep[Input], url: Rep[Url]) =
+    reptoS(urlChar(in)) ~ opt
+  */
 }

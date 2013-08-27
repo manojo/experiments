@@ -24,10 +24,6 @@ trait MyIfThenElseExpOpt extends IfThenElseExpOpt { this: BooleanOpsExp with Equ
     case Def(BooleanNegate(a)) => __ifThenElse(a, elsep, thenp)
     case Def(NotEqual(a,b)) => __ifThenElse(equals(a,b), elsep, thenp)
     case _ =>
-//      val a = reifyEffectsHere(thenp)
-//      val b = reifyEffectsHere(elsep)
-//      ifThenElse(cond,a,b)
-
       if(map.contains(cond)){
         if(map(cond)) thenp else elsep
       }else{
