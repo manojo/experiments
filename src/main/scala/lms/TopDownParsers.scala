@@ -58,14 +58,17 @@ trait TopDownParsers extends MyScalaOpsPkg with GeneratorOps with LiftVariables
     def ^^[U:Manifest](f: Rep[T] => Rep[U]) = self.map(f)
     def ^^^[U:Manifest](u: Rep[U]) = self.map(x => u)
 
-    def | (that: Parser[T]) = Parser[T]{ pos =>
-      //make these parsers "toplevel"
-      val tmpSelf = toplevel(self)
-      val tmpThat = toplevel(that)
+    def | (that: Parser[T]) = {
+      val p = Parser[T]{ pos =>
+        //make these parsers "toplevel"
+        val tmpSelf = toplevel(self)
+        //val tmpThat = toplevel(that)
 
-      tmpSelf(pos).flatMap{x =>
-        if(x.isEmpty) tmpThat(pos) else elGen(x)
+        tmpSelf(pos).flatMap{x =>
+          if(x.isEmpty) that(pos) else elGen(x)
+        }
       }
+      toplevel(p)
     }
 
     def filter(p: Rep[T] => Rep[Boolean]) = Parser[T]{pos =>

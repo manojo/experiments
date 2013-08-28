@@ -1,0 +1,350 @@
+/*****************************************
+  Emitting Generated Code                  
+*******************************************/
+class testOr2 extends ((Array[Char])=>(Unit)) {
+def apply(x0:Array[Char]): Unit = {
+val x1 = null.asInstanceOf[Tuple2CharChar]
+var x3: Tuple2CharChar = x1
+var x4: Boolean = true
+var x5: Int = -1
+val x19 = x0.length
+val x68 = {x13: (Int) => 
+var x15: Tuple2CharChar = x1
+var x16: Boolean = true
+var x17: Int = x13
+val x20 = x13 >= x19
+val x62 = if (x20) {
+x15 = x1
+x16 = true
+x17 = x13
+()
+} else {
+val x23 = x0(x13)
+val x24 = x23 == 'h'
+val x60 = if (x24) {
+val x25 = x13 + 1
+val x32 = x25 >= x19
+val x54 = if (x32) {
+x15 = x1
+x16 = true
+x17 = x13
+()
+} else {
+val x34 = x0(x25)
+val x35 = x34 == 'e'
+val x52 = if (x35) {
+val x42 = new Tuple2CharChar(x23,x34)
+x15 = x42
+x16 = false
+val x36 = x25 + 1
+x17 = x36
+()
+} else {
+x15 = x1
+x16 = true
+x17 = x13
+()
+}
+x52
+}
+x54
+} else {
+x15 = x1
+x16 = true
+x17 = x13
+()
+}
+x60
+}
+val x63 = x15
+val x64 = x16
+val x65 = x17
+val x66 = new ParseResultTuple2CharChar(x63,x64,x65)
+x66
+}
+val x126 = {x7: (Int) => 
+var x9: Tuple2CharChar = x1
+var x10: Boolean = true
+var x11: Int = x7
+val x69 = x68(x7)
+val x70 = x69.empty
+val x120 = if (x70) {
+val x71 = x7 >= x19
+val x112 = if (x71) {
+x9 = x1
+x10 = true
+x11 = x7
+()
+} else {
+val x73 = x0(x7)
+val x74 = x73 == '1'
+val x110 = if (x74) {
+val x75 = x7 + 1
+val x82 = x75 >= x19
+val x104 = if (x82) {
+x9 = x1
+x10 = true
+x11 = x7
+()
+} else {
+val x84 = x0(x75)
+val x85 = x84 == '2'
+val x102 = if (x85) {
+val x92 = new Tuple2CharChar(x73,x84)
+x9 = x92
+x10 = false
+val x86 = x75 + 1
+x11 = x86
+()
+} else {
+x9 = x1
+x10 = true
+x11 = x7
+()
+}
+x102
+}
+x104
+} else {
+x9 = x1
+x10 = true
+x11 = x7
+()
+}
+x110
+}
+x112
+} else {
+val x114 = x69.res
+x9 = x114
+x10 = x70
+val x117 = x69.next
+x11 = x117
+()
+}
+val x121 = x9
+val x122 = x10
+val x123 = x11
+val x124 = new ParseResultTuple2CharChar(x121,x122,x123)
+x124
+}
+val x127 = x126(0)
+val x128 = x127.res
+x3 = x128
+val x130 = x127.empty
+x4 = x130
+val x132 = x127.next
+x5 = x132
+val x134 = x3
+val x135 = x4
+val x136 = x5
+val x137 = new ParseResultTuple2CharChar(x134,x135,x136)
+val x138 = println(x137)
+x138
+}
+}
+/*****************************************
+  End of Generated Code                  
+*******************************************/
+
+case class Tuple2CharChar(_1: Char, _2: Char)
+
+case class ParseResultTuple2CharChar(res: Tuple2CharChar, empty: Boolean, next: Int)
+compilation: ok
+ParseResultTuple2CharChar(Tuple2CharChar(h,e),false,2)
+ParseResultTuple2CharChar(Tuple2CharChar(1,2),false,2)
+ParseResultTuple2CharChar(null,true,0)
+ParseResultTuple2CharChar(null,true,0)
+ParseResultTuple2CharChar(null,true,0)
+/*****************************************
+  Emitting Generated Code                  
+*******************************************/
+class testOr3 extends ((Array[Char])=>(Unit)) {
+def apply(x277:Array[Char]): Unit = {
+val x278 = null.asInstanceOf[Tuple2Tuple2CharCharChar]
+var x280: Tuple2Tuple2CharCharChar = x278
+var x281: Boolean = true
+var x282: Int = -1
+val x1 = null.asInstanceOf[Tuple2CharChar]
+val x296 = x277.length
+val x344 = {x290: (Int) => 
+var x292: Tuple2CharChar = x1
+var x293: Boolean = true
+var x294: Int = x290
+val x297 = x290 >= x296
+val x338 = if (x297) {
+x292 = x1
+x293 = true
+x294 = x290
+()
+} else {
+val x299 = x277(x290)
+val x300 = x299 == 'h'
+val x336 = if (x300) {
+val x301 = x290 + 1
+val x308 = x301 >= x296
+val x330 = if (x308) {
+x292 = x1
+x293 = true
+x294 = x290
+()
+} else {
+val x310 = x277(x301)
+val x311 = x310 == 'e'
+val x328 = if (x311) {
+val x318 = new Tuple2CharChar(x299,x310)
+x292 = x318
+x293 = false
+val x312 = x301 + 1
+x294 = x312
+()
+} else {
+x292 = x1
+x293 = true
+x294 = x290
+()
+}
+x328
+}
+x330
+} else {
+x292 = x1
+x293 = true
+x294 = x290
+()
+}
+x336
+}
+val x339 = x292
+val x340 = x293
+val x341 = x294
+val x342 = new ParseResultTuple2CharChar(x339,x340,x341)
+x342
+}
+val x402 = {x284: (Int) => 
+var x286: Tuple2CharChar = x1
+var x287: Boolean = true
+var x288: Int = x284
+val x345 = x344(x284)
+val x346 = x345.empty
+val x396 = if (x346) {
+val x347 = x284 >= x296
+val x388 = if (x347) {
+x286 = x1
+x287 = true
+x288 = x284
+()
+} else {
+val x349 = x277(x284)
+val x350 = x349 == '1'
+val x386 = if (x350) {
+val x351 = x284 + 1
+val x358 = x351 >= x296
+val x380 = if (x358) {
+x286 = x1
+x287 = true
+x288 = x284
+()
+} else {
+val x360 = x277(x351)
+val x361 = x360 == '2'
+val x378 = if (x361) {
+val x368 = new Tuple2CharChar(x349,x360)
+x286 = x368
+x287 = false
+val x362 = x351 + 1
+x288 = x362
+()
+} else {
+x286 = x1
+x287 = true
+x288 = x284
+()
+}
+x378
+}
+x380
+} else {
+x286 = x1
+x287 = true
+x288 = x284
+()
+}
+x386
+}
+x388
+} else {
+val x390 = x345.res
+x286 = x390
+x287 = x346
+val x393 = x345.next
+x288 = x393
+()
+}
+val x397 = x286
+val x398 = x287
+val x399 = x288
+val x400 = new ParseResultTuple2CharChar(x397,x398,x399)
+x400
+}
+val x403 = x402(0)
+val x404 = x403.empty
+val x436 = if (x404) {
+x280 = x278
+x281 = true
+x282 = 0
+()
+} else {
+val x406 = x403.next
+val x407 = x406 >= x296
+val x434 = if (x407) {
+x280 = x278
+x281 = true
+x282 = 0
+()
+} else {
+val x409 = x277(x406)
+val x410 = x409 == '3'
+val x432 = if (x410) {
+val x421 = x403.res
+val x422 = new Tuple2Tuple2CharCharChar(x421,x409)
+x280 = x422
+x281 = false
+val x411 = x406 + 1
+x282 = x411
+()
+} else {
+x280 = x278
+x281 = true
+x282 = 0
+()
+}
+x432
+}
+x434
+}
+val x437 = x280
+val x438 = x281
+val x439 = x282
+val x440 = new ParseResultTuple2Tuple2CharCharChar(x437,x438,x439)
+val x441 = println(x440)
+x441
+}
+}
+/*****************************************
+  End of Generated Code                  
+*******************************************/
+
+case class Tuple2CharChar(_1: Char, _2: Char)
+
+case class ParseResultTuple2Tuple2CharCharChar(res: Tuple2Tuple2CharCharChar, empty: Boolean, next: Int)
+
+case class ParseResultTuple2CharChar(res: Tuple2CharChar, empty: Boolean, next: Int)
+
+case class Tuple2Tuple2CharCharChar(_1: Tuple2CharChar, _2: Char)
+compilation: ok
+ParseResultTuple2Tuple2CharCharChar(Tuple2Tuple2CharCharChar(Tuple2CharChar(h,e),3),false,3)
+ParseResultTuple2Tuple2CharCharChar(Tuple2Tuple2CharCharChar(Tuple2CharChar(1,2),3),false,3)
+ParseResultTuple2Tuple2CharCharChar(null,true,0)
+ParseResultTuple2Tuple2CharCharChar(null,true,0)
+ParseResultTuple2Tuple2CharCharChar(null,true,0)

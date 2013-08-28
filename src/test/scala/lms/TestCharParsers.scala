@@ -93,6 +93,18 @@ trait CharParsersProg extends CharParsers /*TokenParsers*/{
     println(s)
   }
 
+  //or3: (a | b) ~ c
+  def testOr3(in: Rep[Array[Char]]): Rep[Unit] = {
+    var s = Failure[((Char,Char),Char)](unit(-1))
+    val parser =
+      (((accept(in, unit('h'))~accept(in, unit('e'))) |
+        (accept(in, unit('1'))~accept(in, unit('2')))
+       ) ~ accept(in, unit('3'))
+      ).apply(unit(0))
+    parser{x => s = x}
+    println(s)
+  }
+
   //rep
   def test10(in: Rep[Array[Char]]): Rep[Unit] = {
     var s = Failure[String](unit(-1))
@@ -277,5 +289,41 @@ class TestCharParsers extends FileDiffSuite {
     }
 
     assertFileEqualsCheck(prefix+"char-parser")
+  }
+
+  def testOr{
+    withOutFile(prefix+"or-parser"){
+      new CharParsersProg with MyScalaOpsPkgExp with GeneratorOpsExp
+       with CharOpsExp with MyIfThenElseExpOpt with StructOpsExpOptCommon
+       with ParseResultOpsExp with FunctionsExp with OptionOpsExp
+       with MyScalaCompile{self =>
+
+        val codegen = new MyScalaCodeGenPkg with ScalaGenGeneratorOps
+          with ScalaGenCharOps with ScalaGenParseResultOps with ScalaGenStructOps
+          with ScalaGenFunctions with ScalaGenOptionOps{
+            val IR: self.type = self
+        }
+
+        codegen.emitSource(testOr2 _ , "testOr2", new java.io.PrintWriter(System.out))
+        codegen.emitDataStructures(new java.io.PrintWriter(System.out))
+        val testcOr2 = compile(testOr2)
+        testcOr2("hello".toArray)
+        testcOr2("12".toArray)
+        testcOr2(":".toArray) //fail case
+        testcOr2("h1".toArray) //fail case
+        testcOr2("1d".toArray) //fail case
+
+        codegen.emitSource(testOr3 _ , "testOr3", new java.io.PrintWriter(System.out))
+        codegen.emitDataStructures(new java.io.PrintWriter(System.out))
+        val testcOr3 = compile(testOr3)
+        testcOr3("he3lo".toArray)
+        testcOr3("123".toArray)
+        testcOr3(":".toArray) //fail case
+        testcOr3("he1".toArray) //fail case
+        testcOr3("12d".toArray) //fail case
+
+      }
+    }
+    assertFileEqualsCheck(prefix+"or-parser")
   }
 }
