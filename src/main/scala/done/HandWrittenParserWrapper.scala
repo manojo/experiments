@@ -35,20 +35,20 @@ class DefaultHttpSettings extends HttpParserLL.http_parser_settings{
   }
 
   def on_header_field(parser: http_parser, at: Array[Char], p: Int, length: Int) = {
-    //println("got the following header field")
-    //for(i <- p to (p+length)){
-    //  print(at(i))
-    //}
-    //println
+    var s = ""; var i = 0
+    while(i < length){
+      s += at(p+i)
+      i+=1
+    }
     0
   }
 
   def on_header_value(parser: http_parser, at: Array[Char], p: Int, length: Int) = {
-    //println("got the following header value")
-    //for(i <- p to (p+length)){
-    //  print(at(i))
-    //}
-    //println
+    var s = ""; var i = 0
+    while(i < length){
+      s += at(p+i)
+      i+=1
+    }
     0
   }
 
