@@ -6,14 +6,26 @@ scalaVersion := "2.10.2-RC1"
 
 resolvers ++= Seq(
   ScalaToolsSnapshots, //needed for custom build of scala test
-  "ScalaTest" at "https://oss.sonatype.org/content/groups/public"
+  "ScalaTest" at "https://oss.sonatype.org/content/groups/public",
+  "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
 )
 
 libraryDependencies ++= Seq(
   "EPFL" %% "lms" % "0.3-SNAPSHOT",
   //"org.scala-lang" % "scala-actors" % "2.10.0", // for ScalaTest
-  "org.scalatest" % "scalatest_2.10" % "2.0.M5b" % "test"
+  "org.scalatest" % "scalatest_2.10" % "2.0.M5b" % "test",
   //"org.scalatest" % "scalatest_2.10.0" % "2.0.M5" % "test"
+  "commons-codec" % "commons-codec" % "1.6",
+  "com.github.axel22" %% "scalameter" % "0.4-M2"
 )
 
-scalacOptions += "-Yvirtualize"
+autoCompilerPlugins := true
+
+addCompilerPlugin("org.scala-lang.virtualized.plugins" % "continuations" % "2.10.2-RC1")
+
+scalacOptions ++= Seq(
+  "-Yvirtualize",
+  "-P:continuations:enable"
+)
+
+testFrameworks += new TestFramework("org.scalameter.ScalaMeterFramework")

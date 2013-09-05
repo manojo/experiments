@@ -1,4 +1,4 @@
-package generators
+ package generators
 
 /**
  * An implementation of the general yield as described in
@@ -66,6 +66,8 @@ trait Generators{
     //case _ => (,)
   }
 
+  //type SR[I,A,R] = Iterator[I]
+
 }
 
 
@@ -75,10 +77,12 @@ object GeneratorTest extends Generators{
 
     val tree = Node(Leaf(1), Node(Leaf(10), Leaf(5)))
     val tree2 = Node(Node(Leaf(1), Leaf(10)), Leaf(5))
+
+
     val tree3 = Node(Node(Leaf(4), Leaf(7)), Leaf(2))
 
-    println(renum(depthWalk(tree)))
+    //println(renum(depthWalk(tree)))
     println(samefringe(depthWalk[Int,Int](tree), depthWalk[Int,Int](tree2)))
-    println(swapfringe(depthWalk[Int,Int](tree), depthWalk[Int,Int](tree3)))
+    //println(swapfringe(depthWalk[Int,Int](tree), depthWalk[Int,Int](tree3)))
   }
 }

@@ -86,7 +86,7 @@ object HTTP{
 
 }
 
-class HTTP extends JavaTokenParsers {
+trait HTTP extends JavaTokenParsers {
 
   //removing cr-lf from whiteSpace
   override val whiteSpace = """[ \t\f\x0B\f]""".r
@@ -95,7 +95,7 @@ class HTTP extends JavaTokenParsers {
   val crlf = """\r?\n""".r
 
   val wildRegex = """[^\r\n]*""".r
-  val headerName = """[A-Z][\w-]*""".r
+  val headerName = """[a-zA-Z][\w-]*""".r
   val hexNumber = """[0-9A-F]+""".r
 
   // 0x23 == '#', 0x74 == 'del'
@@ -282,8 +282,31 @@ object HttpParser extends HTTP{
       |</html>
       |""".stripMargin
 
-    println(str.length)
-    println(parseAll(body(129), str))
+    val resp =
+    """|HTTP/1.1 200 OK
+       |cache-control: no-cache, no-store, must-revalidate, pre-check=0, post-check=0
+       |content-length: 0
+       |content-type: application/json;charset=utf-8
+       |date: Tue, 03 Sep 2013 19:10:56 GMT
+       |expires: Tue, 31 Mar 1981 05:00:00 GMT
+       |last-modified: Tue, 03 Sep 2013 19:10:56 GMT
+       |pragma: no-cache
+       |server: tfe
+       |set-cookie: lang=en
+       |set-cookie: guest_id=v1%3A137823545658205848; Domain=.twitter.com; Path=/; Expires=Thu, 03-Sep-2015 19:10:56 UTC
+       |status: 200 OK
+       |x-access-level: read
+       |x-frame-options: SAMEORIGIN
+       |x-rate-limit-limit: 180
+       |x-rate-limit-remaining: 179
+       |x-rate-limit-reset: 1378236356
+       |x-transaction: 7c742b402f213b9d
+       |
+       |
+       |""".stripMargin
+
+    //println(str.length)
+    println(parseAll(respAndMessage, resp))
 
   }
 }

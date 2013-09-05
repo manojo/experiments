@@ -116,7 +116,7 @@ final class HttpParserLL {
   static final int HTTP_BOTH      = 2;
 
 
-  static class http_parser {
+  static class http_parser implements java.io.Serializable {
     /** PRIVATE **/
     /*unsigned char*/ int type; // : 2;
     /*unsigned char*/ int flags; // : 6;

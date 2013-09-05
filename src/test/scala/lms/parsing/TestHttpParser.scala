@@ -330,6 +330,7 @@ class TestHttpParser extends FileDiffSuite {
         testcBody("Make it funky! -Maceo.".toArray)
 
         codegen.emitSource(respAndMessageParse _ , "respAndMessageParse", new java.io.PrintWriter(System.out))
+        codegen.emitDataStructures(new java.io.PrintWriter(System.out))
         val testcRespAndMessage = compile(respAndMessageParse)
 
         val messages = scala.List(

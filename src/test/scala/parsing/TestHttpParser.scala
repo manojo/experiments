@@ -239,6 +239,35 @@ class TestHttpParser extends HTTP with FunSuite{
               |</body>
               |</html>""".stripMargin
           )
+      ),
+      ("""|HTTP/1.1 200 OK
+          |cache-control: no-cache, no-store, must-revalidate, pre-check=0, post-check=0
+          |content-length: 2
+          |content-type: application/json;charset=utf-8
+          |date: Tue, 03 Sep 2013 19:10:56 GMT
+          |expires: Tue, 31 Mar 1981 05:00:00 GMT
+          |last-modified: Tue, 03 Sep 2013 19:10:56 GMT
+          |pragma: no-cache
+          |server: tfe
+          |set-cookie: lang=en
+          |set-cookie: guest_id=v1%3A137823545658205848; Domain=.twitter.com; Path=/; Expires=Thu, 03-Sep-2015 19:10:56 UTC
+          |status: 200 OK
+          |x-access-level: read
+          |x-frame-options: SAMEORIGIN
+          |x-rate-limit-limit: 180
+          |x-rate-limit-remaining: 179
+          |x-rate-limit-reset: 1378236356
+          |x-transaction: 7c742b402f213b9d
+          |
+          |AA
+          |""".stripMargin,
+        (Response(
+            status = 200,
+            connection = "close",
+            contentLength = 0,
+            upgrade = false,
+            chunked = false
+          ), "")
       )
     )
 

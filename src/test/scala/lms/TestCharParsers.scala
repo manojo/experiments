@@ -295,7 +295,7 @@ class TestCharParsers extends FileDiffSuite {
     withOutFile(prefix+"or-parser"){
       new CharParsersProg with MyScalaOpsPkgExp with GeneratorOpsExp
        with CharOpsExp with MyIfThenElseExpOpt with StructOpsExpOptCommon
-       with ParseResultOpsExp with FunctionsExp with OptionOpsExp
+       with ParseResultOpsExp with MyFunctionsRecursiveExp with OptionOpsExp
        with MyScalaCompile{self =>
 
         val codegen = new MyScalaCodeGenPkg with ScalaGenGeneratorOps

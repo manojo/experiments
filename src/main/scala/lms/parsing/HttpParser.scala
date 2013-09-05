@@ -150,6 +150,9 @@ trait HttpParser extends TokenParsers with HttpComponents {
   // 0x23 == '#', 0x74 == 'del'
   val urlChar = """[^\x00-\x20#\?\x7F]""".r
 
+  def toLower(c: Rep[Char]): Rep[Char] =
+    (c.toInt | unit(0x20)).toChar
+
   def capitalLetter(in:Rep[Input]) = {
     acceptIf(in, {
       c: Rep[Char] => c >= unit('A') && c <= unit('Z')
@@ -176,9 +179,13 @@ trait HttpParser extends TokenParsers with HttpComponents {
   def status(in: Rep[Input]): Parser[Int] =
     (accept(in, "HTTP/")~decimalNumber(in)~whitespaces(in))~>wholeNumber(in)<~(wildRegex(in)~crlf(in))
 
+  //repToSLower
+  def repToSLower(p: Parser[Char]) : Parser[String] =
+    repFold(p)(unit(""), (res: Rep[String], x: Rep[Char]) => res + toLower(x))
+
   def headerName(in: Rep[Input]): Parser[String] =
-    capitalLetter(in)~repToS(letter(in) | accept(in, unit('-'))) ^^ {
-      x: Rep[(Char, String)] => x._1 + x._2
+    letter(in)~repToSLower(letter(in) | accept(in, unit('-'))) ^^ {
+      x: Rep[(Char, String)] => toLower(x._1) + x._2
     }
 
   //TODO: do filtering based on input. Option[(String,String)]
@@ -204,10 +211,10 @@ trait HttpParser extends TokenParsers with HttpComponents {
     ){
       Response(st = res.status, cL = res.contentLength, conn = prop,
         ch = res.chunked, up = res.upgrade)
-    }else if(hName == unit("Content-Length")){
+    }else if(hName == unit("content-length")){
       Response(st = res.status, cL = prop.toInt, conn = res.connection,
         ch = res.chunked, up = res.upgrade)
-    }else if(hName == unit("Transfer-Encoding") && prop == unit("chunked")){
+    }else if(hName == unit("transfer-encoding") && prop == unit("chunked")){
       Response(st = res.status, cL = res.contentLength, conn = res.connection,
         ch = unit(true), up = res.upgrade)
     }else if(hName == unit("upgrade")){
@@ -317,4 +324,9 @@ trait HttpParser extends TokenParsers with HttpComponents {
       else copyUrl(x._2)(sch = x._1._1)
     }
 
+  def requestStatus(in: Rep[Input]) =
+    requestType(in) ~ (url(in, Url()) <~ crlf(in))
+
+  def request(in: Rep[Input]) =
+    requestStatus(in) ~ (headers(in) <~ crlf(in))
 }
