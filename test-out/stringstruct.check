@@ -1,0 +1,136 @@
+/*****************************************
+  Emitting Generated Code                  
+*******************************************/
+class test1 extends ((Array[Char], Array[Char])=>(Boolean)) {
+def apply(x0:Array[Char], x1:Array[Char]): Boolean = {
+val x2 = x0.length
+val x4 = x1.length
+val x5 = x2 == x4
+val x28 = if (x5) {
+var x6: Int = 0
+var x7: Boolean = true
+val x25 = while ({val x8 = x6
+val x10 = x7
+val x9 = x8 < x2
+val x11 = x9 && x10
+x11}) {
+val x13 = x6
+val x14 = x13 + 0
+val x15 = x0(x14)
+val x16 = x1(x13)
+val x18 = x15 == x16
+val x21 = if (x18) {
+()
+} else {
+x7 = false
+()
+}
+val x22 = x13 + 1
+x6 = x22
+()
+}
+val x26 = x7
+x26
+} else {
+false
+}
+x28
+}
+}
+/*****************************************
+  End of Generated Code                  
+*******************************************/
+compilation: ok
+false
+true
+false
+/*****************************************
+  Emitting Generated Code                  
+*******************************************/
+class test2 extends ((Array[Char])=>(Boolean)) {
+def apply(x58:Array[Char]): Boolean = {
+val x59 = x58.length
+val x61 = Array('a','b')
+val x62 = x61.length
+val x63 = x59 == x62
+val x86 = if (x63) {
+var x64: Int = 0
+var x65: Boolean = true
+val x83 = while ({val x66 = x64
+val x68 = x65
+val x67 = x66 < x59
+val x69 = x67 && x68
+x69}) {
+val x71 = x64
+val x72 = x71 + 0
+val x73 = x58(x72)
+val x74 = x61(x71)
+val x76 = x73 == x74
+val x79 = if (x76) {
+()
+} else {
+x65 = false
+()
+}
+val x80 = x71 + 1
+x64 = x80
+()
+}
+val x84 = x65
+x84
+} else {
+false
+}
+x86
+}
+}
+/*****************************************
+  End of Generated Code                  
+*******************************************/
+compilation: ok
+false
+/*****************************************
+  Emitting Generated Code                  
+*******************************************/
+class test3 extends ((Array[Char])=>(Boolean)) {
+def apply(x114:Array[Char]): Boolean = {
+val x115 = x114.length
+val x117 = Array('h','e','l','l','o')
+val x118 = x117.length
+val x119 = x115 == x118
+val x142 = if (x119) {
+var x120: Int = 0
+var x121: Boolean = true
+val x139 = while ({val x122 = x120
+val x124 = x121
+val x123 = x122 < x115
+val x125 = x123 && x124
+x125}) {
+val x127 = x120
+val x128 = x127 + 0
+val x129 = x114(x128)
+val x130 = x117(x127)
+val x132 = x129 == x130
+val x135 = if (x132) {
+()
+} else {
+x121 = false
+()
+}
+val x136 = x127 + 1
+x120 = x136
+()
+}
+val x140 = x121
+x140
+} else {
+false
+}
+x142
+}
+}
+/*****************************************
+  End of Generated Code                  
+*******************************************/
+compilation: ok
+true
