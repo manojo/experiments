@@ -9,61 +9,49 @@ object HandWrittenParserWrapper{
 
 class DefaultHttpSettings extends HttpParserLL.http_parser_settings{
   def on_message_begin(parser: http_parser) = {
-    println("Just begun parsing!")
+    //println("Just begun parsing!")
     0
   }
 
-  def on_path(parser: http_parser, at: Array[Char], p: Int, length: Int) = {
-    0
-  }
+  def on_path(parser: http_parser, at: Array[Char], p: Int, length: Int) = 0
 
-  def on_query_string(parser: http_parser, at: Array[Char], p: Int, length: Int) = {
-    0
-  }
+  def on_query_string(parser: http_parser, at: Array[Char], p: Int, length: Int) = 0
 
-  def on_url(parser: http_parser, at: Array[Char], p: Int, length: Int) ={
-    //println("got the following url")
-    //for(i <- p to (p+length)){
-    //  print(at(i))
-    //}
-    //println
-    0
-  }
+  def on_url(parser: http_parser, at: Array[Char], p: Int, length: Int) = 0
 
-  def on_fragment(parser: http_parser, at: Array[Char], p: Int, length: Int) = {
-    0
-  }
+  def on_fragment(parser: http_parser, at: Array[Char], p: Int, length: Int) = 0
 
-  def on_header_field(parser: http_parser, at: Array[Char], p: Int, length: Int) = {
-    var s = ""; var i = 0
-    while(i < length){
-      s += at(p+i)
-      i+=1
-    }
-    0
-  }
+  def on_header_field(parser: http_parser, at: Array[Char], p: Int, length: Int) = 0
 
-  def on_header_value(parser: http_parser, at: Array[Char], p: Int, length: Int) = {
-    var s = ""; var i = 0
-    while(i < length){
-      s += at(p+i)
-      i+=1
-    }
-    0
-  }
+  def on_header_value(parser: http_parser, at: Array[Char], p: Int, length: Int) = 0
 
-  def on_headers_complete(parser: http_parser) = {
-    //println("headers done!")
-    0
-  }
+  def on_headers_complete(parser: http_parser) = 0
 
-  def on_body(parser: http_parser, at: Array[Char], p: Int, length: Int) = {
-    //println("body deh!")
-    0
-  }
+  def on_body(parser: http_parser, at: Array[Char], p: Int, length: Int) = 0
 
   def on_message_complete(parser: http_parser) = {
-    println("Message completed!")
+    //println("Message completed!")
+    0
+  }
+}
+
+class StringFoldingSettings extends DefaultHttpSettings{
+
+  override def on_header_field(parser: http_parser, at: Array[Char], p: Int, length: Int) = {
+    var s = ""; var i = 0
+    while(i < length){
+      s += at(p+i)
+      i+=1
+    }
+    0
+  }
+
+  override def on_header_value(parser: http_parser, at: Array[Char], p: Int, length: Int) = {
+    var s = ""; var i = 0
+    while(i < length){
+      s += at(p+i)
+      i+=1
+    }
     0
   }
 }

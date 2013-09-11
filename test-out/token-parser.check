@@ -647,3 +647,251 @@ x1092
 *******************************************/
 compilation: ok
 ParseResultInt(1234,false,4)
+/*****************************************
+  Emitting Generated Code                  
+*******************************************/
+class parseStringStruct extends ((Array[Char])=>(Unit)) {
+def apply(x1161:Array[Char]): Unit = {
+val x1162 = null.asInstanceOf[Anon1680061013]
+var x1164: Anon1680061013 = x1162
+var x1165: Boolean = true
+var x1166: Int = -1
+var x1170: Array[Char] = x1161
+var x1171: Int = 0
+var x1172: Int = 0
+var x1174: Boolean = false
+var x1175: Int = 0
+var x1177: Int = -1
+var x1178: Boolean = true
+var x1179: Int = 0
+val x1188 = x1161.length
+val x1226 = while ({val x1180 = x1178
+val x1181 = x1177
+val x1182 = x1179
+val x1183 = x1181 != x1182
+val x1184 = x1180 && x1183
+x1184}) {
+val x1186 = x1179
+x1177 = x1186
+val x1189 = x1186 >= x1188
+val x1224 = if (x1189) {
+x1178 = false
+()
+} else {
+val x1191 = x1161(x1186)
+val x1192 = x1191 >= 'a'
+val x1193 = x1191 <= 'z'
+val x1194 = x1192 && x1193
+val x1195 = x1191 >= 'A'
+val x1196 = x1191 <= 'Z'
+val x1197 = x1195 && x1196
+val x1198 = x1194 || x1197
+val x1222 = if (x1198) {
+val x1203 = x1170
+val x1204 = x1171
+val x1205 = x1172
+val x1207 = x1174
+val x1208 = x1175
+x1170 = x1161
+x1171 = x1204
+val x1210 = x1205 + 1
+x1172 = x1210
+x1174 = false
+val x1199 = x1186 + 1
+x1175 = x1199
+x1179 = x1199
+()
+} else {
+x1178 = false
+()
+}
+x1222
+}
+x1224
+}
+val x1227 = x1170
+val x1228 = x1171
+val x1229 = x1172
+val x1231 = x1174
+val x1232 = x1175
+val x1230 = new Anon1680061013(x1227,x1228,x1229)
+x1164 = x1230
+x1165 = x1231
+x1166 = x1232
+val x1237 = x1164
+val x1238 = x1165
+val x1239 = x1166
+val x1241 = x1237.start
+val x1242 = x1241+", "
+val x1243 = x1237.length
+val x1244 = x1242+x1243
+val x1245 = println(x1244)
+x1245
+}
+}
+/*****************************************
+  End of Generated Code                  
+*******************************************/
+compilation: ok
+0, 5
+0, 8
+/*****************************************
+  Emitting Generated Code                  
+*******************************************/
+class parseStringStruct2 extends ((Array[Char])=>(Unit)) {
+def apply(x1331:Array[Char]): Unit = {
+val x1162 = null.asInstanceOf[Anon1680061013]
+var x1332: Anon1680061013 = x1162
+var x1333: Boolean = true
+var x1334: Int = -1
+var x1419: Array[Char] = x1331
+var x1420: Int = 0
+var x1421: Int = 0
+var x1423: Boolean = false
+var x1424: Int = 0
+var x1426: Int = -1
+var x1427: Boolean = true
+var x1428: Int = 0
+val x1025 = null.asInstanceOf[Int]
+val x1348 = x1331.length
+val x1380 = {x1342: (Int) => 
+var x1344: Int = x1025
+var x1345: Boolean = true
+var x1346: Int = x1342
+val x1349 = x1342 >= x1348
+val x1374 = if (x1349) {
+x1344 = x1025
+x1345 = true
+x1346 = x1342
+()
+} else {
+val x1350 = x1331(x1342)
+val x1351 = x1350 >= 'a'
+val x1352 = x1350 <= 'z'
+val x1353 = x1351 && x1352
+val x1354 = x1350 >= 'A'
+val x1355 = x1350 <= 'Z'
+val x1356 = x1354 && x1355
+val x1357 = x1353 || x1356
+val x1372 = if (x1357) {
+x1344 = x1342
+x1345 = false
+val x1358 = x1342 + 1
+x1346 = x1358
+()
+} else {
+x1344 = x1025
+x1345 = true
+x1346 = x1342
+()
+}
+x1372
+}
+val x1375 = x1344
+val x1376 = x1345
+val x1377 = x1346
+val x1378 = new ParseResultInt(x1375,x1376,x1377)
+x1378
+}
+val x1416 = {x1336: (Int) => 
+var x1338: Int = x1025
+var x1339: Boolean = true
+var x1340: Int = x1336
+val x1381 = x1380(x1336)
+val x1382 = x1381.empty
+val x1410 = if (x1382) {
+val x1383 = x1336 >= x1348
+val x1402 = if (x1383) {
+x1338 = x1025
+x1339 = true
+x1340 = x1336
+()
+} else {
+val x1384 = x1331(x1336)
+val x1385 = x1384 == '-'
+val x1400 = if (x1385) {
+x1338 = x1336
+x1339 = false
+val x1386 = x1336 + 1
+x1340 = x1386
+()
+} else {
+x1338 = x1025
+x1339 = true
+x1340 = x1336
+()
+}
+x1400
+}
+x1402
+} else {
+val x1404 = x1381.res
+x1338 = x1404
+x1339 = x1382
+val x1407 = x1381.next
+x1340 = x1407
+()
+}
+val x1411 = x1338
+val x1412 = x1339
+val x1413 = x1340
+val x1414 = new ParseResultInt(x1411,x1412,x1413)
+x1414
+}
+val x1461 = while ({val x1429 = x1427
+val x1430 = x1426
+val x1431 = x1428
+val x1432 = x1430 != x1431
+val x1433 = x1429 && x1432
+x1433}) {
+val x1435 = x1428
+x1426 = x1435
+val x1437 = x1416(x1435)
+val x1438 = x1437.empty
+val x1459 = if (x1438) {
+x1427 = false
+()
+} else {
+val x1441 = x1419
+val x1442 = x1420
+val x1443 = x1421
+val x1445 = x1423
+val x1446 = x1424
+x1419 = x1331
+x1420 = x1442
+val x1448 = x1443 + 1
+x1421 = x1448
+x1423 = false
+val x1450 = x1437.next
+x1424 = x1450
+x1428 = x1450
+()
+}
+x1459
+}
+val x1462 = x1419
+val x1463 = x1420
+val x1464 = x1421
+val x1466 = x1423
+val x1467 = x1424
+val x1465 = new Anon1680061013(x1462,x1463,x1464)
+x1332 = x1465
+x1333 = x1466
+x1334 = x1467
+val x1472 = x1332
+val x1473 = x1333
+val x1474 = x1334
+val x1476 = x1472.start
+val x1477 = x1476+", "
+val x1478 = x1472.length
+val x1479 = x1477+x1478
+val x1480 = println(x1479)
+x1480
+}
+}
+/*****************************************
+  End of Generated Code                  
+*******************************************/
+compilation: ok
+0, 14
+0, 11

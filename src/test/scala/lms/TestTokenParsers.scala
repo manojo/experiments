@@ -43,6 +43,22 @@ trait TokenParsersProg extends TokenParsers{
     println(s)
   }
 
+  //stringStruct
+  def parseStringStruct(in: Rep[Array[Char]]): Rep[Unit] = {
+    var s = Failure[StringStruct](unit(-1))
+    val parser = stringStruct(in, letterIdx(in)).apply(unit(0))
+    parser{x => s = x}
+    println(readVar(s).get.start + unit(", ") + readVar(s).get.length)
+  }
+
+  //stringStruct
+  def parseStringStruct2(in: Rep[Array[Char]]): Rep[Unit] = {
+    var s = Failure[StringStruct](unit(-1))
+    val parser = stringStruct(in, letterIdx(in) | acceptIdx(in, unit('-'))).apply(unit(0))
+    parser{x => s = x}
+    println(readVar(s).get.start + unit(", ") + readVar(s).get.length)
+  }
+
 }
 
 class TestTokenParsers extends FileDiffSuite {
@@ -83,8 +99,17 @@ class TestTokenParsers extends FileDiffSuite {
         val testc5 = compile(parseWholeNumber)
         testc5("1234a".toArray)
 
-      }
+        codegen.emitSource(parseStringStruct _ , "parseStringStruct", new java.io.PrintWriter(System.out))
+        val testcStringStruct = compile(parseStringStruct)
+        testcStringStruct("hello21".toArray)
+        testcStringStruct("helloasd".toArray)
 
+        codegen.emitSource(parseStringStruct2 _ , "parseStringStruct2", new java.io.PrintWriter(System.out))
+        val testcStringStruct2 = compile(parseStringStruct2)
+        testcStringStruct2("content-length".toArray)
+        testcStringStruct2("passing-ast".toArray)
+
+      }
     }
 
     assertFileEqualsCheck(prefix+"token-parser")

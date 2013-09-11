@@ -70,7 +70,7 @@ trait CharParsersProg extends CharParsers /*TokenParsers*/{
   //digit to int
   def test8(in: Rep[Array[Char]]): Rep[Unit] = {
     var s = Failure[Int](unit(-1))
-    val parser = digitI(in).apply(unit(0))
+    val parser = digit2Int(in).apply(unit(0))
     parser{x: Rep[ParseResult[Int]] => s = x}
     println(s)
   }
@@ -116,7 +116,7 @@ trait CharParsersProg extends CharParsers /*TokenParsers*/{
   //repFold
   def test11(in: Rep[Array[Char]]): Rep[Unit] = {
     var s = Failure[Int](unit(-1))
-    val parser = repFold(digitI(in))(unit(0), (x: Rep[Int], y :Rep[Int]) => x + y) .apply(unit(0))
+    val parser = repFold(digit2Int(in))(unit(0), (x: Rep[Int], y :Rep[Int]) => x + y) .apply(unit(0))
     parser{x: Rep[ParseResult[Int]] => s = x}
     println(s)
   }
@@ -214,7 +214,7 @@ class TestCharParsers extends FileDiffSuite {
         val testc7 = compile(test7)
         testc7("hello".toArray)
 
-        //digitI
+        //digit2Int
         codegen.emitSource(test8 _ , "test8", new java.io.PrintWriter(System.out))
         val testc8 = compile(test8)
         testc8("1ello".toArray)

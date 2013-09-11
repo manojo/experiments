@@ -68,9 +68,38 @@ class HttpParseBenchmark extends PerformanceTest.Regression
     }
   }
 
-//hand written
+//staged parser bis
+  val stagedParserBis = new ResponseParseBis
+
+  performance of "RespAndMessageParserBis" in {
+    measure method "parse" config(
+      //exec.minWarmupRuns -> 1,
+      //exec.maxWarmupRuns -> 2,
+      //exec.benchRuns -> 15
+      //exec.independentSamples -> 1
+    ) in {
+      using(messages.cached) in {m =>
+        stagedParserBis.apply(m)
+      }
+    }
+  }
+
+//hand written, folding
 
   val handWrittenParser = HandWrittenParserWrapper.getParser
+
+  performance of "HTTPParserLL" in {
+    measure method "parseFoldString" config(
+      //exec.minWarmupRuns -> 1,
+      //exec.maxWarmupRuns -> 2,
+      //exec.benchRuns -> 15
+      //exec.independentSamples -> 1
+    ) in {
+      using(messages.cached) in {m =>
+        HandWrittenParserWrapper.execute(handWrittenParser, new StringFoldingSettings, m, 0, m.length)
+      }
+    }
+  }
 
   performance of "HTTPParserLL" in {
     measure method "parse" config(

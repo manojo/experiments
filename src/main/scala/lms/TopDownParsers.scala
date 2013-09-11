@@ -185,8 +185,12 @@ trait CharParsers extends TopDownParsers with CharOps{
     c >= unit('0') && c <= unit('9')
 
   def letter(in:Rep[Input]): Parser[Char] = acceptIf(in, (c: Rep[Char]) => isLetter(c))
+  def letterIdx(in:Rep[Input]) = acceptIfIdx(in, (c: Rep[Char]) => isLetter(c))
+
+
   def digit(in: Rep[Input]): Parser[Char] = acceptIf(in, (c: Rep[Char]) => isDigit(c))
-  def digitI(in: Rep[Input]): Parser[Int] = digit(in) ^^ {c: Rep[Char] => (c - unit('0')).toInt}
+  def digit2Int(in: Rep[Input]): Parser[Int] = digit(in) ^^ {c: Rep[Char] => (c - unit('0')).toInt}
+  def digitIdx(in: Rep[Input]) = acceptIfIdx(in, (c: Rep[Char]) => isDigit(c))
 
   def accept(in:Rep[Input], e: Rep[Elem]): Parser[Char] = acceptIf(in, (c: Rep[Char]) => c == e)
 
@@ -200,10 +204,25 @@ trait CharParsers extends TopDownParsers with CharOps{
     if(i >= in.length) elGen(Failure[Char](i))
     else elGen(Success[Char](in(i), i+unit(1)))
   }
+
+  //acceptIf, returning the index of the element found
+  def acceptIdx(in:Rep[Input], e: Rep[Elem]): Parser[Int] = acceptIfIdx(in, (c: Rep[Char]) => c == e)
+
+  def acceptIfIdx(in:Rep[Input], p: Rep[Elem] => Rep[Boolean]) = Parser[Int]{ i =>
+    if(i >= in.length) elGen(Failure[Int](i))
+    else if(p(in(i))) elGen(Success(i, i+unit(1)))
+    else elGen(Failure[Int](i))
+  }
+
+  def acceptAllIdx(in: Rep[Input]) = Parser[Int]{i =>
+    if(i >= in.length) elGen(Failure[Int](i))
+    else elGen(Success[Int](i, i+unit(1)))
+  }
+
 }
 
 
-trait TokenParsers extends TopDownParsers with CharParsers{
+trait TokenParsers extends TopDownParsers with CharParsers with StringStructOps{
 
   def processIdent(s: Rep[String]) = if(s == unit("true") || s == unit("null") || s == unit("false")) unit("Keyword(") + s + unit(")")
                                      else unit("NoToken")
@@ -217,7 +236,7 @@ trait TokenParsers extends TopDownParsers with CharParsers{
   }
 
   def wholeNumber(in: Rep[Input]): Parser[Int] =
-    repFold(digitI(in))(unit(0), (res:Rep[Int], y: Rep[Int]) => res * unit(10) + y)
+    repFold(digit2Int(in))(unit(0), (res:Rep[Int], y: Rep[Int]) => res * unit(10) + y)
 
   def stringLit(in:Rep[Input]) : Parser[String] =
     accept(in, unit('\"')) ~> repToS( acceptIf(in, (x:Rep[Char]) => x != unit('\"'))) <~ accept(in, unit('\"')) ^^ {
@@ -229,6 +248,15 @@ trait TokenParsers extends TopDownParsers with CharParsers{
 
   def repToS(p: Parser[Char]) : Parser[String] =
     repFold(p)(unit(""), (res: Rep[String], x: Rep[Char]) => res + x)
+
+  def repToS_f(p: Parser[Char]) : Parser[String] = {
+    repFold(p)(unit(""), (res: Rep[String], x: Rep[Char]) => res)
+  }
+
+  //TODO: ensure that we have an Idx parser here, and not any
+  //Int parser
+//  def repToSStruct(p: Parser[Int]) : Parser[StringStruct] =
+//    repFold(p)(String(, (res: Rep[String], x: Rep[Char]) => res + x)
 
   def word(in:Rep[Input]) : Parser[String] = repToS(letter(in))
 
@@ -247,17 +275,6 @@ trait TokenParsers extends TopDownParsers with CharParsers{
   def stringLit
   */
 
-  /* The string itself is static, it's not a Rep[String] */
-
-  /*val i = 0
-  while(i <- s.length){
-    if(in(j) == s(i)){
-      //good
-    }else{
-      //break
-    }
-  }*/
-
   def accept(in: Rep[Input], cs: List[Rep[Char]]): Parser[String] = cs match {
     case Nil => Parser{i => elGen(Success(unit(""), i))}
     case x::xs => accept(in, x) ~ accept(in, xs) ^^ {
@@ -266,4 +283,31 @@ trait TokenParsers extends TopDownParsers with CharParsers{
   }
 
   def accept(in: Rep[Input], s: String): Parser[String] = accept(in, s.toList.map{c => unit(c)})
+
+  /* specialized rep for retrieving a stringstruct
+   * cannot be implemented using a rep because the zero element
+   * does not have any notion of the start position
+   */
+  def stringStruct(in: Rep[Input], p : Parser[Int]) = Parser[StringStruct]{ pos =>
+    Generator{ g =>
+      var s = Success[Int](unit(0), pos)
+
+      var old = unit(-1)
+      var continue = unit(true)
+      var cur = pos
+
+      while(continue && old != cur){
+        old = cur
+        p(cur).apply{ x: Rep[ParseResult[Int]] =>
+          if(x.isEmpty) continue = unit(false)
+          else{
+            s = Success(readVar(s).get + unit(1), x.next)
+            cur = x.next
+          }
+        }
+      }
+
+      g(Success[StringStruct](String(in, pos, readVar(s).get), readVar(s).next))
+    }
+  }
 }

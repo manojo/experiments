@@ -50,6 +50,15 @@ with BooleanOps with MiscOps with LiftVariables{
     l == tmp
   }
 
+  def infix_mkString(st: Rep[StringStruct])(implicit pos: SourceContext): Rep[String] = {
+    var s = unit(""); var i = unit(0)
+    while(i < st.length){
+      s = string_plus(s, st.input(st.start + readVar(i)))
+      i = i + unit(1)
+    }
+    s
+  }
+
 /*
   def infix_unary_toString(st: Rep[StringStruct])(implicit pos: SourceContext) = {
     var s = unit("")

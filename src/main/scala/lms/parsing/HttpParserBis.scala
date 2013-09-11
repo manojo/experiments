@@ -8,139 +8,12 @@ import java.io.PrintWriter
 import java.io.StringWriter
 import java.io.FileOutputStream
 
-trait HttpComponents extends lms.StructOps with SetOps{
+trait HttpComponentsBis
 
-  type Response = Record {
-    val status: Int
-    val contentLength: Int
-    val connection: String
-    val chunked: Boolean
-    val upgrade: Boolean
-
-  }
-
-  def Response(st: Rep[Int] = unit(200), cL: Rep[Int] = unit(0),
-               conn: Rep[String] = unit("close"), ch: Rep[Boolean] = unit(false),
-               up: Rep[Boolean] = unit(false)) : Rep[Response] = new Record{
-    val status = st
-    val contentLength = cL
-    val connection = conn
-    val chunked = ch
-    val upgrade = up
-  }
-
-  type Url = Record {
-    val schema: String
-    val hostName: String
-    val path: String
-    val queryString: String
-    val fragment: String
-    val port: Int
-  }
-
-  def Url( sch: Rep[String] = unit(""), hName: Rep[String] = unit(""),
-           pth: Rep[String] = unit(""), qString: Rep[String] = unit(""),
-           frag: Rep[String] = unit(""), prt: Rep[Int] = unit(80)
-  ) : Rep[Url] = new Record{
-    val schema = sch
-    val hostName = hName
-    val path = pth
-    val queryString = qString
-    val fragment = frag
-    val port = prt
-  }
-
-  def copyUrl(url: Rep[Url])(sch: Rep[String] = url.schema, hName: Rep[String] = url.hostName,
-           pth: Rep[String] = url.path, qString: Rep[String] = url.queryString,
-           frag: Rep[String] = url.fragment, prt: Rep[Int] = url.port
-  ) = Url(sch, hName, pth, qString, frag, prt)
-
-//  def copy(resp: Rep[Response],)
-
-  type Request = Record {
-    val requestType: String
-    val uri: Url
-    val contentLength: Int
-    val connection: String
-    val chunked: Boolean
-    val upgrade: Boolean
-  }
-
-  def Request(rType: Rep[String] = unit("get"), url: Rep[Url] = Url(),
-    cL: Rep[Int] = unit(0), conn: Rep[String] = unit("close"),
-    ch: Rep[Boolean] = unit(false), up: Rep[Boolean] = unit(false)
-  ) : Rep[Request] = new Record{
-   val requestType = rType
-   val uri = url
-   val contentLength = cL
-   val connection = conn
-   val chunked = ch
-   val upgrade = up
-  }
-
-  def copyRequest(req: Rep[Request])(rType: Rep[String] = req.requestType, url: Rep[Url] = req.uri,
-           cL: Rep[Int] = req.contentLength, conn: Rep[String] = req.connection,
-           ch: Rep[Boolean] = req.chunked, up: Rep[Boolean] = req.upgrade
-  ) = Request(rType, url, cL, conn, ch, up)
-
-  //a def because we want to create the node only when required
-  def requestTypes = Set(
-    unit("connect"),
-    unit("copy"),
-    unit("checkout"),
-    unit("delete"),
-    unit("get"),
-    unit("head"),
-    unit("lock"),
-    unit("merge"),
-    unit("mkactivity"),
-    unit("mkcol"),
-    unit("move"),
-    unit("msearch"),
-    unit("notify"),
-    unit("options"),
-    unit("post"),
-    unit("propfind"),
-    unit("proppatch"),
-    unit("put"),
-    unit("report"),
-    unit("subscribe"),
-    unit("trace"),
-    unit("unlock"),
-    unit("unsubscribe")
-  )
-
-  //code duplication oO
-  val requestTypesUnRepped = scala.List(
-    "connect",
-    "copy",
-    "checkout",
-    "delete",
-    "get",
-    "head",
-    "lock",
-    "merge",
-    "mkactivity",
-    "mkcol",
-    "move",
-    "msearch",
-    "notify",
-    "options",
-    "post",
-    "propfind",
-    "proppatch",
-    "put",
-    "report",
-    "subscribe",
-    "trace",
-    "unlock",
-    "unsubscribe"
-  )
-
-}
-
-
-trait HttpParser extends TokenParsers with HttpComponents{
+/**
+ * Bis uses StringStructs instead of strings
+ */
+trait HttpParserBis extends TokenParsers with HttpComponents with StringStructOps{
 
   def toLower(c: Rep[Char]): Rep[Char] =
     (c.toInt | unit(0x20)).toChar
@@ -153,17 +26,17 @@ trait HttpParser extends TokenParsers with HttpComponents{
 
   //local whitespaces
   override def whitespaces(in: Rep[Input]) : Parser[String] =
-    repToS(accept(in, unit(' '))) ^^^ {unit("")}
+    repToS_f(accept(in, unit(' ')))// ^^^ {unit("")}
 
   //just keep the major and minor disctinction
   def decimalNumber(in: Rep[Input]): Parser[(Int,Int)] =
     wholeNumber(in)~(accept(in, unit('.'))~>wholeNumber(in))
 
-  def wildChar(in:Rep[Input]) = acceptIf(in, {
+  def wildChar(in:Rep[Input]) = acceptIfIdx(in, {
     x: Rep[Char] => x != unit('\n')
   })
 
-  def wildRegex(in: Rep[Input]) = repToS(wildChar(in))
+  def wildRegex(in: Rep[Input]) = stringStruct(in,wildChar(in))
 
   //TODO: ignoring \r for now
   def crlf(in:Rep[Input]) = accept(in, unit('\n'))
@@ -171,20 +44,20 @@ trait HttpParser extends TokenParsers with HttpComponents{
   def status(in: Rep[Input]): Parser[Int] =
     (accept(in, "HTTP/")~decimalNumber(in)~whitespaces(in))~>wholeNumber(in)<~(wildRegex(in)~crlf(in))
 
-  def repToSLower(p: Parser[Char]) : Parser[String] =
-    repFold(p)(unit(""), (res: Rep[String], x: Rep[Char]) => res + toLower(x))
+//  def repToSLower(p: Parser[Char]) : Parser[String] =
+//    repFold(p)(unit(""), (res: Rep[String], x: Rep[Char]) => res + toLower(x))
 
-  def headerName(in: Rep[Input]): Parser[String] =
-    letter(in)~repToSLower(letter(in) | accept(in, unit('-'))) ^^ {
-      x: Rep[(Char, String)] => toLower(x._1) + x._2
+  def headerName(in: Rep[Input]): Parser[StringStruct] =
+    letterIdx(in)~stringStruct(in, letterIdx(in) | acceptIdx(in, unit('-'))) ^^ {
+      x: Rep[(Int, StringStruct)] => String(in, st = x._1, len = x._2.length + unit(1))
     }
 
   //TODO: do filtering based on input. Option[(String,String)]
-  def header(in: Rep[Input]): Parser[(String, String)] =
+  def header(in: Rep[Input]): Parser[(StringStruct, StringStruct)] =
     (headerName(in)<~(whitespaces(in)~accept(in,":")))~(whitespaces(in)~>wildRegex(in)<~crlf(in))
 
-  def headers(in: Rep[Input]) = repFold(header(in))(Response(),
-    (res: Rep[Response], hds: Rep[(String,String)]) => collect(res, hds._1, hds._2)
+  def headers(in: Rep[Input]): Parser[Response] = repFold(header(in))(Response(),
+    (res: Rep[Response], hds: Rep[(StringStruct,StringStruct)]) => collect(res, hds._1, hds._2)
   )
 
   def response(in: Rep[Input]) = status(in)~headers(in)<~crlf(in) ^^{
@@ -196,33 +69,32 @@ trait HttpParser extends TokenParsers with HttpComponents{
   def body(in:Rep[Input], n:Rep[Int]) =
     repNFold(acceptAll(in), n)(unit(""), (res: Rep[String], c: Rep[Char]) => res + c)
 
-  def collect(res: Rep[Response], hName: Rep[String], prop: Rep[String]) : Rep[Response] =
-    if((hName == unit("connection") || hName == unit("proxy-connection"))
-      && (prop == unit("keep-alive") || prop == unit("close"))
+  def collect(res: Rep[Response], hName: Rep[StringStruct], prop: Rep[StringStruct]) : Rep[Response] =
+    if((hName == "connection" || hName == "proxy-connection")
+      && (prop == "keep-alive" || prop == "close")
     ){
-      Response(st = res.status, cL = res.contentLength, conn = prop,
+      Response(st = res.status, cL = res.contentLength, conn = prop.mkString,
         ch = res.chunked, up = res.upgrade)
-    }else if(hName == unit("content-length")){
-      Response(st = res.status, cL = prop.toInt, conn = res.connection,
+    }else if(hName == "content-length"){
+      Response(st = res.status, cL = prop.mkString.toInt, conn = res.connection,
         ch = res.chunked, up = res.upgrade)
-    }else if(hName == unit("transfer-encoding") && prop == unit("chunked")){
+    }else if(hName == "transfer-encoding" && prop == "chunked"){
       Response(st = res.status, cL = res.contentLength, conn = res.connection,
         ch = unit(true), up = res.upgrade)
-    }else if(hName == unit("upgrade")){
+    }else if(hName == "upgrade"){
       Response(st = res.status, cL = res.contentLength, conn = res.connection,
         ch = res.chunked, up = unit(true))
-      ///*res.upgrade = unit(true);*/ res
     }else {
       res
     }
-
+/*
   def respAndMessage(in: Rep[Input]): Parser[(Response,String)] = response(in) >> { rsp =>
     body(in, rsp.contentLength) ^^ {txt: Rep[String] => make_tuple2(rsp, txt)}
   }
 
   //TODO: chunked parser
 
-/*
+
     if(rsp.contentLength == 0)  <~ crlf(in)
       {
         if(rsp.chunked) chunkedParser
