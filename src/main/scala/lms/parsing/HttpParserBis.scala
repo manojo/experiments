@@ -8,8 +8,6 @@ import java.io.PrintWriter
 import java.io.StringWriter
 import java.io.FileOutputStream
 
-trait HttpComponentsBis
-
 /**
  * Bis uses StringStructs instead of strings
  */
@@ -61,7 +59,7 @@ trait HttpParserBis extends TokenParsers with HttpComponents with StringStructOp
   )
 
   def response(in: Rep[Input]) = status(in)~headers(in)<~crlf(in) ^^{
-    x: Rep[(Int, Response)] => Response(st = x._1, cL = x._2.contentLength, conn = x._2.connection,
+    x => Response(st = x._1, cL = x._2.contentLength, conn = x._2.connection,
         ch = x._2.chunked, up = x._2.upgrade)
   }
 

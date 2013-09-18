@@ -431,8 +431,41 @@ trait ScalaGenStructOps extends ScalaGenBase with BaseGenStructOps {
 
 }
 
-/*trait CGenStruct extends CGenBase with BaseGenStruct
-trait CudaGenStruct extends CudaGenBase with BaseGenStruct
+trait CGenStructOps extends CGenBase with BaseGenStructOps{
+  val IR: StructOpsExp
+  import IR._
+
+  override def emitNode(sym: Sym[Any], rhs: Def[Any]) = rhs match {
+    case Struct(tag, elems) =>
+      registerStruct(structName(sym.tp), elems)
+      emitValDef(sym, "{" + elems.map(e => quote(e._2)).mkString(",") + "}")
+    case FieldApply(struct, index) =>
+      emitValDef(sym, quote(struct) + "." + index)
+    case FieldUpdate(struct, index, rhs) =>
+      emitValDef(sym, quote(struct) + "." + index + " = " + quote(rhs))
+    case _ => super.emitNode(sym, rhs)
+  }
+
+  override def remap[A](m: Manifest[A]) = m match {
+    case s if s <:< manifest[Record] => structName(m)
+    case _ => super.remap(m)
+  }
+
+  override def emitDataStructures(stream: PrintWriter) {
+    for ((name, elems) <- encounteredStructs) {
+      stream.println()
+      stream.println("typedef struct{")
+      for(e <- elems){
+        stream.println(remap(e._2) + " " + e._1+";")
+      }
+      stream.println("} "+ name + ";")
+    }
+    stream.flush()
+    super.emitDataStructures(stream)
+  }
+
+}
+/*trait CudaGenStruct extends CudaGenBase with BaseGenStruct
 trait OpenCLGenStruct extends OpenCLGenBase with BaseGenStruct
 
 trait CudaGenFatStruct extends CudaGenStruct with BaseGenFatStruct

@@ -33,3 +33,14 @@ trait ScalaGenCharOps extends ScalaGenBase {
     case _ => super.emitNode(sym, rhs)
   }
 }
+
+trait CGenCharOps extends CGenBase {
+  val IR: CharOpsExp
+  import IR._
+
+  override def emitNode(sym: Sym[Any], rhs: Def[Any]) = rhs match {
+    case CharToInt(c) => emitValDef(sym, "(int)%s".format(quote(c)))
+    case IntToChar(i) => emitValDef(sym, "(char)%s".format(quote(i)))
+    case _ => super.emitNode(sym, rhs)
+  }
+}

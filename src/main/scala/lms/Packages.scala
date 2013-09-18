@@ -22,6 +22,15 @@ trait MyScalaCodeGenPkg extends ScalaGenImplicitOps with ScalaGenNumericOps with
     with ScalaGenSeqOps with ScalaGenDSLOps with ScalaGenMathOps with ScalaGenCastingOps with ScalaGenSetOps
     with ScalaGenObjectOps with ScalaGenArrayBufferOps
   { val IR: MyScalaOpsPkgExp  }
+
+trait MyCCodeGenPkg extends CGenDSLOps with CGenImplicitOps with CGenNumericOps with CGenFractionalOps with CGenOrderingOps
+    with CGenStringOps with CGenRangeOps with CGenIOOps with CGenArrayOps with CGenBooleanOps
+    with CGenPrimitiveOps with CGenMiscOps with CGenFunctions with CGenEqual with CGenIfThenElse
+    with CGenVariables with CGenWhile with CGenMyTupleOps
+    with CGenMathOps with CGenCastingOps with CGenSetOps with CGenArrayBufferOps
+    { val IR: MyScalaOpsPkgExp  }
+//No SeqOps and no ListOps
+
 /*
 trait Package extends ScalaOpsPkg with MyRangeOps with MyListOps /*with LiftScala*/ {
 

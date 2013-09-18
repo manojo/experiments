@@ -85,3 +85,4 @@ trait MyTupleGenBase extends GenericCodegen with lms.BaseGenStructOps {
 }
 
 trait ScalaGenMyTupleOps extends ScalaGenBase with MyTupleGenBase with lms.ScalaGenStructOps { val IR: MyTupleOpsExp }
+trait CGenMyTupleOps extends CGenBase with MyTupleGenBase with lms.CGenStructOps { val IR: MyTupleOpsExp }

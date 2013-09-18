@@ -59,7 +59,7 @@ trait OptionOpsExp extends OptionOps with IfThenElseExp with BooleanOpsExp with 
     struct(classTag[Option[T]], "value" -> rep_asinstanceof(unit(null), manifest[Null], manifest[T]), "defined" -> unit(false))
 }
 
-trait OptionGenBase extends GenericCodegen with BaseGenStructOps with ScalaGenCastingOps{
+trait OptionGenBase extends GenericCodegen with BaseGenStructOps{
   val IR: OptionOpsExp
 
   override def remap[A](m: Manifest[A]) = m.erasure.getSimpleName match {
@@ -68,4 +68,5 @@ trait OptionGenBase extends GenericCodegen with BaseGenStructOps with ScalaGenCa
   }
 }
 
-trait ScalaGenOptionOps extends ScalaGenBase with OptionGenBase with ScalaGenStructOps { val IR: OptionOpsExp }
+trait ScalaGenOptionOps extends ScalaGenBase with OptionGenBase with ScalaGenStructOps with ScalaGenCastingOps{ val IR: OptionOpsExp }
+trait CGenOptionOps extends CGenBase with OptionGenBase with CGenStructOps with CGenCastingOps{ val IR: OptionOpsExp }
