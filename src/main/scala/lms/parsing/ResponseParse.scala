@@ -26,7 +26,11 @@ object TestResponse{
        |AA
        |""".stripMargin
 
-    new ResponseParse().apply(resp.toArray)
+    for(i <- 1 to 25){
+      val now = System.nanoTime
+      new ResponseParse().apply(resp.toArray)
+      println("time taken: " + (System.nanoTime - now))
+    }
   }
 }
 

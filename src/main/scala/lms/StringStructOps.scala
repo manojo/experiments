@@ -4,7 +4,7 @@ import scala.reflect.SourceContext
 
 trait StringStructOps extends StructOps with While with IfThenElse
 with NumericOps with ArrayOps with Equal with StringOps with OrderingOps
-with BooleanOps with MiscOps with LiftVariables{
+with BooleanOps with MiscOps with StaticData with LiftVariables{
   type StringStruct = Record{
     val input: Array[Char]
     val start: Int
@@ -44,10 +44,10 @@ with BooleanOps with MiscOps with LiftVariables{
 
   def __equal(l: Rep[StringStruct], r: String)(implicit pos: SourceContext): Rep[Boolean] = {
     //TODO: lms.Array.apply not working
-    val tmp: Rep[Array[Char]] = array_obj_fromseq{
-      r.toSeq.map{x: Char => unit(x)}
-    }
-    l == tmp
+    //val tmp: Rep[Array[Char]] = array_obj_fromseq{
+    //  staticData(r.toArray)
+    //}
+    l == staticData(r.toArray)
   }
 
   def infix_mkString(st: Rep[StringStruct])(implicit pos: SourceContext): Rep[String] = {
@@ -70,10 +70,10 @@ with BooleanOps with MiscOps with LiftVariables{
 
 trait StringStructOpsExp extends StringStructOps with StructOpsExpOptCommon with WhileExp with IfThenElseExpOpt
 with BooleanOpsExp with NumericOpsExp with ArrayOpsExp with EqualExpOpt with StringOpsExp with OrderingOpsExp
-with MiscOpsExp with VariablesExp
+with MiscOpsExp with VariablesExp with StaticDataExp
 
 trait ScalaGenStringStructOps extends ScalaGenBase with ScalaGenStructOps with ScalaGenWhile with ScalaGenIfThenElse
 with ScalaGenNumericOps with ScalaGenArrayOps with ScalaGenEqual with ScalaGenStringOps with ScalaGenOrderingOps
-with ScalaGenBooleanOps with ScalaGenMiscOps with ScalaGenVariables{
+with ScalaGenBooleanOps with ScalaGenMiscOps with ScalaGenVariables with ScalaGenStaticData{
   val IR: StringStructOpsExp
 }

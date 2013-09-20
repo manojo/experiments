@@ -1,57 +1,10 @@
-package lms.parsing
+/*package lms.parsing
 
-object TestResponseBis{
-
-  val x777 = Array('c','o','n','n','e','c','t','i','o','n')
-  val x778 = x777.length
-  val x803 = Array('p','r','o','x','y','-','c','o','n','n','e','c','t','i','o','n')
-  val x804 = x803.length
-  val x830 = Array('k','e','e','p','-','a','l','i','v','e')
-  val x831 = x830.length
-  val x856 = Array('c','l','o','s','e')
-  val x857 = x856.length
-  val x902 = Array('c','o','n','t','e','n','t','-','l','e','n','g','t','h')
-  val x903 = x902.length
-  val x947 = Array('t','r','a','n','s','f','e','r','-','e','n','c','o','d','i','n','g')
-  val x948 = x947.length
-  val x973 = Array('c','h','u','n','k','e','d')
-  val x974 = x973.length
-  val x1001 = Array('u','p','g','r','a','d','e')
-  val x1002 = x1001.length
-
-  def main(args: Array[String]){
-
-    val resp =
-    """|HTTP/1.1 200 OK
-       |cache-control: no-cache, no-store, must-revalidate, pre-check=0, post-check=0
-       |content-length: 2
-       |content-type: application/json;charset=utf-8
-       |date: Tue, 03 Sep 2013 19:10:56 GMT
-       |expires: Tue, 31 Mar 1981 05:00:00 GMT
-       |last-modified: Tue, 03 Sep 2013 19:10:56 GMT
-       |pragma: no-cache
-       |server: tfe
-       |set-cookie: lang=en
-       |set-cookie: guest_id=v1%3A137823545658205848; Domain=.twitter.com; Path=/; Expires=Thu, 03-Sep-2015 19:10:56 UTC
-       |status: 200 OK
-       |x-access-level: read
-       |x-frame-options: SAMEORIGIN
-       |x-rate-limit-limit: 180
-       |x-rate-limit-remaining: 179
-       |x-rate-limit-reset: 1378236356
-       |x-transaction: 7c742b402f213b9d
-       |
-       |AA
-       |""".stripMargin
-
-    new ResponseParseBis().apply(resp.toArray)
-  }
-}
 /*****************************************
   Emitting Generated Code
 *******************************************/
-class ResponseParseBis extends ((Array[Char])=>(Unit)) with Serializable{
-  import TestResponseBis._
+class ResponseParseStatic(px777:Array[Char],px803:Array[Char],px830:Array[Char],px856:Array[Char],px902:Array[Char],px947:Array[Char],px973:Array[Char],px1001:Array[Char]) extends ((Array[Char])=>(Unit)) with Serializable{
+import TestResponseBis._
 def apply(x0:Array[Char]): Unit = {
 val x1 = null.asInstanceOf[Anon1323431030]
 var x3: Anon1323431030 = x1
@@ -515,6 +468,22 @@ val x85 = x12
 val x86 = new ParseResultInt(x83,x84,x85)
 x86
 }
+val x777 = px777 // static data: Array(c,o,n,n,e,c,t,i,o,n)
+val x778 = a1l//x777.length
+val x803 = px803 // static data: Array(p,r,o,x,y,-,c,o,n,n,e,c,t,i,o,n)
+val x804 = a2l//x803.length
+val x830 = px830 // static data: Array(k,e,e,p,-,a,l,i,v,e)
+val x831 = a3l//x830.length
+val x856 = px856 // static data: Array(c,l,o,s,e)
+val x857 = a4l//x856.length
+val x902 = px902 // static data: Array(c,o,n,t,e,n,t,-,l,e,n,g,t,h)
+val x903 = a5l//x902.length
+val x947 = px947 // static data: Array(t,r,a,n,s,f,e,r,-,e,n,c,o,d,i,n,g)
+val x948 = a6l//x947.length
+val x973 = px973 // static data: Array(c,h,u,n,k,e,d)
+val x974 = a7l//x973.length
+val x1001 = px1001 // static data: Array(u,p,g,r,a,d,e)
+val x1002 = a8l//x1001.length
 val x1079 = while ({val x515 = x513
 val x516 = x512
 val x517 = x514
@@ -1377,3 +1346,4 @@ val x1199 = new ParseResultAnon1323431030(x1196,x1197,x1198)
 /*****************************************
   End of Generated Code
 *******************************************/
+*/

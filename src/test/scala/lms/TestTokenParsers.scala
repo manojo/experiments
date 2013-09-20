@@ -69,13 +69,13 @@ class TestTokenParsers extends FileDiffSuite {
     withOutFile(prefix+"token-parser"){
        new TokenParsersProg with MyScalaOpsPkgExp with GeneratorOpsExp
         with CharOpsExp with MyIfThenElseExpOpt with StructOpsExpOptCommon
-        with ParseResultOpsExp with OptionOpsExp with MyScalaCompile{self =>
+        with ParseResultOpsExp with OptionOpsExp with StringStructOpsExp with MyScalaCompile{self =>
 
         //dumpGeneratedCode = true
 
         val codegen = new MyScalaCodeGenPkg with ScalaGenGeneratorOps
          with ScalaGenCharOps with ScalaGenParseResultOps
-         with ScalaGenStructOps with ScalaGenOptionOps{
+         with ScalaGenStructOps with ScalaGenOptionOps with ScalaGenStringStructOps{
           val IR: self.type = self
         }
 

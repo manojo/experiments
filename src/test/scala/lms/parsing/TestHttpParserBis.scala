@@ -70,11 +70,12 @@ class TestHttpParserBis extends FileDiffSuite {
     withOutFile(prefix+"resp-parser-bis"){
       new HttpParserProgBis with MyScalaOpsPkgExp with GeneratorOpsExp
         with CharOpsExp with MyIfThenElseExpOpt with StructOpsExpOptCommon
-        with ParseResultOpsExp with OptionOpsExp with MyScalaCompile{self =>
+        with ParseResultOpsExp with OptionOpsExp with StringStructOpsExp
+        with MyScalaCompile{self =>
 
         val codegen = new MyScalaCodeGenPkg with ScalaGenGeneratorOps
          with ScalaGenCharOps with ScalaGenParseResultOps with ScalaGenStructOps
-         with ScalaGenOptionOps{
+         with ScalaGenOptionOps with ScalaGenStringStructOps{
           val IR: self.type = self
         }
 

@@ -196,11 +196,12 @@ class TestHttpParser extends FileDiffSuite {
     withOutFile(prefix+"http-parser"){
       new HttpParserProg with MyScalaOpsPkgExp with GeneratorOpsExp
         with CharOpsExp with MyIfThenElseExpOpt with StructOpsExpOptCommon
-        with ParseResultOpsExp with OptionOpsExp with MyScalaCompile{self =>
+        with ParseResultOpsExp with OptionOpsExp with StringStructOpsExp
+        with MyScalaCompile{self =>
 
         val codegen = new MyScalaCodeGenPkg with ScalaGenGeneratorOps
          with ScalaGenCharOps with ScalaGenParseResultOps with ScalaGenStructOps
-         with ScalaGenOptionOps{
+         with ScalaGenOptionOps with ScalaGenStringStructOps{
           val IR: self.type = self
         }
 
@@ -246,11 +247,12 @@ class TestHttpParser extends FileDiffSuite {
     withOutFile(prefix+"resp-parser"){
       new HttpParserProg with MyScalaOpsPkgExp with GeneratorOpsExp
         with CharOpsExp with MyIfThenElseExpOpt with StructOpsExpOptCommon
-        with ParseResultOpsExp with OptionOpsExp with MyScalaCompile{self =>
+        with ParseResultOpsExp with OptionOpsExp with StringStructOpsExp
+        with MyScalaCompile{self =>
 
         val codegen = new MyScalaCodeGenPkg with ScalaGenGeneratorOps
          with ScalaGenCharOps with ScalaGenParseResultOps with ScalaGenStructOps
-         with ScalaGenOptionOps{
+         with ScalaGenOptionOps with ScalaGenStringStructOps{
           val IR: self.type = self
         }
 
@@ -407,12 +409,12 @@ class TestReqParser extends FileDiffSuite {
     withOutFile(prefix+"req-parser"){
       new HttpParserProg with MyScalaOpsPkgExp with GeneratorOpsExp
         with CharOpsExp with MyIfThenElseExpOpt with StructOpsExpOptCommon
-        with ParseResultOpsExp with SetOpsExp with OptionOpsExp
+        with ParseResultOpsExp with SetOpsExp with OptionOpsExp with StringStructOpsExp
         with MyScalaCompile{self =>
 
         val codegen = new MyScalaCodeGenPkg with ScalaGenGeneratorOps
          with ScalaGenCharOps with ScalaGenParseResultOps with ScalaGenStructOps
-         with ScalaGenSetOps with ScalaGenOptionOps{
+         with ScalaGenSetOps with ScalaGenOptionOps with ScalaGenStringStructOps{
           val IR: self.type = self
         }
 

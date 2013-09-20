@@ -5,18 +5,22 @@ import java.io.{BufferedReader, FileReader, Serializable}
 import scala.collection.mutable.ArrayBuffer
 import parsing.HTTP
 import done._
+//import TestResponseBis.{a1,a2,a3,a4,a5,a6,a7,a8}
 //import done.HttpParserLL.http_parser
 
 /******* Swap commented lines for using regression testing ****/
 //class HttpParseBenchmark extends PerformanceTest.Regression
-class HttpParseBenchmark extends PerformanceTest.Quickbenchmark
+class HttpParseBenchmark extends PerformanceTest
   with HTTP with Serializable{
 
   /* configuration */
-  //def executor = SeparateJvmsExecutor(
-  //  new Executor.Warmer.Default,
-  //  Aggregator.min,
-  //  new Measurer.Default)
+  def executor = SeparateJvmsExecutor(
+    new Executor.Warmer.Default,
+    Aggregator.min,
+    new Measurer.Default)
+
+  def reporter = new LoggingReporter
+  def persistor = Persistor.None
 
 /******* Uncomment below for using regression testing ****/
   //override def reporter: Reporter = Reporter.Composite(
@@ -74,7 +78,7 @@ class HttpParseBenchmark extends PerformanceTest.Quickbenchmark
   }
 
 //staged parser bis
-  val stagedParserBis = new ResponseParseBis
+val stagedParserBis = new ResponseParseBis
 
   performance of "RespAndMessageParserBis" in {
     measure method "parse" config(
