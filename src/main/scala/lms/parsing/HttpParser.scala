@@ -140,7 +140,7 @@ trait HttpComponents extends lms.StructOps with SetOps{
 }
 
 
-trait HttpParser extends TokenParsers with HttpComponents{
+trait HttpParser extends TokenParsers with HttpComponents with StringStructOps{
 
   def toLower(c: Rep[Char]): Rep[Char] =
     (c.toInt | unit(0x20)).toChar
@@ -153,17 +153,17 @@ trait HttpParser extends TokenParsers with HttpComponents{
 
   //local whitespaces
   override def whitespaces(in: Rep[Input]) : Parser[String] =
-    repToS(accept(in, unit(' '))) ^^^ {unit("")}
+    repToS_f(accept(in, unit(' ')))// ^^^ {unit("")}
 
   //just keep the major and minor disctinction
   def decimalNumber(in: Rep[Input]): Parser[(Int,Int)] =
     wholeNumber(in)~(accept(in, unit('.'))~>wholeNumber(in))
 
-  def wildChar(in:Rep[Input]) = acceptIf(in, {
+  def wildChar(in:Rep[Input]) = acceptIfIdx(in, {
     x: Rep[Char] => x != unit('\n')
   })
 
-  def wildRegex(in: Rep[Input]) = repToS(wildChar(in))
+  def wildRegex(in: Rep[Input]) = stringStruct(in,wildChar(in))
 
   //TODO: ignoring \r for now
   def crlf(in:Rep[Input]) = accept(in, unit('\n'))
@@ -174,21 +174,21 @@ trait HttpParser extends TokenParsers with HttpComponents{
   def repToSLower(p: Parser[Char]) : Parser[String] =
     repFold(p)(unit(""), (res: Rep[String], x: Rep[Char]) => res + toLower(x))
 
-  def headerName(in: Rep[Input]): Parser[String] =
-    letter(in)~repToSLower(letter(in) | accept(in, unit('-'))) ^^ {
-      x: Rep[(Char, String)] => toLower(x._1) + x._2
+  def headerName(in: Rep[Input]): Parser[StringStruct] =
+    letterIdx(in)~stringStruct(in, letterIdx(in) | acceptIdx(in, unit('-'))) ^^ {
+      x: Rep[(Int, StringStruct)] => String(in, st = x._1, len = x._2.length + unit(1))
     }
 
   //TODO: do filtering based on input. Option[(String,String)]
-  def header(in: Rep[Input]): Parser[(String, String)] =
+  def header(in: Rep[Input]): Parser[(StringStruct, StringStruct)] =
     (headerName(in)<~(whitespaces(in)~accept(in,":")))~(whitespaces(in)~>wildRegex(in)<~crlf(in))
 
-  def headers(in: Rep[Input]) = repFold(header(in))(Response(),
-    (res: Rep[Response], hds: Rep[(String,String)]) => collect(res, hds._1, hds._2)
+  def headers(in: Rep[Input]): Parser[Response] = repFold(header(in))(Response(),
+    (res: Rep[Response], hds: Rep[(StringStruct,StringStruct)]) => collect(res, hds._1, hds._2)
   )
 
   def response(in: Rep[Input]) = status(in)~headers(in)<~crlf(in) ^^{
-    x: Rep[(Int, Response)] => Response(st = x._1, cL = x._2.contentLength, conn = x._2.connection,
+    x => Response(st = x._1, cL = x._2.contentLength, conn = x._2.connection,
         ch = x._2.chunked, up = x._2.upgrade)
   }
 
@@ -196,22 +196,21 @@ trait HttpParser extends TokenParsers with HttpComponents{
   def body(in:Rep[Input], n:Rep[Int]) =
     repNFold(acceptAll(in), n)(unit(""), (res: Rep[String], c: Rep[Char]) => res + c)
 
-  def collect(res: Rep[Response], hName: Rep[String], prop: Rep[String]) : Rep[Response] =
-    if((hName == unit("connection") || hName == unit("proxy-connection"))
-      && (prop == unit("keep-alive") || prop == unit("close"))
+  def collect(res: Rep[Response], hName: Rep[StringStruct], prop: Rep[StringStruct]) : Rep[Response] =
+    if((hName == "connection" || hName == "proxy-connection")
+      && (prop == "keep-alive" || prop == "close")
     ){
-      Response(st = res.status, cL = res.contentLength, conn = prop,
+      Response(st = res.status, cL = res.contentLength, conn = prop.mkString,
         ch = res.chunked, up = res.upgrade)
-    }else if(hName == unit("content-length")){
-      Response(st = res.status, cL = prop.toInt, conn = res.connection,
+    }else if(hName == "content-length"){
+      Response(st = res.status, cL = prop.mkString.toInt, conn = res.connection,
         ch = res.chunked, up = res.upgrade)
-    }else if(hName == unit("transfer-encoding") && prop == unit("chunked")){
+    }else if(hName == "transfer-encoding" && prop == "chunked"){
       Response(st = res.status, cL = res.contentLength, conn = res.connection,
         ch = unit(true), up = res.upgrade)
-    }else if(hName == unit("upgrade")){
+    }else if(hName == "upgrade"){
       Response(st = res.status, cL = res.contentLength, conn = res.connection,
         ch = res.chunked, up = unit(true))
-      ///*res.upgrade = unit(true);*/ res
     }else {
       res
     }

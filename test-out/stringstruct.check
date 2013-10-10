@@ -92,10 +92,10 @@ false
 /*****************************************
   Emitting Generated Code                  
 *******************************************/
-class test3 extends ((Array[Char])=>(Boolean)) {
+class test3(px117:Array[Char]) extends ((Array[Char])=>(Boolean)) {
 def apply(x114:Array[Char]): Boolean = {
 val x115 = x114.length
-val x117 = Array('h','e','l','l','o')
+val x117 = px117 // static data: Array(h,e,l,l,o)
 val x118 = x117.length
 val x119 = x115 == x118
 val x142 = if (x119) {

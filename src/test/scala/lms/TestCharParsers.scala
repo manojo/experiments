@@ -9,7 +9,7 @@ import java.io.StringWriter
 import java.io.FileOutputStream
 
 
-trait CharParsersProg extends CharParsers /*TokenParsers*/{
+trait CharParsersProg extends CharParsers{
 
   //simple acceptIf filter
   def test1(in: Rep[Array[Char]]): Rep[Unit] = {
@@ -143,27 +143,6 @@ trait CharParsersProg extends CharParsers /*TokenParsers*/{
   }
 }
 
-
-trait CharStructParser extends CharParsers {
-  //a basic struct
-  type Lettah = Record { val left: Char; val right: Char }
-  def Lettah(l: Rep[Char], r: Rep[Char]): Rep[Lettah] = new Record {
-    val left = l; val right = r
-  }
-
-  //a simple map
-  def testLettah(in: Rep[Array[Char]], i: Rep[Int]): Rep[Unit] = {
-    var s = Failure[Lettah](unit(-1))
-    val parser = (letter(in)~letter(in) ^^ {x: Rep[(Char, Char)] =>
-      Lettah(x._1, x._2)
-    }).apply(unit(0))
-
-    parser{x: Rep[ParseResult[Lettah]] => s = x}
-    println(s)
-  }
-
-}
-
 class TestCharParsers extends FileDiffSuite {
 
   val prefix = "test-out/"
@@ -263,39 +242,15 @@ class TestCharParsers extends FileDiffSuite {
         testcBind("ca".toArray) //fail
 
       }
-
-      new CharStructParser with MyScalaOpsPkgExp with GeneratorOpsExp
-       with CharOpsExp with StructOpsExpOptCommon  with ParseResultOpsExp
-       with IfThenElseExpOpt with FunctionsExp with OptionOpsExp
-       with MyScalaCompile{self =>
-
-       val codegen = new MyScalaCodeGenPkg with ScalaGenGeneratorOps
-         with ScalaGenCharOps with ScalaGenStructOps with ScalaGenParseResultOps
-         with ScalaGenFunctions with ScalaGenOptionOps{
-          val IR: self.type = self
-       }
-
-       val printWriter = new java.io.PrintWriter(System.out)
-
-       codegen.emitSource2(testLettah _, "testLettah", printWriter)
-       codegen.emitDataStructures(printWriter)
-       val source = new StringWriter
-       codegen.emitDataStructures(new PrintWriter(source))
-       val testcLettah = compile2s(testLettah, source)
-       testcLettah("hello".toArray, 1)
-
-      }
-
-    }
-
     assertFileEqualsCheck(prefix+"char-parser")
+    }
   }
 
   def testOr{
     withOutFile(prefix+"or-parser"){
       new CharParsersProg with MyScalaOpsPkgExp with GeneratorOpsExp
        with CharOpsExp with MyIfThenElseExpOpt with StructOpsExpOptCommon
-       with ParseResultOpsExp with MyFunctionsRecursiveExp with OptionOpsExp
+       with ParseResultOpsExp with FunctionsExp with OptionOpsExp
        with MyScalaCompile{self =>
 
         val codegen = new MyScalaCodeGenPkg with ScalaGenGeneratorOps
