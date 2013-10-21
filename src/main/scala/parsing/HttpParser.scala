@@ -96,7 +96,7 @@ trait HTTP extends JavaTokenParsers {
 
   val wildRegex = """[^\r\n]*""".r
   val headerName = """[a-zA-Z][\w-]*""".r
-  val hexNumber = """[0-9A-F]+""".r
+  val hexNum = """[0-9A-F]+""".r
 
   // 0x23 == '#', 0x74 == 'del'
   val urlChar = """[^\x00-\x20#\?\x7F]""".r
@@ -131,7 +131,7 @@ trait HTTP extends JavaTokenParsers {
     case i => (body(i) ~ chunkedParser) ^^ {case x~y => x + y}
   }
 
-  def chunkSize: Parser[Int] = hexNumber<~(wildRegex~crlf) ^^ hexToInt
+  def chunkSize: Parser[Int] = hexNum<~(wildRegex~crlf) ^^ hexToInt
 
   //TODO: the asInstanceOf here in a bit ugly, the types are already known
   // when the result has been parsed

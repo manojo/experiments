@@ -35,7 +35,7 @@ trait TokenParsersProg extends TokenParsers{
     println(s)
   }
 
-  //wholeNumber
+  //wholeNum
   def parseWholeNumber(in: Rep[Array[Char]]): Rep[Unit] = {
     var s = Failure[Int](unit(-1))
     val parser = wholeNumber(in).apply(unit(0))
@@ -95,7 +95,7 @@ class TestTokenParsers extends FileDiffSuite {
         val testc4 = compile(parseString)
         testc4("hello21".toArray)
 
-        codegen.emitSource(parseWholeNumber _ , "parseWholeNumber", new java.io.PrintWriter(System.out))
+        codegen.emitSource(parseWholeNumber _ , "parseWholeNum", new java.io.PrintWriter(System.out))
         val testc5 = compile(parseWholeNumber)
         testc5("1234a".toArray)
 

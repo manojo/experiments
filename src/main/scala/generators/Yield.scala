@@ -21,6 +21,11 @@ trait Generators{
       case Susp(o,k) => Susp(o, (i: I) => k(i).map(f))
     }
 
+    def filter(p: R => Boolean): Iterator[I,O,Option[R]] = self match {
+      case Result(r) => Result(if(p(r)) Some(r) else None)
+      case Susp(o,k) => Susp(o, (i: I) => k(i).filter(p))
+    }
+
     def loop(f: O => I): R = self match {
       case Result(r) => r
       case Susp(o,k) => k(f(o)) loop f
@@ -41,8 +46,7 @@ trait Generators{
 
 
   /**
-   * A contorted way to do a depthWalk in a language like Scala
-   * we could also simply use val t = ...
+   * Monadic style writing
    * The magic of this function however is how easy samefringe and swapfringe become!
    */
 
@@ -63,7 +67,6 @@ trait Generators{
   def swapfringe[A,T](l: Iterator[A,A,T] , r: Iterator[A,A,T]) : (T,T) = (l,r) match {
     case (Result(t1), Result(t2)) => (t1, t2)
     case (Susp(o1, k1), Susp(o2, k2)) => swapfringe(k1(o2), k2(o1))
-    //case _ => (,)
   }
 
   //type SR[I,A,R] = Iterator[I]
@@ -78,11 +81,10 @@ object GeneratorTest extends Generators{
     val tree = Node(Leaf(1), Node(Leaf(10), Leaf(5)))
     val tree2 = Node(Node(Leaf(1), Leaf(10)), Leaf(5))
 
-
     val tree3 = Node(Node(Leaf(4), Leaf(7)), Leaf(2))
 
     //println(renum(depthWalk(tree)))
-    println(samefringe(depthWalk[Int,Int](tree), depthWalk[Int,Int](tree2)))
+    //println(samefringe(depthWalk[Int,Int](tree), depthWalk[Int,Int](tree2)))
     //println(swapfringe(depthWalk[Int,Int](tree), depthWalk[Int,Int](tree3)))
   }
 }

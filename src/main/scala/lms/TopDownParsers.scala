@@ -68,7 +68,7 @@ trait TopDownParsers extends MyScalaOpsPkg with GeneratorOps with LiftVariables
           if(x.isEmpty) that(pos) else elGen(x)
         }
       }
-      toplevel(p)
+      p//toplevel(p)
     }
 
     def filter(p: Rep[T] => Rep[Boolean]) = Parser[T]{pos =>
@@ -155,7 +155,7 @@ trait TopDownParsers extends MyScalaOpsPkg with GeneratorOps with LiftVariables
     def apply(i: Rep[Int]) = f(i)
   }
 
-  //making a function of a parser
+  //making a function of a non-recursive parser
   private def toplevel[T:Manifest](p: Parser[T]) : Parser[T] = {
 
     val f  = doLambda{ (i:Rep[Int]) => {
@@ -165,12 +165,16 @@ trait TopDownParsers extends MyScalaOpsPkg with GeneratorOps with LiftVariables
       }
     }
 
+    scala.Console.println(f)
+
     val res = Parser[T]{ i =>
-        val tmp = f(i)
-        elGen(tmp)
-      }
-      res
+      val tmp = f(i)
+      elGen(tmp)
     }
+    res
+  }
+
+
 
 }
 
@@ -310,4 +314,64 @@ trait TokenParsers extends TopDownParsers with CharParsers with StringStructOps{
       g(Success[StringStruct](String(in, pos, readVar(s).get), readVar(s).next))
     }
   }
+}
+
+trait RecParsers extends TopDownParsers{
+  def rec[T:Manifest](name: String, p:Parser[T]): Parser[T]
+}
+
+trait RecParsersExp extends RecParsers with MyScalaOpsPkgExp with GeneratorOpsExp
+  with StructOpsExp with ParseResultOpsExp with OptionOpsExp with FunctionsExp{
+
+  import scala.collection.mutable.HashSet
+  val store = new scala.collection.mutable.HashMap[String, Sym[_]]
+  def rec[T: Manifest](name: String, p: Parser[T]): Parser[T] = {
+
+    store.get(name) match {
+      case Some(f) =>
+        scala.Console.println("contains")
+        val realf = f.asInstanceOf[Exp[Int => ParseResult[T]]]
+        Parser[T]{i => elGen(realf(i))}
+      case None =>
+        scala.Console.println("does not contain")
+        val funSym = fresh[Int => ParseResult[T]]
+
+        store += (name -> funSym)
+        val f = (i: Rep[Int]) => {
+          var init = Failure[T](i)
+          p(i){x => init = x}
+          readVar(init)
+        }
+
+        val g = createDefinition(funSym,doLambdaDef(f))
+        store -= name
+        Parser[T]{i => elGen(funSym(i))}
+    }
+  }
+
+/*
+    type RecFun = Rep[Int => ParseResult[T]]
+
+    store.get(name) match {
+      case Some(f) =>
+        scala.Console.println("contains a sym!")
+        //val realf = f.asInstanceOf[RecFun]
+        Parser[T]{i => elGen(Failure[T](unit(-1)))}
+      case None =>
+        scala.Console.println("contains no such thing")
+        val funSym = fresh[Int => ParseResult[T]]
+        store += name -> funSym
+
+        val f: (Rep[Int] => Rep[ParseResult[T]]) = {i: Rep[Int] =>
+          var init = Failure[T](i)
+          p(i){x => init = x}
+          readVar(init)
+        }
+        store -= name
+        createDefinition(funSym, doLambdaDef(f))
+
+        Parser[T]{i => elGen(f(i))}
+    }
+  }
+*/
 }
