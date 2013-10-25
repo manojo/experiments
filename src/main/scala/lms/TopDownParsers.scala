@@ -17,9 +17,10 @@ trait TopDownParsers extends MyScalaOpsPkg with GeneratorOps with LiftVariables
   abstract class Parser[T:Manifest] extends (Rep[Int] => Generator[ParseResult[T]]){self =>
 
     private def flatMap[U:Manifest](f: Rep[T] => Parser[U]) = Parser[U]{ pos =>
-      self(pos).flatMap{x: Rep[ParseResult[T]] =>
+      self(pos).flatMap{x: Rep[ParseResult[T]] =>{
         if(x.isEmpty) elGen(Failure[U](pos))
         else f(x.get).apply(x.next).map{x => if(x.isEmpty) Failure[U](pos) else x}
+      }
       }
     }
 
@@ -28,7 +29,7 @@ trait TopDownParsers extends MyScalaOpsPkg with GeneratorOps with LiftVariables
     def ~[U: Manifest](that: Parser[U]) = Parser[(T,U)]{pos =>
       self(pos).flatMap{x: Rep[ParseResult[T]] =>
         if(x.isEmpty) elGen(Failure[(T,U)](pos))
-        else that(x.next).map{ y: Rep[ParseResult[U]] =>
+        else that(x.next).map{y: Rep[ParseResult[U]] =>
           if(y.isEmpty) Failure[(T,U)](pos)
           else Success(make_tuple2(x.get, y.get), y.next)
         }
@@ -60,15 +61,13 @@ trait TopDownParsers extends MyScalaOpsPkg with GeneratorOps with LiftVariables
 
     def | (that: Parser[T]) = {
       val p = Parser[T]{ pos =>
-        //make these parsers "toplevel"
         val tmpSelf = toplevel(self)
-        //val tmpThat = toplevel(that)
 
         tmpSelf(pos).flatMap{x =>
           if(x.isEmpty) that(pos) else elGen(x)
         }
       }
-      p//toplevel(p)
+      toplevel(p)
     }
 
     def filter(p: Rep[T] => Rep[Boolean]) = Parser[T]{pos =>
@@ -165,12 +164,7 @@ trait TopDownParsers extends MyScalaOpsPkg with GeneratorOps with LiftVariables
       }
     }
 
-    scala.Console.println(f)
-
-    val res = Parser[T]{ i =>
-      val tmp = f(i)
-      elGen(tmp)
-    }
+    val res = Parser[T]{ i => elGen(f(i))}
     res
   }
 
@@ -329,9 +323,9 @@ trait RecParsersExp extends RecParsers with MyScalaOpsPkgExp with GeneratorOpsEx
 
     store.get(name) match {
       case Some(f) =>
-        scala.Console.println("contains")
         val realf = f.asInstanceOf[Exp[Int => ParseResult[T]]]
         Parser[T]{i => elGen(realf(i))}
+
       case None =>
         scala.Console.println("does not contain")
         val funSym = fresh[Int => ParseResult[T]]
@@ -348,30 +342,4 @@ trait RecParsersExp extends RecParsers with MyScalaOpsPkgExp with GeneratorOpsEx
         Parser[T]{i => elGen(funSym(i))}
     }
   }
-
-/*
-    type RecFun = Rep[Int => ParseResult[T]]
-
-    store.get(name) match {
-      case Some(f) =>
-        scala.Console.println("contains a sym!")
-        //val realf = f.asInstanceOf[RecFun]
-        Parser[T]{i => elGen(Failure[T](unit(-1)))}
-      case None =>
-        scala.Console.println("contains no such thing")
-        val funSym = fresh[Int => ParseResult[T]]
-        store += name -> funSym
-
-        val f: (Rep[Int] => Rep[ParseResult[T]]) = {i: Rep[Int] =>
-          var init = Failure[T](i)
-          p(i){x => init = x}
-          readVar(init)
-        }
-        store -= name
-        createDefinition(funSym, doLambdaDef(f))
-
-        Parser[T]{i => elGen(f(i))}
-    }
-  }
-*/
 }

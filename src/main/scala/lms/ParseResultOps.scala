@@ -9,7 +9,7 @@ import java.io.PrintWriter
 /**
  * Inspired from TupleOps on delite-develop branch
  */
-trait ParseResultOps extends Base with IfThenElse with BooleanOps with CastingOps{
+trait ParseResultOps extends Base with IfThenElse with BooleanOps with CastingOps with MiscOps{
 
   /**A mini implementation of a parseresult
    *
@@ -74,10 +74,10 @@ trait ParseResultOpsExp extends ParseResultOps with IfThenElseExp with BooleanOp
   def parseresult_next[A:Manifest](pr:Rep[ParseResult[A]])(implicit pos: SourceContext):Rep[Int] = field[Int](pr, "next")
 
   def Success[T:Manifest](res: Rep[T], next:Rep[Int]) : Exp[ParseResult[T]]
-   = struct(classTag[ParseResult[T]], "res" -> res, "empty" -> unit(false), "next" -> next)
+    = struct(classTag[ParseResult[T]], "res" -> res, "empty" -> unit(false), "next" -> next)
 
   def Failure[T:Manifest](next: Rep[Int]): Exp[ParseResult[T]]
-  = struct(classTag[ParseResult[T]], "res" -> rep_asinstanceof(unit(null), manifest[Null], manifest[T]), "empty" -> unit(true), "next" -> next)
+    = struct(classTag[ParseResult[T]], "res" -> rep_asinstanceof(unit(null), manifest[Null], manifest[T]), "empty" -> unit(true), "next" -> next)
 }
 
 trait ParseResultGenBase extends GenericCodegen with BaseGenStructOps{
