@@ -1,8 +1,9 @@
-does not contain
+not contains
+contains
 /*****************************************
   Emitting Generated Code                  
 *******************************************/
-class test1 extends ((Array[Char])=>(Unit)) {
+class testRecNumber extends ((Array[Char])=>(Unit)) {
 def apply(x0:Array[Char]): Unit = {
 var x7 = null.asInstanceOf[scala.Function1[Int, ParseResultInt]]
 var x122 = null.asInstanceOf[scala.Function1[Int, ParseResultInt]]
@@ -172,7 +173,8 @@ x146
 /*****************************************
   End of Generated Code                  
 *******************************************/
-does not contain
+not contains
+contains
 compilation: ok
 ParseResultInt(2,false,1)
 ParseResultInt(5,false,2)

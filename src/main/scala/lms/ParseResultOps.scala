@@ -9,7 +9,7 @@ import java.io.PrintWriter
 /**
  * Inspired from TupleOps on delite-develop branch
  */
-trait ParseResultOps extends Base with IfThenElse with BooleanOps with CastingOps with MiscOps{
+trait ParseResultOps extends Base with IfThenElse with BooleanOps with CastingOps{
 
   /**A mini implementation of a parseresult
    *

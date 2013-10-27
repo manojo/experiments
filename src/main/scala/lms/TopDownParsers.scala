@@ -155,7 +155,7 @@ trait TopDownParsers extends MyScalaOpsPkg with GeneratorOps with LiftVariables
   }
 
   //making a function of a non-recursive parser
-  private def toplevel[T:Manifest](p: Parser[T]) : Parser[T] = {
+  /*private*/ def toplevel[T:Manifest](p: Parser[T]) : Parser[T] = {
 
     val f  = doLambda{ (i:Rep[Int]) => {
         var init = Failure[T](i)
@@ -323,11 +323,12 @@ trait RecParsersExp extends RecParsers with MyScalaOpsPkgExp with GeneratorOpsEx
 
     store.get(name) match {
       case Some(f) =>
+        scala.Console.println("contains")
         val realf = f.asInstanceOf[Exp[Int => ParseResult[T]]]
         Parser[T]{i => elGen(realf(i))}
 
       case None =>
-        scala.Console.println("does not contain")
+        scala.Console.println("not contains")
         val funSym = fresh[Int => ParseResult[T]]
 
         store += (name -> funSym)

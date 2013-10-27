@@ -10,7 +10,7 @@ import java.io.FileOutputStream
 
 trait RecParsersProg extends CharParsers with RecParsers{
 
-  def expr(in: Rep[Array[Char]]): Parser[Int] = {
+  def recNumber(in: Rep[Array[Char]]): Parser[Int] = {
     lazy val temp: Parser[Int] = rec("hi",
       Parser{i: Rep[Int] =>
         ((digit2Int(in) ~ temp) ^^ {
@@ -21,9 +21,9 @@ trait RecParsersProg extends CharParsers with RecParsers{
     temp
   }
 
-  def test1(in: Rep[Array[Char]]): Rep[Unit]= {
+  def testRecNumber(in: Rep[Array[Char]]): Rep[Unit]= {
     var s = Failure[Int](unit(-1))
-    val p = expr(in).apply(unit(0))
+    val p = recNumber(in).apply(unit(0))
     p{x => s = x}
     println(s)
   }
@@ -33,7 +33,7 @@ class TestRecParsers extends FileDiffSuite {
   val prefix = "test-out/"
 
   def testRec = {
-    withOutFile(prefix+"gen-topdown-rec") {
+    withOutFile(prefix+"rec-parser") {
       new RecParsersProg with RecParsersExp with MyScalaOpsPkgExp with GeneratorOpsExp
        with CharOpsExp with /*IfThenElseExp*/ MyIfThenElseExpOpt with StructOpsExpOptCommon
        with ParseResultOpsExp with FunctionsExp with OptionOpsExp
@@ -45,16 +45,16 @@ class TestRecParsers extends FileDiffSuite {
           val IR: self.type = self
         }
 
-        codegen.emitSource(test1 _ , "test1", new java.io.PrintWriter(System.out))
-        val testc1 = compile(test1)
-        testc1("2".toArray)
-        testc1("23".toArray)
-        testc1("2a".toArray)
-        testc1("23b".toArray)
-        testc1("a".toArray)
+        codegen.emitSource(testRecNumber _ , "testRecNumber", new java.io.PrintWriter(System.out))
+        val testcRecNumber = compile(testRecNumber)
+        testcRecNumber("2".toArray)
+        testcRecNumber("23".toArray)
+        testcRecNumber("2a".toArray)
+        testcRecNumber("23b".toArray)
+        testcRecNumber("a".toArray)
       }
     }
-    assertFileEqualsCheck(prefix+"gen-topdown-rec")
+    assertFileEqualsCheck(prefix+"rec-parser")
   }
 }
 
