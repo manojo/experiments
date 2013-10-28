@@ -234,10 +234,10 @@ trait TokenParsers extends TopDownParsers with CharParsers with StringStructOps{
   }
 
   def wholeNumber(in: Rep[Input]): Parser[Int] =
-    (digit2Int(in) ~
-    repFold(digit2Int(in))(unit(0), (res:Rep[Int], y: Rep[Int]) => res * unit(10) + y)) ^^ {
-      x => if(x._2 == unit(0)) x._1 else x._1 * unit(10) + x._2
+    digit2Int(in) >> {x =>
+      repFold(digit2Int(in))(x, (res:Rep[Int], y: Rep[Int]) => (res * unit(10) + y))
     }
+
 
   def stringLit(in:Rep[Input]) : Parser[String] =
     accept(in, unit('\"')) ~> repToS( acceptIf(in, (x:Rep[Char]) => x != unit('\"'))) <~ accept(in, unit('\"')) ^^ {
