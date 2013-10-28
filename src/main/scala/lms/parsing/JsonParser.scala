@@ -15,27 +15,27 @@ trait JsonParser extends TokenParsers with RecParsers with StringStructOps{
     repToS_f(acceptIf(in, {x:Rep[Char] => x == unit(' ') || x == unit('\n')}))// ^^^ {unit("")}
 
   def json(in: Rep[Input]): Parser[Any] = {
-    def value = rec("json",
-      obj | arr | stringLit(in) | wholeNumber(in) //|
-      //"null", "true", "false"
-    )
+    //def value = rec("json",
+    //  obj | arr | stringLit(in) | wholeNumber(in) //|
+    //  //"null", "true", "false"
+    //)
 
-    def arr: Parser[List[Any]] =
-      (accept(in,unit('[')) ~> whitespaces(in)) ~>
-      repsep(value, accept(in, unit(',')) ~> whitespaces(in)) <~
-      (accept(in, unit(']')) ~> whitespaces(in))
+    //def arr: Parser[List[Any]] =
+    //  (accept(in,unit('[')) ~> whitespaces(in)) ~>
+    //  repsep(value, accept(in, unit(',')) ~> whitespaces(in)) <~
+    //  (accept(in, unit(']')) ~> whitespaces(in))
 
-    def obj: Parser[List[Any]] =
-      (accept(in,unit('{')) ~> whitespaces(in)) ~>
-      repsep(member, accept(in, unit(',')) ~> whitespaces(in)) <~
-      (accept(in, unit('}')) ~> whitespaces(in))
+    //def obj: Parser[List[Any]] =
+    //  (accept(in,unit('{')) ~> whitespaces(in)) ~>
+    //  repsep(member, accept(in, unit(',')) ~> whitespaces(in)) <~
+    //  (accept(in, unit('}')) ~> whitespaces(in))
 
     def member: Parser[Any] =
       (stringLit(in) <~
       (whitespaces(in) <~ accept(in, unit(':')) ~ whitespaces(in))) ~
-      value
+      stringLit(in)
 
-    value
+    member//value
   }
 
   override def stringLit(in:Rep[Input]): Parser[String] =

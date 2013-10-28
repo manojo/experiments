@@ -12,7 +12,7 @@ import java.io.FileOutputStream
 trait JsonParserProg extends JsonParser{
 
   def jsonParse(in: Rep[Array[Char]]): Rep[Unit] = {
-    var s = Failure[Any](unit(-1))
+    var s = Failure[(String,String)](unit(-1))
     val p = json(in).apply(unit(0))
     p{x => s = x}
     println(s)
