@@ -234,7 +234,10 @@ trait TokenParsers extends TopDownParsers with CharParsers with StringStructOps{
   }
 
   def wholeNumber(in: Rep[Input]): Parser[Int] =
-    repFold(digit2Int(in))(unit(0), (res:Rep[Int], y: Rep[Int]) => res * unit(10) + y)
+    (digit2Int(in) ~
+    repFold(digit2Int(in))(unit(0), (res:Rep[Int], y: Rep[Int]) => res * unit(10) + y)) ^^ {
+      x => if(x._2 == unit(0)) x._1 else x._1 * unit(10) + x._2
+    }
 
   def stringLit(in:Rep[Input]) : Parser[String] =
     accept(in, unit('\"')) ~> repToS( acceptIf(in, (x:Rep[Char]) => x != unit('\"'))) <~ accept(in, unit('\"')) ^^ {
@@ -311,7 +314,7 @@ trait TokenParsers extends TopDownParsers with CharParsers with StringStructOps{
 }
 
 trait RecParsers extends TopDownParsers{
-  def rec[T:Manifest](name: String, p:Parser[T]): Parser[T]
+  def rec[T:Manifest](name: String, p: => Parser[T]): Parser[T]
 }
 
 trait RecParsersExp extends RecParsers with MyScalaOpsPkgExp with GeneratorOpsExp
@@ -319,8 +322,8 @@ trait RecParsersExp extends RecParsers with MyScalaOpsPkgExp with GeneratorOpsEx
 
   import scala.collection.mutable.HashSet
   val store = new scala.collection.mutable.HashMap[String, Sym[_]]
-  def rec[T: Manifest](name: String, p: Parser[T]): Parser[T] = {
-
+  var counter:Int = 0
+  def rec[T: Manifest](name: String, p: => Parser[T]): Parser[T] = {
     store.get(name) match {
       case Some(f) =>
         scala.Console.println("contains")
@@ -329,6 +332,7 @@ trait RecParsersExp extends RecParsers with MyScalaOpsPkgExp with GeneratorOpsEx
 
       case None =>
         scala.Console.println("not contains")
+
         val funSym = fresh[Int => ParseResult[T]]
 
         store += (name -> funSym)

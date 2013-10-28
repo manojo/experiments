@@ -11,8 +11,8 @@ class JSON extends JavaTokenParsers {
   def arr : Parser[Any] = "["~repsep(value, ",")~"]"
   def member: Parser[Any] = stringLiteral~":"~value
 
-  def wNum : Parser[Int] = wholeNumber ^^ (_.toInt)
-  def simpleRec: Parser[Int] = (wNum ~ simpleRec) ^^ {case x~y => x+y} | wNum
+  def wNum : Parser[Int] = bla
+  def bla: Parser[Int] = (wholeNumber ^^ (_.toInt)) | "[" ~> wNum <~ "]"
 }
 
 object JsonParser extends JSON{
@@ -39,7 +39,7 @@ object JsonParser extends JSON{
     val reader = new CharSequenceReader(addressbook, 0)
     println(parseAll(value, reader))
 
-    val reader2 = new CharSequenceReader("12 13 14", 0)
-    println(parseAll(simpleRec, reader2))
+    val reader2 = new CharSequenceReader("[[22]]", 0)
+    println(parseAll(wNum, reader2))
   }
 }
