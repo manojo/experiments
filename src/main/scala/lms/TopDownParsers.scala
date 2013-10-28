@@ -14,7 +14,7 @@ trait TopDownParsers extends MyScalaOpsPkg with GeneratorOps with LiftVariables
   type Input = Array[Char]
   type Pos = Int
 
-  abstract class Parser[T:Manifest] extends (Rep[Int] => Generator[ParseResult[T]]){self =>
+  abstract class Parser[+T:Manifest] extends (Rep[Int] => Generator[ParseResult[T]]){self =>
 
     private def flatMap[U:Manifest](f: Rep[T] => Parser[U]) = Parser[U]{ pos =>
       self(pos).flatMap{x: Rep[ParseResult[T]] =>{
@@ -59,12 +59,12 @@ trait TopDownParsers extends MyScalaOpsPkg with GeneratorOps with LiftVariables
     def ^^[U:Manifest](f: Rep[T] => Rep[U]) = self.map(f)
     def ^^^[U:Manifest](u: Rep[U]) = self.map(x => u)
 
-    def | (that: Parser[T]) = {
-      val p = Parser[T]{ pos =>
+    def | [U>:T:Manifest](that: Parser[U]) = {
+      val p = Parser[U]{ pos =>
         val tmpSelf = toplevel(self)
 
         tmpSelf(pos).flatMap{x =>
-          if(x.isEmpty) that(pos) else elGen(x)
+          if(x.isEmpty) that(pos) else elGen(x.asInstanceOf[Rep[ParseResult[U]]])
         }
       }
       toplevel(p)
@@ -85,7 +85,7 @@ trait TopDownParsers extends MyScalaOpsPkg with GeneratorOps with LiftVariables
     p(pos)
   }*/
 
-  def repFold[T:Manifest, U:Manifest](p : Parser[T])(z: Rep[U], f: (Rep[U], Rep[T]) => Rep[U]) = Parser[U]{ pos =>
+  def repFold[T:Manifest, U:Manifest](p : => Parser[T])(z: Rep[U], f: (Rep[U], Rep[T]) => Rep[U]) = Parser[U]{ pos =>
     /** This is tremendously tricky: the code that goes into the generator
      cannot be taken outside if it is to be bound properly */
     Generator{ g =>
@@ -108,7 +108,7 @@ trait TopDownParsers extends MyScalaOpsPkg with GeneratorOps with LiftVariables
   }
 
   //repN fold. TODO: make sure we do not cross the input length
-  def repNFold[T:Manifest, U:Manifest](p : Parser[T], n:Rep[Int])(z: Rep[U], f: (Rep[U], Rep[T]) => Rep[U]) = Parser[U]{ pos =>
+  def repNFold[T:Manifest, U:Manifest](p : => Parser[T], n:Rep[Int])(z: Rep[U], f: (Rep[U], Rep[T]) => Rep[U]) = Parser[U]{ pos =>
     Generator{ g =>
       var s = Success[U](z, pos)
 
@@ -130,13 +130,13 @@ trait TopDownParsers extends MyScalaOpsPkg with GeneratorOps with LiftVariables
   }
 
   //rep can be expressed as a fold
-  def rep[T:Manifest](p : Parser[T]) =
+  def rep[T:Manifest](p : => Parser[T]) =
     repFold(p)(List[T]().asInstanceOf[Rep[List[T]]],
       {(ls : Rep[List[T]], t: Rep[T]) => ls ++ List(t)}
     )
 
   def repsep[T:Manifest,U:Manifest](p: => Parser[T], q: =>Parser[U]): Parser[List[T]] =
-    rep(p <~  q)
+    (p ~ rep(q ~>  p)) ^^ {x => x._1 :: x._2} | success(List[T]())
 
   //a 'conditional' parser
   def __ifThenElse[A: Manifest](cond: Rep[Boolean], thenp: => Parser[A], elsep: => Parser[A]): Parser[A] = Parser[A]{
@@ -155,7 +155,7 @@ trait TopDownParsers extends MyScalaOpsPkg with GeneratorOps with LiftVariables
   }
 
   //making a function of a non-recursive parser
-  /*private*/ def toplevel[T:Manifest](p: Parser[T]) : Parser[T] = {
+  def toplevel[T:Manifest](p: Parser[T]) : Parser[T] = {
 
     val f  = doLambda{ (i:Rep[Int]) => {
         var init = Failure[T](i)
@@ -167,6 +167,12 @@ trait TopDownParsers extends MyScalaOpsPkg with GeneratorOps with LiftVariables
     val res = Parser[T]{ i => elGen(f(i))}
     res
   }
+
+  /**
+   * a Success combinator
+   */
+  def success[T:Manifest](v:Rep[T]) = Parser[T]{i => elGen(Success(v, i))}
+
 
 
 

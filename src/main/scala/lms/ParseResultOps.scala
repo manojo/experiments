@@ -14,7 +14,7 @@ trait ParseResultOps extends Base with IfThenElse with BooleanOps with CastingOp
   /**A mini implementation of a parseresult
    *
    */
-  abstract class ParseResult[T:Manifest]{
+  abstract class ParseResult[+T:Manifest]{
     def isEmpty: Rep[Boolean]
     def next: Rep[Int]
     def res: Rep[T]

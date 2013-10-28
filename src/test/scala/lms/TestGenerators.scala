@@ -56,7 +56,7 @@ trait GeneratorProg extends GeneratorOps with NumericOps
     }
 
     var s = unit(0)
-    (f++g){ x:Rep[Int] => s = s+x }
+    (f++g).apply{ x:Rep[Int] => s = s+x }
     s
   }
 

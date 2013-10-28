@@ -14,7 +14,7 @@ trait GeneratorOps extends Variables with While with LiftVariables
     def fSeq[A:Manifest](xs: Rep[A]*)(implicit pos: SourceContext) = fromSeq(xs)
   }
 
-  abstract class Generator[T:Manifest] extends ((Rep[T] => Rep[Unit]) => Rep[Unit]) {self =>
+  abstract class Generator[+T:Manifest] extends ((Rep[T] => Rep[Unit]) => Rep[Unit]) {self =>
 
     def map[U:Manifest](g: Rep[T] => Rep[U]) = Generator[U]{ f =>
       self.apply{
@@ -28,7 +28,7 @@ trait GeneratorOps extends Variables with While with LiftVariables
       }
     }
 
-    def ++(that: Generator[T]) = Generator[T]{ f =>
+    def ++[U>:T:Manifest](that: => Generator[U]) = Generator[U]{ f =>
       self.apply(f)
       that.apply(f)
     }
@@ -40,7 +40,7 @@ trait GeneratorOps extends Variables with While with LiftVariables
       }
     }
 
-    def reduce(h:(Rep[T],Rep[T])=>Rep[T], z:Rep[T]) = Generator[T]{ f =>
+    def reduce[T1>:T:Manifest](h:(Rep[T1],Rep[T1])=>Rep[T1], z:Rep[T1]) = Generator[T1]{ f =>
       var best = z;
       self.apply { x:Rep[T] => if (best==z) best=x; else best=h(best,x) }
       if (best!=z) f(best)
