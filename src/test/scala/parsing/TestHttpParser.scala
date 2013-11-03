@@ -3,12 +3,12 @@ package parsing
 import scala.util.parsing.combinator._
 import scala.util.parsing.input._
 
-import org.scalatest.FunSuite
+import org.scalatest._
 
 //import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 
-class TestHttpParser extends HTTP with FunSuite{
+class TestHttpParser extends FunSpec with HTTP {
 
   def isSuccessful(p: Parser[Any], in: java.lang.CharSequence): Boolean =
     parseAll(p,in) match {
@@ -25,7 +25,7 @@ class TestHttpParser extends HTTP with FunSuite{
     )
   }
 
-  test("response headers: valid"){
+  it("response headers: valid"){
 
     val headers = List(
    """|Date: Mon, 23 May 2005 22:38:34 GMT
@@ -54,7 +54,7 @@ class TestHttpParser extends HTTP with FunSuite{
   }
 
 
-  test("response headers: invalid"){
+  it("response headers: invalid"){
 
     val headers = List(
       """Date: Mon, 23 May 2005 22:38:34 GMT""",
@@ -70,7 +70,7 @@ class TestHttpParser extends HTTP with FunSuite{
     }
   }
 
-  test("statusMessages: valid"){
+  it("statusMessages: valid"){
     val statusMessages = List(
       """HTTP/1.1 200 OK
       |""".stripMargin,
@@ -84,7 +84,7 @@ class TestHttpParser extends HTTP with FunSuite{
     }
   }
 
-  test("statusMessages: invalid"){
+  it("statusMessages: invalid"){
     val statusMessages = List(
       """HTTP/1.1 200 OK""",
       """HTTP/1.1 418 I'm a teapot"""
@@ -95,7 +95,7 @@ class TestHttpParser extends HTTP with FunSuite{
     }
   }
 
-  test("A response with headers"){
+  it("A response with headers"){
     val httpMessage =
    """|HTTP/1.1 200 OK
       |Date: Mon, 23 May 2005 22:38:34 GMT
@@ -120,7 +120,7 @@ class TestHttpParser extends HTTP with FunSuite{
 
   }
 
-  test("chunked data"){
+  it("chunked data"){
     val messages = List(
       ("0\r\n\r\n", ""),
       (
@@ -146,7 +146,7 @@ class TestHttpParser extends HTTP with FunSuite{
     }
   }
 
-  test("response and messages"){
+  it("response and messages"){
      val messages = List(
       ("""|HTTP/1.1 200 OK
           |Date: Mon, 23 May 2005 22:38:34 GMT
@@ -276,7 +276,7 @@ class TestHttpParser extends HTTP with FunSuite{
     }
   }
 
-  test("urls"){
+  it("urls"){
     val urls = List(
       ("http://en.wikipedia.org/wiki/URI_scheme",
         Url(

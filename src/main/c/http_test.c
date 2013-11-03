@@ -84,7 +84,7 @@ int main(int argc, char **argv){
       }
     }
     gettimeofday(&stop, NULL);
-    printf("Parameters(size -> %d): %lu microsec\n", iter, stop.tv_usec - start.tv_usec);
+    printf("Parameters(size -> %d): %u microsec\n", iter, stop.tv_usec - start.tv_usec);
   }
 
   for(int i = 0; i < 5; i++){
