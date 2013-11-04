@@ -34,8 +34,8 @@ scalacOptions ++= Seq(
   "-P:continuations:enable",
   "-optimize",
   "-deprecation",
-  "-feature",
-  "-Yinline-warnings"
+  "-feature"//,
+  //"-Yinline-warnings"
 )
 
 testFrameworks += new TestFramework("org.scalameter.ScalaMeterFramework")
