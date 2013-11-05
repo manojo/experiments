@@ -77,3 +77,9 @@ with ScalaGenNumericOps with ScalaGenArrayOps with ScalaGenEqual with ScalaGenSt
 with ScalaGenBooleanOps with ScalaGenMiscOps with ScalaGenVariables with ScalaGenStaticData{
   val IR: StringStructOpsExp
 }
+
+trait CGenStringStructOps extends CGenBase with CGenStructOps with CGenWhile with CGenIfThenElse
+with CGenNumericOps with CGenArrayOps with CGenEqual with CGenStringOps with CGenOrderingOps
+with CGenBooleanOps with CGenMiscOps with CGenVariables with CGenStaticData{
+  val IR: StringStructOpsExp
+}

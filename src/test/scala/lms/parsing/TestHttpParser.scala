@@ -191,6 +191,60 @@ trait HttpParserProg extends HttpParser{
   }
 }
 
+// TCK BEGIN
+object TestHttpCParser {
+  import java.io._
+
+  class Writer(file:String) extends HttpParserProg with MyScalaOpsPkgExp with GeneratorOpsExp
+    with CharOpsExp with MyIfThenElseExpOpt with StructOpsExpOptCommon
+    with ParseResultOpsExp with OptionOpsExp with StringStructOpsExp { self =>
+    val codegen = new MyCCodeGenPkg with CGenGeneratorOps
+      with CGenCharOps with CGenParseResultOps with CGenStructOps
+      with CGenOptionOps with CGenStringStructOps { val IR: self.type = self }
+    val buf = new ByteArrayOutputStream()
+    val pr = new PrintWriter(buf)
+    def close {
+      val out=new FileOutputStream(file); val pr2=new java.io.PrintWriter(out)
+      pr2.print("#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#include <stdbool.h>\n\n")
+      codegen.emitDataStructures(pr2); pr2.flush; pr.flush; pr.close; out.write(buf.toByteArray); out.close
+      System.out.println("Written in "+file)
+    }
+  }
+  class Gen() extends HttpParserProg with MyScalaOpsPkgExp with GeneratorOpsExp
+    with CharOpsExp with MyIfThenElseExpOpt with StructOpsExpOptCommon
+    with ParseResultOpsExp with OptionOpsExp with StringStructOpsExp with MyScalaCompile{self =>
+      val codegen = new MyScalaCodeGenPkg with ScalaGenGeneratorOps
+      with ScalaGenCharOps with ScalaGenParseResultOps with ScalaGenStructOps
+      with ScalaGenOptionOps with ScalaGenStringStructOps { val IR: self.type = self }
+  }
+  def read(file:String) = scala.io.Source.fromFile(file).mkString.toArray
+
+  def main(args:Array[String]) {
+    val s = read("src/main/c/tweet1")
+    val g = new Gen()
+    val f = g.compile(g.respAndMessageParse)
+    println(f(s))
+
+    /*
+    val w = new Writer("src/main/c/http_gen_full.h")
+    w.codegen.emitSource(w.respAndMessageParse _ , "respAndMessageParse", w.pr)
+    w.close
+    */
+    /*
+    val w = new Writer("src/main/c/http_gen.h")
+    w.codegen.emitSource(w.responseParse _ , "responseParse", w.pr)
+    w.codegen.emitSource(w.bodyParse _ , "bodyParse", w.pr)
+    w.close
+    */
+    /*
+    val w2 = new Writer("src/main/c/http_gen_head.h")
+    w2.codegen.emitSource(w2.httpNumStatusParse _ , "httpNumStatusParse", w2.pr)
+    w2.close
+    */
+  }
+}
+// TCK END
+
 class TestHttpParser extends FileDiffSuite {
 
   val prefix = "test-out/"

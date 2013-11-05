@@ -24,6 +24,7 @@ trait StructOps extends Base {
   class RecordOps(record: Rep[Record]) {
     def selectDynamic[T : Manifest](field: String): Rep[T] = record_select[T](record, field)
   }
+  import scala.language.implicitConversions
   implicit def recordToRecordOps(record: Rep[Record]) = new RecordOps(record)
 
   def record_new[T : Manifest](fields: Seq[(String, Boolean, Rep[T] => Rep[_])]): Rep[T]
@@ -36,7 +37,7 @@ trait StructTags {
   case class ClassTag[T](name: String) extends StructTag[T]
   case class NestClassTag[C[_],T](elem: StructTag[T]) extends StructTag[C[T]]
   case class AnonTag[T](fields: RefinedManifest[T]) extends StructTag[T]
-  case class MapTag[T] extends StructTag[T]
+  case class MapTag[T]() extends StructTag[T]
 }
 
 trait StructOpsExp extends StructOps with StructTags with BaseExp with EffectExp with VariablesExp with ObjectOpsExp with StringOpsExp with OverloadHack {

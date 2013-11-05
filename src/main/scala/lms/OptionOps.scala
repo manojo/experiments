@@ -11,7 +11,7 @@ import java.io.PrintWriter
  */
 
 trait OptionOps extends Base with IfThenElse with BooleanOps{
-
+  import scala.language.implicitConversions
 //  implicit def varToOptionOps[T:Manifest](x: Var[Option[T]]) = new OptionOpsCls(readVar(x)) // FIXME: dep on var is not nice
   implicit def repToOptionOps[T:Manifest](a: Rep[Option[T]]) = new OptionOpsCls(a)
   //implicit def optionToOptionOps[T:Manifest](a: Option[T]) = new ListOpsCls(unit(a))
@@ -48,7 +48,7 @@ trait OptionOps extends Base with IfThenElse with BooleanOps{
 }
 
 trait OptionOpsExp extends OptionOps with IfThenElseExp with BooleanOpsExp with StructOpsExpOpt with CastingOpsExp{
-
+  import scala.language.implicitConversions
   implicit def make_opt[A:Manifest](o: Option[Rep[A]])(implicit pos: SourceContext): Exp[Option[A]]
     = struct(classTag[Option[A]], "value" -> o.getOrElse(rep_asinstanceof(unit(null), manifest[Null], manifest[A])), "defined" -> unit(o.isDefined))
 
