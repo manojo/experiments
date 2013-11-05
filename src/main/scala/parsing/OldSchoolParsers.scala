@@ -15,7 +15,7 @@ trait OldSchoolParsers{
     //classic monad law
     def map[T](f: R => T): Parser[S,T] = this.flatMap{r:R => unit(f(r))}
 
-    def <~> [T](f: R => Parser[S,T]) = flatMap(f)
+    def >> [T](f: R => Parser[S,T]) = flatMap(f)
 
     def | (that: Parser[S,R]) = Parser{xs:List[S] => self(xs) ++ that(xs)}
 
@@ -61,6 +61,13 @@ trait ContParsers extends OldSchoolParsers{
         next
       )
     }
+
+    def | (that: ParserC[S,R,T]) = ParserC[S,R,T]{
+      (succ: Success[S,R,T], nr: NextRes[S,T]) => Parser{xs: List[S] =>
+        self.apply(succ, that(succ,nr)(xs))(xs)
+      }
+
+    }
   }
   abstract class Success[S,R,T] extends ((R,NextRes[S,T]) => Parser[S,T])
   type NextRes[S,T] = ParseResult[S,T]
@@ -77,7 +84,7 @@ trait ContParsers extends OldSchoolParsers{
     (succ: Success[S,R,T], next: NextRes[S,T]) => Parser[S,T]{xs:List[S] => next}
   }
 
-  def yieldC[S,R,T](r:R) = ParserC[S,R,T]{
+  def unitC[S,R,T](r:R) = ParserC[S,R,T]{
     (succ: Success[S,R,T], next:NextRes[S,T]) => Parser[S,T]{xs:List[S] => succ(r,next)(xs)}
   }
 
@@ -87,6 +94,11 @@ trait ContParsers extends OldSchoolParsers{
       case _ => next
     }}
   }
+
+  def begin[S,T](p: ParserC[S,T,T]) = p (
+    Success{(t:T, nr:NextRes[S,T]) =>  Parser{xs:List[S] => (xs,t)::nr}},
+    Nil
+  )
 }
 
 
