@@ -59,27 +59,37 @@ with BooleanOps with MiscOps with StaticData with LiftVariables{
     s
   }
 
-/*
-  def infix_unary_toString(st: Rep[StringStruct])(implicit pos: SourceContext) = {
-    var s = unit("")
-    s =
-  }
-*/
+  def infix_toStr(st: Rep[StringStruct])(implicit pos: SourceContext) : Rep[String]
 
 }
 
 trait StringStructOpsExp extends StringStructOps with StructOpsExpOptCommon with WhileExp with IfThenElseExpOpt
 with BooleanOpsExp with NumericOpsExp with ArrayOpsExp with EqualExpOpt with StringOpsExp with OrderingOpsExp
-with MiscOpsExp with VariablesExp with StaticDataExp
+with MiscOpsExp with VariablesExp with StaticDataExp {
+  case class StringStructToString(s:Rep[StringStruct]) extends Def[String]
+  def infix_toStr(s: Rep[StringStruct])(implicit pos: SourceContext) = StringStructToString(s)
+}
 
 trait ScalaGenStringStructOps extends ScalaGenBase with ScalaGenStructOps with ScalaGenWhile with ScalaGenIfThenElse
 with ScalaGenNumericOps with ScalaGenArrayOps with ScalaGenEqual with ScalaGenStringOps with ScalaGenOrderingOps
 with ScalaGenBooleanOps with ScalaGenMiscOps with ScalaGenVariables with ScalaGenStaticData{
   val IR: StringStructOpsExp
+  import IR._
+
+  override def emitNode(sym: Sym[Any], rhs: Def[Any]) = rhs match {
+    case StringStructToString(s) => emitValDef(sym,src"$s.input.slice($s.start,$s.start+$s.length).mkString")
+    case _ => super.emitNode(sym, rhs)
+  }
 }
 
 trait CGenStringStructOps extends CGenBase with CGenStructOps with CGenWhile with CGenIfThenElse
 with CGenNumericOps with CGenArrayOps with CGenEqual with CGenStringOps with CGenOrderingOps
 with CGenBooleanOps with CGenMiscOps with CGenVariables with CGenStaticData{
   val IR: StringStructOpsExp
+  import IR._
+
+  override def emitNode(sym: Sym[Any], rhs: Def[Any]) = rhs match {
+    case StringStructToString(s) => emitValDef(sym,src"({ char* r=(char*)malloc($s.length+1); memcpy(r,$s.input+$s.start,$s.length); r[$s.length]=0; r; })")
+    case _ => super.emitNode(sym, rhs)
+  }
 }

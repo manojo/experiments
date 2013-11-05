@@ -1,0 +1,35 @@
+::Benchmark RespAndMessageParser.parse::
+Parameters(size -> 1): 0.254
+Parameters(size -> 10): 2.524
+Parameters(size -> 100): 25.184
+Parameters(size -> 1000): 253.929
+Parameters(size -> 10000): 2586.893
+
+::Benchmark RespAndMessageParserStatic.parse::
+Parameters(size -> 1): 0.018
+Parameters(size -> 10): 0.158
+Parameters(size -> 100): 1.554
+Parameters(size -> 1000): 15.634
+Parameters(size -> 10000): 156.754
+
+::Benchmark HTTPParserLL.parseFoldString::
+Parameters(size -> 1): 0.032
+Parameters(size -> 10): 0.299
+Parameters(size -> 100): 2.984
+Parameters(size -> 1000): 29.078
+Parameters(size -> 10000): 291.413
+
+::Benchmark HTTPParserLL.parse::
+Parameters(size -> 1): 0.032
+Parameters(size -> 10): 0.294
+Parameters(size -> 100): 2.932
+Parameters(size -> 1000): 28.536
+Parameters(size -> 10000): 287.759
+
+-------------------------------------------------
+
+JQ without processing, -O3, median of 10 runs on the payload of tweet1+tweet2+tweet3+tweet4+tweet6:
+- 1 loop: 0.015 sec
+- 10 loops: 0.153 sec
+- 100 loops: 1.531 sec
+- 1000 loops: 15.476 sec (2 runs because JQ it's heavily leaking memory)

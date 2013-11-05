@@ -13,6 +13,12 @@ bool upgrade;
 } Anon1323431030;
 
 typedef struct{
+const char* input;
+int start;
+int length;
+} Anon1680061013;
+
+typedef struct{
 Anon1323431030 _1;
 const char* _2;
 } Tuple2Anon1323431030String;
@@ -305,7 +311,7 @@ if (x302) {
 const char* x305 = x282;
 const bool x306 = x283;
 const int x307 = x284;
-x282 = x305;
+x282 = (char*)x305;
 x283 = false;
 const int x303 = x295 + 1;
 x284 = x303;
@@ -642,7 +648,7 @@ if (x662) {
 const char* x665 = x642;
 const bool x666 = x643;
 const int x667 = x644;
-x642 = x665;
+x642 = (char*)x665;
 x643 = false;
 const int x663 = x655 + 1;
 x644 = x663;
@@ -691,7 +697,7 @@ if (x728) {
 const char* x731 = x708;
 const bool x732 = x709;
 const int x733 = x710;
-x708 = x731;
+x708 = (char*)x731;
 x709 = false;
 const int x729 = x721 + 1;
 x710 = x729;
@@ -889,7 +895,7 @@ const int x937 = x932;
 const int x938 = x750 + x937;
 const char x939 = x0[x938];
 const char* x940 = ({ int l1=strlen(x936); char* r=(char*)malloc(l1+2); memcpy(r,x936,l1); r[l1]=x939; r[l1+2]=0; r; });
-x931 = x940;
+x931 = (char*)x940;
 const int x942 = x937 + 1;
 x932 = x942;
 }
@@ -938,7 +944,7 @@ const int x981 = x976;
 const int x982 = x750 + x981;
 const char x983 = x0[x982];
 const char* x984 = ({ int l1=strlen(x980); char* r=(char*)malloc(l1+2); memcpy(r,x980,l1); r[l1]=x983; r[l1+2]=0; r; });
-x975 = x984;
+x975 = (char*)x984;
 const int x986 = x981 + 1;
 x976 = x986;
 }
@@ -1086,7 +1092,7 @@ x1082 = x1076;
 }
 char* x1083;
 if (x1046) {
-x1083 = x817;
+x1083 = (char*)x817;
 } else {
 const bool x1050 = x638 == x1049;
 bool x1073;
@@ -1118,9 +1124,9 @@ x1073 = false;
 }
 char* x1077;
 if (x1073) {
-x1077 = x817;
+x1077 = (char*)x817;
 } else {
-x1077 = x817;
+x1077 = (char*)x817;
 }
 x1083 = x1077;
 }
@@ -1214,7 +1220,7 @@ x477 = x1090;
 const int x1092 = x1088.contentLength;
 x478 = x1092;
 const char* x1094 = x1088.connection;
-x479 = x1094;
+x479 = (char*)x1094;
 const bool x1096 = x1088.chunked;
 x480 = x1096;
 const bool x1098 = x1088.upgrade;
@@ -1271,14 +1277,7 @@ x5 = 0;
 const char x1153 = x0[x1140];
 const bool x1154 = x1153 == '\n';
 if (x1154) {
-char* x1167 = (char*)malloc(x1128+1); // TCK: prealloc
-bool x1168 = false;
 const int x1155 = x1140 + 1;
-int x1169 = x1155;
-int x1171 = -1;
-bool x1172 = true;
-int x1173 = x1155;
-int x1174 = 0;
 Tuple2IntAnon1323431030 x1138;
 if (x1133) {
 const Tuple2IntAnon1323431030 x22 = {};
@@ -1296,93 +1295,25 @@ x1138 = x1136;
 }
 const Anon1323431030 x1159 = x1138._2;
 const int x1160 = x1159.contentLength;
-
-// Address inefficiencies (x1128=contentLength)
-strlcpy(x1167,x0+x1173,x1128);
-x1173 += x1128;
-
-/*
-for (;;) {
-const int x1175 = x1174;
-const int x1177 = x1171;
-const int x1178 = x1173;
-const bool x1181 = x1172;
-const bool x1176 = x1175 < x1160;
-const bool x1179 = x1177 != x1178;
-const bool x1180 = x1176 && x1179;
-const bool x1182 = x1180 && x1181;
-if (!x1182) break;
-const int x1184 = x1173;
-x1171 = x1184;
-const bool x1186 = x1184 >= x8;
-if (x1186) {
-x1172 = false;
-} else {
-const char* x1193 = x1167;
-const bool x1194 = x1168;
-const int x1195 = x1169;
-const char x1190 = x0[x1184];
-const char* x1197 = ({ int l1=strlen(x1193); char* r=(char*)malloc(l1+2); memcpy(r,x1193,l1); r[l1]=x1190; r[l1+2]=0; r; });
-x1167 = x1197;
-x1168 = false;
-const int x1191 = x1184 + 1;
-x1169 = x1191;
-x1173 = x1191;
-const int x1203 = x1174;
-const int x1204 = x1203 + 1;
-x1174 = x1204;
-}
-}
-*/
-
-const char* x1210 = x1167;
-const bool x1211 = x1168;
-const int x1212 = x1169;
-bool x1218;
-if (x1211) {
-x1218 = true;
-} else {
-x1218 = false;
-}
-Tuple2Anon1323431030String x1221;
-if (x1218) {
-x1221 = x1;
-} else {
-Tuple2Anon1323431030String x1217;
-if (x1211) {
-x1217 = x1;
-} else {
+const int x1166 = x1155 + x1160;
+const bool x1167 = x1166 < x8;
+if (x1167) {
 const int x1158 = x1138._1;
 const char* x1161 = x1159.connection;
 const bool x1162 = x1159.chunked;
 const bool x1163 = x1159.upgrade;
 const Anon1323431030 x1164 = {x1158,x1160,x1161,x1162,x1163};
-const Tuple2Anon1323431030String x1215 = {x1164,x1210};
-x1217 = x1215;
-}
-x1221 = x1217;
-}
-x3 = x1221;
-bool x1222;
-if (x1218) {
-x1222 = true;
+const Anon1680061013 x1168 = {x0,x1155,x1166};
+const char* x1169 = ({ char* r=(char*)malloc(x1168.length+1); memcpy(r,x1168.input+x1168.start,x1168.length); r[x1168.length]=0; r; });
+const Tuple2Anon1323431030String x1171 = {x1164,x1169};
+x3 = x1171;
+x4 = false;
+x5 = x1160;
 } else {
-x1222 = x1218;
+x3 = x1;
+x4 = true;
+x5 = 0;
 }
-x4 = x1222;
-int x1223;
-if (x1218) {
-x1223 = 0;
-} else {
-int x1219;
-if (x1211) {
-x1219 = x1212;
-} else {
-x1219 = x1212;
-}
-x1223 = x1219;
-}
-x5 = x1223;
 } else {
 x3 = x1;
 x4 = true;
@@ -1454,13 +1385,12 @@ x4 = true;
 x5 = 0;
 }
 }
-const Tuple2Anon1323431030String x1326 = x3;
-const bool x1327 = x4;
-const int x1328 = x5;
-const ParseResultTuple2Anon1323431030String x1329 = {x1326,x1327,x1328};
-//printf("%s\n",x1329);
-//printf("DONE\n");
-return x1329;
+const Tuple2Anon1323431030String x1282 = x3;
+const bool x1283 = x4;
+const int x1284 = x5;
+const ParseResultTuple2Anon1323431030String x1285 = {x1282,x1283,x1284};
+//printf("%s\n",x1285);
+return x1285;
 }
 /*****************************************
   End of C Generated Code
