@@ -224,12 +224,9 @@ object TestHttpCParser {
     val g = new Gen()
     val f = g.compile(g.respAndMessageParse)
     println(f(s))
-
-    /*
-    val w = new Writer("src/main/c/http_gen_full.h")
+    val w = new Writer("src/main/c/http_gen_full2.h")
     w.codegen.emitSource(w.respAndMessageParse _ , "respAndMessageParse", w.pr)
     w.close
-    */
     /*
     val w = new Writer("src/main/c/http_gen.h")
     w.codegen.emitSource(w.responseParse _ , "responseParse", w.pr)

@@ -1,0 +1,14 @@
+#!/bin/sh
+cd `dirname $0`
+
+if [ -x /usr/local/gcc/bin/gcc ]; then GCC=/usr/local/gcc/bin/gcc; else GCC=gcc; fi
+
+${GCC} gen.c -o gen && ./gen
+
+# -Wall
+
+
+#scp -r . manojo@lampmac10.epfl.ch:/Users/manojo/tck > /dev/null && \
+#ssh manojo@lampmac10.epfl.ch 'cd tck && gcc gen.c -fnested-functions -o gen && ./gen'
+
+
