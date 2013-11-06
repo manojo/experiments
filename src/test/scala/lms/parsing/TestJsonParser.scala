@@ -18,6 +18,13 @@ trait JsonParserProg extends JsonParser{
     println(s)
   }
 
+
+  def jsonInt(in: Rep[Array[Char]]): Rep[Unit] = {
+    var s = Failure[JV](unit(-1))
+    val p = json(in).apply(unit(0))
+    p{x => s = x}
+    println(s)
+  }
 }
 
 class TestJsonParser extends FileDiffSuite {
@@ -36,6 +43,12 @@ class TestJsonParser extends FileDiffSuite {
           with ScalaGenFunctions with ScalaGenOptionOps with ScalaGenStringStructOps{
           val IR: self.type = self
         }
+
+
+        codegen.emitSource(jsonInt _ , "jsonInt", new java.io.PrintWriter(System.out))
+        val testcJsonInt = compile(jsonInt)
+        testcJsonInt("123".toArray)
+
 
         codegen.emitSource(jsonParse _ , "jsonParse", new java.io.PrintWriter(System.out))
         val testcJsonParse = compile(jsonParse)
