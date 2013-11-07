@@ -8,7 +8,7 @@ import java.io.PrintWriter
 import java.io.StringWriter
 import java.io.FileOutputStream
 
-trait JsonParser extends TokenParsers with RecParsers with StringStructOps with CastingOpsExp {
+trait JsonParser extends TokenParsers with RecParsers with StringStructOps with CastingOpsExp /*with FunctionsRecursiveExp*/ {
   final val kNull = unit(0)
   final val kFalse = unit(1)
   final val kTrue = unit(2)
@@ -24,20 +24,33 @@ trait JsonParser extends TokenParsers with RecParsers with StringStructOps with 
     val data = d // pointer | long | double, maps alternate key/value
   }
 
-  //def rec_mks:Rep[JV=>String] = doLambda((jv: Rep[JV]) =>infix_mkString(jv))
+  /*
+  // Desired function
+  def infix_mkString(jv: Rep[JV]) = jStr(jv)
+  def jStr:Rep[JV=>String] = doLambda{ (jv: Rep[JV]) =>
+    if (jv.kind==kNull) unit("null")
+    else if (jv.kind==kFalse) unit("false")
+    else if (jv.kind==kTrue) unit("true")
+    else if (jv.kind==kInt) unit("")+jv.data
+    else if (jv.kind==kDouble) unit("")+jv.data
+    else if (jv.kind==kString) unit("\"")+jv.data+unit("\"")
+    else if (jv.kind==kArray) unit("[")+jv.data.AsInstanceOf[List[JV]].map(x=>jStr(x)).mkString(unit(","))+unit("]")
+    else if (jv.kind==kObject) unit("{")+jv.data.AsInstanceOf[List[(String,JV)]].map(x=>unit("\"")+x._1+unit("\":")+x._2).mkString(unit(","))+unit("}")
+    else unit("<bad kind: ")+jv.kind+unit(">")
+  }
+  */
 
+  //def rec_mks:Rep[JV=>String] = doLambda((jv: Rep[JV]) =>infix_mkString(jv))
   def infix_mkString(jv: Rep[JV]) : Rep[String] = {
-    var s = unit("");
-    if (jv.kind==kNull) s = unit("null")
-    else if (jv.kind==kFalse) s = unit("false")
-    else if (jv.kind==kTrue) s = unit("true")
-    else if (jv.kind==kInt) s = unit("")+jv.data
-    else if (jv.kind==kDouble) s = unit("")+jv.data
-    else if (jv.kind==kString) s = unit("\"")+jv.data+unit("\"")
-    else if (jv.kind==kArray) s = unit("[")+jv.data.AsInstanceOf[List[JV]] /*.map(rec_mks)*/ .mkString(unit(","))+unit("]")
-    else if (jv.kind==kObject) s = unit("{")+jv.data.AsInstanceOf[List[(String,JV)]].map(x=>unit("\"")+x._1+unit("\":")+x._2).mkString(unit(","))+unit("}")
-    else s = unit("XXX: unimplemented")
-    s+unit("(")+jv.kind+unit(")")
+    if (jv.kind==kNull) unit("null")
+    else if (jv.kind==kFalse) unit("false")
+    else if (jv.kind==kTrue) unit("true")
+    else if (jv.kind==kInt) unit("")+jv.data
+    else if (jv.kind==kDouble) unit("")+jv.data
+    else if (jv.kind==kString) unit("\"")+jv.data+unit("\"")
+    else if (jv.kind==kArray) unit("[")+jv.data.AsInstanceOf[List[JV]] /*.map(rec_mks)*/ .mkString(unit(","))+unit("]")
+    else if (jv.kind==kObject) unit("{")+jv.data.AsInstanceOf[List[(String,JV)]].map(x=>unit("\"")+x._1+unit("\":")+x._2).mkString(unit(","))+unit("}")
+    else unit("<bad kind: ")+jv.kind+unit(">")
   }
 
   def jFalse = JV(kFalse,unit(null))
