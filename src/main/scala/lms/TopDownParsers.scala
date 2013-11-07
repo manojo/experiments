@@ -172,10 +172,6 @@ trait TopDownParsers extends MyScalaOpsPkg with GeneratorOps with LiftVariables
    * a Success combinator
    */
   def success[T:Manifest](v:Rep[T]) = Parser[T]{i => elGen(Success(v, i))}
-
-
-
-
 }
 
 trait CharParsers extends TopDownParsers with CharOps{
@@ -244,6 +240,8 @@ trait TokenParsers extends TopDownParsers with CharParsers with StringStructOps{
       repFold(digit2Int(in))(x, (res:Rep[Int], y: Rep[Int]) => (res * unit(10) + y))
     }
 
+  def intLit(in:Rep[Input]) : Parser[Int] = digit2Int(in) >> {x => repFold(digit2Int(in))(x, (res:Rep[Int], y: Rep[Int]) => (res * unit(10) + y)) }
+  //def doubleLit(in:Rep[Input]) : Parser[Double] = rep1(acceptIf(in,isDigit))~accept(in,".")~rep(acceptIf(in,isDigit)) ^^ { x => (x._1._1.mkString+unit(".")+x._2.mkString).toDouble }
 
   def stringLit(in:Rep[Input]) : Parser[String] =
     accept(in, unit('\"')) ~> repToS( acceptIf(in, (x:Rep[Char]) => x != unit('\"'))) <~ accept(in, unit('\"')) ^^ {

@@ -424,7 +424,9 @@ trait ScalaGenStructOps extends ScalaGenBase with BaseGenStructOps {
     for ((name, elems) <- encounteredStructs) {
       stream.println()
       stream.print("case class " + name + "(")
-      stream.println(elems.map(e => e._1 + ": " + remap(e._2)).mkString(", ") + ")")
+      // stream.println(elems.map(e => e._1 + ": " + remap(e._2)).mkString(", ") + ")")
+      // XXX: DIRTY HACK HERE
+      stream.println(elems.map(e => e._1 + ": " + (if (e._1=="data") "Any" else remap(e._2))).mkString(", ") + ")")
     }
     stream.flush()
     super.emitDataStructures(stream)

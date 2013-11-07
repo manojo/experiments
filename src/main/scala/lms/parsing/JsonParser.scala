@@ -8,46 +8,87 @@ import java.io.PrintWriter
 import java.io.StringWriter
 import java.io.FileOutputStream
 
-trait JsonParser extends TokenParsers with RecParsers with StringStructOps{
+// Casting operations and Any support
+trait CastOpsExp extends BaseExp {
+  case class CastOp[T:Manifest,U](obj:Rep[T],as:Manifest[U]) extends Def[U]
+  def cast[T:Manifest,U](obj:Rep[T])(implicit mU:Manifest[U]):Rep[U] = CastOp(obj,mU)
+}
+trait ScalaGenCast extends ScalaGenBase {
+  val IR: CastOpsExp
+  import IR._
+  override def emitNode(sym: Sym[Any], rhs: Def[Any]) = rhs match {
+    case CastOp(s,tp) => emitValDef(sym,src"$s.asInstanceOf["+remap(tp)+"]")
+    case _ => super.emitNode(sym, rhs)
+  }
+}
 
-  final val kFalse = 0
-  final val kTrue = 1
-  final val kNull = 2
-  final val kLong = 4
-  final val kDouble = 5
-  final val kString = 6
-  final val kArray = 7
-  final val kObject = 8
+trait JsonParser extends TokenParsers with RecParsers with StringStructOps with CastOpsExp {
+  final val kNull = unit(0)
+  final val kFalse = unit(1)
+  final val kTrue = unit(2)
+  final val kInt = unit(3)
+  final val kDouble = unit(4)
+  final val kString = unit(5)
+  final val kArray = unit(6)
+  final val kObject = unit(7)
 
-  type JV = Record { val kind:Int; val data:Any; val length:Int }
-  def JV(k:Rep[Int], d:Rep[Any], l:Rep[Int]) = new Record {
+  type JV = Record { val kind:Int; val data:Any }
+  def JV(k:Rep[Int], d:Rep[Any]) = new Record {
     val kind = k
     val data = d // pointer | long | double, maps alternate key/value
-    val length = l // # of elements in object/
-    }
+  }
 
-  def valFalse = JV(unit(0),unit(null),unit(0))
-  def valTrue = JV(unit(1),unit(null),unit(0))
-  def valNull = JV(unit(2),unit(null),unit(0))
-  def valInt(n:Rep[Int]) = JV(unit(4),n,unit(0))
-  def valLong(n:Rep[Long]) = JV(unit(4),n,unit(0))
-  def valFloat(n:Rep[Float]) = JV(unit(5),n,unit(0))
-  def valDouble(n:Rep[Double]) = JV(unit(5),n,unit(0))
-  def valString(s:Rep[String]) = JV(unit(6),s,s.length)
-  def valArray(a:Rep[Array[JV]],l:Rep[Int]) = JV(unit(7),a,l)
-  def valObject(a:Rep[(String,JV)],l:Rep[Int]) = JV(unit(7),a,l)
+  def rec:Rep[JV=>String] = doLambda((jv: Rep[JV]) =>infix_mkString(jv))
+
+  def infix_mkString(jv: Rep[JV]) /*(implicit pos: SourceContext)*/ : Rep[String] = {
+    var s = unit("");
+    if (jv.kind==kNull) s = unit("null")
+    else if (jv.kind==kFalse) s = unit("false")
+    else if (jv.kind==kTrue) s = unit("true")
+    else if (jv.kind==kInt) s = unit("")+jv.data
+    else if (jv.kind==kDouble) s = unit("")+jv.data
+    else if (jv.kind==kString) s = unit("\"")+jv.data+unit("\"")
+    else if (jv.kind==kArray) s = unit("[")+cast[Any,List[JV]](jv.data) /*.map(rec)*/ .mkString(unit(","))+unit("]")
+    else s = unit("XXX: unimplemented")
+    s+unit("(")+jv.kind+unit(")")
+  }
+
+  def jFalse = JV(kFalse,unit(null))
+  def jTrue = JV(kTrue,unit(null))
+  def jNull = JV(kNull,unit(null))
+  def jInt(n:Rep[Int]) = JV(kInt,n)
+  def jDouble(n:Rep[Double]) = JV(kDouble,n)
+  def jString(s:Rep[String]) = JV(kString,s)
+  def jArray(a:Rep[List[JV]]) = JV(kArray,a)
+  def jObject(a:Rep[List[(String,JV)]]) = JV(kObject,a)
 
   //local whitespaces
   override def whitespaces(in: Rep[Input]) : Parser[String] =
     repToS_f(acceptIf(in, {x:Rep[Char] => x == unit(' ') || x == unit('\n')}))// ^^^ {unit("")}
 
-  def json(in: Rep[Input]): Parser[Any] = {
-    def value = (wholeNumber(in) ^^ { x=>valInt(x) }
-              |  accept(in,"null") ^^^ valNull
-              |  accept(in,"false") ^^^ valFalse
-              |  accept(in,"true") ^^^ valTrue
-              )
 
+  def json2(in:Rep[Input]): Parser[JV] = rec("json2",
+    accept(in,"false") ^^^ jFalse
+  | accept(in,"true") ^^^ jTrue
+  | accept(in,"null") ^^^ jNull
+  //| doubleLit(in) ^^ { s => jDouble(s) }
+  | intLit(in) ^^ { s => jInt(s) }
+  | stringLit(in) ^^ { s => jString(s) }
+  | accept(in,unit('[')) ~> repsep(json2(in), accept(in, unit(','))) <~ accept(in, unit(']')) ^^  { a=>jArray(a) }
+  )
+
+
+
+
+  def json(in: Rep[Input]): Parser[Any] = {
+  /*
+    def value = ( //wholeNumber(in) ^^ { x=>valInt(x) }
+              //|
+              accept(in,"null") ^^^ valNull
+              //|  accept(in,"false") ^^^ valFalse
+              //|  accept(in,"true") ^^^ valTrue
+              )
+  */
     //def value = rec("json",
     //  obj | arr | stringLit(in) | wholeNumber(in) //|
     //  //"null", "true", "false"
@@ -75,4 +116,56 @@ trait JsonParser extends TokenParsers with RecParsers with StringStructOps{
     accept(in, unit('\"')) ~>
     repToS(acceptIf(in, (x:Rep[Char]) => x != unit('\"'))) <~
     accept(in, unit('\"'))
+}
+
+
+
+object TestJson {
+  def main(args:Array[String]) {
+    new JsonParser with RecParsersExp with MyScalaOpsPkgExp with GeneratorOpsExp
+     with CharOpsExp with MyIfThenElseExpOpt with StructOpsExpOptCommon
+     with ParseResultOpsExp with FunctionsExp with OptionOpsExp with StringStructOpsExp
+     with MyScalaCompile{self =>
+      val codegen = new MyScalaCodeGenPkg with ScalaGenGeneratorOps
+        with ScalaGenCharOps with ScalaGenParseResultOps with ScalaGenStructOps
+        with ScalaGenFunctions with ScalaGenOptionOps with ScalaGenStringStructOps
+        with ScalaGenCast {
+        val IR: self.type = self
+      }
+
+      // JSON parser prog
+
+      /*
+      def jsonParse(in: Rep[Array[Char]]): Rep[Unit] = {
+        var s = Failure[(String,String)](unit(-1))
+        val p = json(in).apply(unit(0))
+        p{x => s = x}
+        println(s)
+      }
+      */
+
+      def jsonParse(in: Rep[Array[Char]]): Rep[Unit] = {
+        var s = Failure[JV](unit(0))
+        val parser = (json2(in)).apply(unit(0))
+        parser{x => s = x}
+        val r = readVar(s)
+        println(unit("Empty=")+r.isEmpty+unit(", next=")+r.next)
+        if (!r.isEmpty) println(r.get.mkString)
+      }
+
+      codegen.emitSource(jsonParse _ , "jsonParse", new java.io.PrintWriter(System.out))
+      codegen.emitDataStructures(new java.io.PrintWriter(System.out))
+
+      val testcJsonParse = compile(jsonParse)
+       //false,true,null,123,1.23,
+      testcJsonParse("[null,false,true,\"hello\",123,[],[[],[]]]".toArray)
+
+/*
+      codegen.emitSource(jsonParse _ , "jsonParse", new java.io.PrintWriter(System.out))
+      val testcJsonParse = compile(jsonParse)
+      testcJsonParse("{}".toArray)
+      testcJsonParse("{\"asdf\" : \"asd\"}".toArray)
+*/
+    }
+  }
 }
