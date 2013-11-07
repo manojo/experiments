@@ -8,21 +8,7 @@ import java.io.PrintWriter
 import java.io.StringWriter
 import java.io.FileOutputStream
 
-// Casting operations and Any support
-trait CastOpsExp extends BaseExp {
-  case class CastOp[T:Manifest,U](obj:Rep[T],as:Manifest[U]) extends Def[U]
-  def cast[T:Manifest,U](obj:Rep[T])(implicit mU:Manifest[U]):Rep[U] = CastOp(obj,mU)
-}
-trait ScalaGenCast extends ScalaGenBase {
-  val IR: CastOpsExp
-  import IR._
-  override def emitNode(sym: Sym[Any], rhs: Def[Any]) = rhs match {
-    case CastOp(s,tp) => emitValDef(sym,src"$s.asInstanceOf["+remap(tp)+"]")
-    case _ => super.emitNode(sym, rhs)
-  }
-}
-
-trait JsonParser extends TokenParsers with RecParsers with StringStructOps with CastOpsExp {
+trait JsonParser extends TokenParsers with RecParsers with StringStructOps with CastingOpsExp {
   final val kNull = unit(0)
   final val kFalse = unit(1)
   final val kTrue = unit(2)
@@ -38,9 +24,9 @@ trait JsonParser extends TokenParsers with RecParsers with StringStructOps with 
     val data = d // pointer | long | double, maps alternate key/value
   }
 
-  def rec:Rep[JV=>String] = doLambda((jv: Rep[JV]) =>infix_mkString(jv))
+  //def rec_mks:Rep[JV=>String] = doLambda((jv: Rep[JV]) =>infix_mkString(jv))
 
-  def infix_mkString(jv: Rep[JV]) /*(implicit pos: SourceContext)*/ : Rep[String] = {
+  def infix_mkString(jv: Rep[JV]) : Rep[String] = {
     var s = unit("");
     if (jv.kind==kNull) s = unit("null")
     else if (jv.kind==kFalse) s = unit("false")
@@ -48,8 +34,8 @@ trait JsonParser extends TokenParsers with RecParsers with StringStructOps with 
     else if (jv.kind==kInt) s = unit("")+jv.data
     else if (jv.kind==kDouble) s = unit("")+jv.data
     else if (jv.kind==kString) s = unit("\"")+jv.data+unit("\"")
-    else if (jv.kind==kArray) s = unit("[")+cast[Any,List[JV]](jv.data) /*.map(rec)*/ .mkString(unit(","))+unit("]")
-    //else if (jv.kind==kObject) s = unit("{")+cast[Any,List[(String,JV)]](jv.data).map(x=>unit("\"")+x._1+unit("\":")+x._2).mkString(unit(","))+unit("}")
+    else if (jv.kind==kArray) s = unit("[")+jv.data.AsInstanceOf[List[JV]] /*.map(rec_mks)*/ .mkString(unit(","))+unit("]")
+    else if (jv.kind==kObject) s = unit("{")+jv.data.AsInstanceOf[List[(String,JV)]].map(x=>unit("\"")+x._1+unit("\":")+x._2).mkString(unit(","))+unit("}")
     else s = unit("XXX: unimplemented")
     s+unit("(")+jv.kind+unit(")")
   }
@@ -75,7 +61,7 @@ trait JsonParser extends TokenParsers with RecParsers with StringStructOps with 
   | intLit(in) ^^ { s => jInt(s) }
   | stringLit(in) ^^ { s => jString(s) }
   | chr(in,'[') ~> repsep(json2(in), chr(in,',')) <~ chr(in,']') ^^  { a=>jArray(a) }
-  //| chr(in,'{') ~> repsep((stringLit(in) <~ chr(in,':')) ~ json2(in), chr(in,',')) <~ chr(in,'}') ^^ { a=>jNull }
+  | chr(in,'{') ~> repsep((stringLit(in) <~ chr(in,':')) ~ json2(in) ^^ {x=> jNull }, chr(in,',')) <~ chr(in,'}') ^^ { l=> jNull /*jObject(l)*/ } // XXX: fix this
   )
 
   def json(in: Rep[Input]): Parser[Any] = {
@@ -126,8 +112,7 @@ object TestJson {
      with MyScalaCompile{self =>
       val codegen = new MyScalaCodeGenPkg with ScalaGenGeneratorOps
         with ScalaGenCharOps with ScalaGenParseResultOps with ScalaGenStructOps
-        with ScalaGenFunctions with ScalaGenOptionOps with ScalaGenStringStructOps
-        with ScalaGenCast {
+        with ScalaGenFunctions with ScalaGenOptionOps with ScalaGenStringStructOps {
         val IR: self.type = self
       }
 
@@ -153,11 +138,12 @@ object TestJson {
 
       codegen.emitSource(jsonParse _ , "jsonParse", new java.io.PrintWriter(System.out))
       codegen.emitDataStructures(new java.io.PrintWriter(System.out))
+      codegen.reset
 
       val testcJsonParse = compile(jsonParse)
        //false,true,null,123,1.23,
       testcJsonParse("[null,false,true,\"hello\",123,1.23,[],[[],[]]]".toArray)
-      //testcJsonParse("{\"foo\":true,\"bar\":false}".toArray)
+      testcJsonParse("{\"foo\":true,\"bar\":false}".toArray)
 
 /*
       codegen.emitSource(jsonParse _ , "jsonParse", new java.io.PrintWriter(System.out))

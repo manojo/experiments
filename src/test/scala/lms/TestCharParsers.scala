@@ -152,11 +152,11 @@ class TestCharParsers extends FileDiffSuite {
        new CharParsersProg with MyScalaOpsPkgExp with GeneratorOpsExp
         with CharOpsExp with MyIfThenElseExpOpt with StructOpsExpOptCommon
         with ParseResultOpsExp with FunctionsExp with OptionOpsExp
-        with MyScalaCompile{self =>
+        with StringStructOpsExp with MyScalaCompile {self =>
 
         val codegen = new MyScalaCodeGenPkg with ScalaGenGeneratorOps
           with ScalaGenCharOps with ScalaGenParseResultOps with ScalaGenStructOps
-          with ScalaGenFunctions with ScalaGenOptionOps{
+          with ScalaGenFunctions with ScalaGenOptionOps with ScalaGenStringStructOps {
             val IR: self.type = self
         }
 
@@ -251,11 +251,11 @@ class TestCharParsers extends FileDiffSuite {
       new CharParsersProg with MyScalaOpsPkgExp with GeneratorOpsExp
        with CharOpsExp with MyIfThenElseExpOpt with StructOpsExpOptCommon
        with ParseResultOpsExp with FunctionsExp with OptionOpsExp
-       with MyScalaCompile{self =>
+       with StringStructOpsExp with MyScalaCompile{self =>
 
         val codegen = new MyScalaCodeGenPkg with ScalaGenGeneratorOps
           with ScalaGenCharOps with ScalaGenParseResultOps with ScalaGenStructOps
-          with ScalaGenFunctions with ScalaGenOptionOps{
+          with ScalaGenFunctions with ScalaGenOptionOps with ScalaGenStringStructOps {
             val IR: self.type = self
         }
 

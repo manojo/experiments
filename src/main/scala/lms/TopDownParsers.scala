@@ -10,7 +10,7 @@ import scala.virtualization.lms.internal.Effects
 
 
 trait TopDownParsers extends MyScalaOpsPkg with GeneratorOps with LiftVariables
-  with StructOps with ParseResultOps with OptionOps with Functions{
+  with StructOps with ParseResultOps with OptionOps with Functions {
   type Input = Array[Char]
   type Pos = Int
 
@@ -132,11 +132,11 @@ trait TopDownParsers extends MyScalaOpsPkg with GeneratorOps with LiftVariables
   //rep can be expressed as a fold
   def rep[T:Manifest](p : => Parser[T]) =
     repFold(p)(List[T]().asInstanceOf[Rep[List[T]]],
-      {(ls : Rep[List[T]], t: Rep[T]) => ls ++ List(t)}
+      {(ls : Rep[List[T]], t: Rep[T]) => ls ++ List(t) }
     )
 
   def repsep[T:Manifest,U:Manifest](p: => Parser[T], q: =>Parser[U]): Parser[List[T]] =
-    (p ~ rep(q ~>  p)) ^^ {x => x._1 :: x._2} | success(List[T]())
+    (p ~ rep(q ~>  p)) ^^ {x => x._1 :: x._2 } | success(List[T]())
 
   //a 'conditional' parser
   def __ifThenElse[A: Manifest](cond: Rep[Boolean], thenp: => Parser[A], elsep: => Parser[A]): Parser[A] = Parser[A]{
