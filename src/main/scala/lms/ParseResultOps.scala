@@ -9,7 +9,7 @@ import java.io.PrintWriter
 /**
  * Inspired from TupleOps on delite-develop branch
  */
-trait ParseResultOps extends Base with IfThenElse with BooleanOps with CastingOps{
+trait ParseResultOps extends Base with IfThenElse with BooleanOps {
 
   /**A mini implementation of a parseresult
    *
@@ -62,7 +62,7 @@ trait ParseResultOps extends Base with IfThenElse with BooleanOps with CastingOp
 */
 }
 
-trait ParseResultOpsExp extends ParseResultOps with IfThenElseExp with BooleanOpsExp with StructOpsExpOpt with CastingOpsExp{
+trait ParseResultOpsExp extends ParseResultOps with IfThenElseExp with BooleanOpsExp with StructOpsExpOpt {
 
   //implicit def make_parseResult[A:Manifest](pr: ParseResult[A])(implicit pos: SourceContext): Exp[ParseResult[A]]
   //  = struct(classTag[ParseResult[A]], "res" -> pr.res, "empty" -> pr.isEmpty, "next" -> pr.next)
@@ -76,8 +76,41 @@ trait ParseResultOpsExp extends ParseResultOps with IfThenElseExp with BooleanOp
   def Success[T:Manifest](res: Rep[T], next:Rep[Int]) : Exp[ParseResult[T]]
     = struct(classTag[ParseResult[T]], "res" -> res, "empty" -> unit(false), "next" -> next)
 
+  // FIXME: Remove this once
+  // https://github.com/TiarkRompf/virtualization-lms-core/pull/70 has
+  // been merged.
+  object ZeroVal {
+
+    val BooleanC = classOf[Boolean]
+    val ByteC = classOf[Byte]
+    val CharC = classOf[Char]
+    val IntC = classOf[Int]
+    val LongC = classOf[Long]
+    val ShortC = classOf[Short]
+    val DoubleC = classOf[Double]
+    val FloatC = classOf[Float]
+    val UnitC = classOf[Unit]
+
+    def apply[A: Manifest]: A = {
+      val z: Any = implicitly[Manifest[A]].runtimeClass match {
+        case ByteC    => 0.toByte
+        case CharC    => 0.toChar
+        case IntC     => 0
+        case LongC    => 0L
+        case ShortC   => 0.toShort
+        case DoubleC  => 0.0
+        case FloatC   => (0.0).toFloat
+        case BooleanC => false
+        case UnitC    => ()
+        case _        => null
+      }
+      z.asInstanceOf[A]
+    }
+
+  }
+
   def Failure[T:Manifest](next: Rep[Int]): Exp[ParseResult[T]]
-    = struct(classTag[ParseResult[T]], "res" -> rep_asinstanceof(unit(null), manifest[Null], manifest[T]), "empty" -> unit(true), "next" -> next)
+    = struct(classTag[ParseResult[T]], "res" -> unit(ZeroVal[T]), "empty" -> unit(true), "next" -> next)
 }
 
 trait ParseResultGenBase extends GenericCodegen with BaseGenStructOps{
@@ -89,5 +122,5 @@ trait ParseResultGenBase extends GenericCodegen with BaseGenStructOps{
   }
 }
 
-trait ScalaGenParseResultOps extends ScalaGenBase with ParseResultGenBase with ScalaGenStructOps with ScalaGenCastingOps{ val IR: ParseResultOpsExp }
-trait CGenParseResultOps extends CGenBase with ParseResultGenBase with CGenStructOps with CGenCastingOps{ val IR: ParseResultOpsExp }
+trait ScalaGenParseResultOps extends ScalaGenBase with ParseResultGenBase with ScalaGenStructOps { val IR: ParseResultOpsExp }
+trait CGenParseResultOps extends CGenBase with ParseResultGenBase with CGenStructOps { val IR: ParseResultOpsExp }

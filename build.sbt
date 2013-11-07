@@ -38,6 +38,9 @@ scalacOptions ++= Seq(
   //"-Yinline-warnings"
 )
 
+// Our tests are not threadsafe so disabling parallel execution for now
+parallelExecution in Test := false
+
 testFrameworks += new TestFramework("org.scalameter.ScalaMeterFramework")
 
 //avoid testing during assembly

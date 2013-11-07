@@ -266,7 +266,7 @@ trait StructOpsExpOptCommon extends StructOpsExpOpt with VariablesExp with IfThe
     case _ => super.readVar(v)
   }
 
-  /*override def ifThenElse[T:Manifest](cond: Rep[Boolean], a: Block[T], b: Block[T])(implicit pos: SourceContext) = (a,b) match {
+  override def ifThenElse[T:Manifest](cond: Rep[Boolean], a: Block[T], b: Block[T])(implicit pos: SourceContext) = (a,b) match {
     case (Block(Def(Struct(tagA,elemsA))), Block(Def(Struct(tagB, elemsB)))) =>
       assert(tagA == tagB)
       val elemsNew = for (((lk,lv), (rk,rv)) <- elemsA zip elemsB) yield {
@@ -276,7 +276,7 @@ trait StructOpsExpOptCommon extends StructOpsExpOpt with VariablesExp with IfThe
       struct[T](tagA, elemsNew)
     case _ => super.ifThenElse(cond,a,b)
   }
-  */
+
 }
 
 

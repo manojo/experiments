@@ -141,15 +141,16 @@ class TestSCharParsers extends FileDiffSuite {
   val prefix = "test-out/"
 
   def testSimpleParsers = {
-    withOutFile(prefix+"schar-parser"){
+    withOutFile(prefix+"schar-parser") {
        new SCharParsersProg with MyScalaOpsPkgExp with CharOpsExp
-        with MyIfThenElseExpOpt with StructOpsExpOptCommon
+        with MyIfThenElseExpOpt with StructOpsFatExpOptCommon
         with ParseResultOpsExp with FunctionsExp with OptionOpsExp
-        with MyScalaCompile{self =>
+        with MyScalaCompile { self =>
 
         val codegen = new MyScalaCodeGenPkg with ScalaGenCharOps
-          with ScalaGenParseResultOps with ScalaGenStructOps
-          with ScalaGenFunctions with ScalaGenOptionOps{
+          with ScalaGenParseResultOps with ScalaGenFatStructOps
+          with ScalaGenFunctions with ScalaGenOptionOps
+          with ScalaGenIfThenElseFat {
             val IR: self.type = self
         }
 

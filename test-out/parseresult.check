@@ -34,10 +34,9 @@ ParseResultInt(6,false,10)
 *******************************************/
 class testMapFail extends ((Int)=>(Unit)) {
 def apply(x20:Int): Unit = {
-val x21 = null.asInstanceOf[Int]
-val x22 = new ParseResultInt(x21,true,x20)
-val x23 = println(x22)
-x23
+val x21 = new ParseResultInt(0,true,x20)
+val x22 = println(x21)
+x22
 }
 }
 /*****************************************
@@ -49,10 +48,10 @@ ParseResultInt(0,true,3)
   Emitting Generated Code                  
 *******************************************/
 class testOrElseLeft extends ((Int)=>(Unit)) {
-def apply(x29:Int): Unit = {
-val x31 = new ParseResultInt(2,false,x29)
-val x32 = println(x31)
-x32
+def apply(x28:Int): Unit = {
+val x30 = new ParseResultInt(2,false,x28)
+val x31 = println(x30)
+x31
 }
 }
 /*****************************************
@@ -64,10 +63,10 @@ ParseResultInt(2,false,3)
   Emitting Generated Code                  
 *******************************************/
 class testOrElseRight extends ((Int)=>(Unit)) {
-def apply(x39:Int): Unit = {
-val x40 = new ParseResultInt(x39,false,10)
-val x42 = println(x40)
-x42
+def apply(x38:Int): Unit = {
+val x39 = new ParseResultInt(x38,false,10)
+val x41 = println(x39)
+x41
 }
 }
 /*****************************************
