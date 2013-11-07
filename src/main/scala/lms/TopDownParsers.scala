@@ -174,7 +174,7 @@ trait TopDownParsers extends MyScalaOpsPkg with GeneratorOps with LiftVariables
   def success[T:Manifest](v:Rep[T]) = Parser[T]{i => elGen(Success(v, i))}
 }
 
-trait CharParsers extends TopDownParsers with CharOps{
+trait CharParsers extends TopDownParsers with CharOps with StringStructOps {
   type Elem = Char
 
   def isLetter(c: Rep[Char]) : Rep[Boolean] =
@@ -219,8 +219,20 @@ trait CharParsers extends TopDownParsers with CharOps{
     else elGen(Success[Int](i, i+unit(1)))
   }
 
+  // Non empty sequence of characters matching predicate 'p'
+  def str(in:Rep[Input],p:Rep[Elem]=>Rep[Boolean], empty:Boolean=false) = Parser[StringStruct] { pos:Rep[Int] =>
+    Generator{ g =>
+      val l = in.length
+      val e = __newVar(pos)
+      while (e<l && p(in(e))) { e += 1 }
+      if (empty) g(Success[StringStruct](String(in,pos,e-pos),e))
+      else {
+        if (pos==e) g(Failure[StringStruct](pos))
+        else g(Success[StringStruct](String(in,pos,e-pos),e))
+      }
+    }
+  }
 }
-
 
 trait TokenParsers extends TopDownParsers with CharParsers with StringStructOps{
 
@@ -238,15 +250,18 @@ trait TokenParsers extends TopDownParsers with CharParsers with StringStructOps{
   def wholeNumber(in: Rep[Input]): Parser[Int] =
     digit2Int(in) >> {x =>
       repFold(digit2Int(in))(x, (res:Rep[Int], y: Rep[Int]) => (res * unit(10) + y))
-    }
+  }
 
-  def intLit(in:Rep[Input]) : Parser[Int] = digit2Int(in) >> {x => repFold(digit2Int(in))(x, (res:Rep[Int], y: Rep[Int]) => (res * unit(10) + y)) }
-  //def doubleLit(in:Rep[Input]) : Parser[Double] = rep1(acceptIf(in,isDigit))~accept(in,".")~rep(acceptIf(in,isDigit)) ^^ { x => (x._1._1.mkString+unit(".")+x._2.mkString).toDouble }
-
-  def stringLit(in:Rep[Input]) : Parser[String] =
+  // the syntax for parsing double is too lousy, everything becomes double
+  def chr(in:Rep[Input],c:Char) = accept(in, unit(c))
+  def intLit(in:Rep[Input]) : Parser[Int] = opt(chr(in,'-')) ~ str(in,c=>c>=unit('0')&&c<=unit('9')) ^^ { case x => val v=x._2.toStr.toInt; if (x._1.isDefined) v*unit(-1) else v  }
+  def doubleLit(in:Rep[Input]) : Parser[Double] = str(in,c=>c>=unit('0')&&c<=unit('9') || c==unit('-') || c==unit('.') || c==unit('e') || c==unit('E')) ^^ { _.toStr.toDouble }
+  def stringLit(in:Rep[Input]) : Parser[String] = chr(in,'"') ~> str(in,_ != unit('"') ,true) <~ chr(in,'"') ^^ { _.toStr }
+    /*
     accept(in, unit('\"')) ~> repToS( acceptIf(in, (x:Rep[Char]) => x != unit('\"'))) <~ accept(in, unit('\"')) ^^ {
       xs: Rep[String] => unit("StringLit(") + xs + unit(")")
     }
+    */
 
   def whitespaces(in: Rep[Input]) : Parser[String] =
     repToS(acceptIf(in, {x:Rep[Char] => x == unit(' ') || x == unit('\n')})) ^^^ {unit("")}

@@ -49,6 +49,7 @@ trait JsonParser extends TokenParsers with RecParsers with StringStructOps with 
     else if (jv.kind==kDouble) s = unit("")+jv.data
     else if (jv.kind==kString) s = unit("\"")+jv.data+unit("\"")
     else if (jv.kind==kArray) s = unit("[")+cast[Any,List[JV]](jv.data) /*.map(rec)*/ .mkString(unit(","))+unit("]")
+    //else if (jv.kind==kObject) s = unit("{")+cast[Any,List[(String,JV)]](jv.data).map(x=>unit("\"")+x._1+unit("\":")+x._2).mkString(unit(","))+unit("}")
     else s = unit("XXX: unimplemented")
     s+unit("(")+jv.kind+unit(")")
   }
@@ -66,19 +67,16 @@ trait JsonParser extends TokenParsers with RecParsers with StringStructOps with 
   override def whitespaces(in: Rep[Input]) : Parser[String] =
     repToS_f(acceptIf(in, {x:Rep[Char] => x == unit(' ') || x == unit('\n')}))// ^^^ {unit("")}
 
-
   def json2(in:Rep[Input]): Parser[JV] = rec("json2",
     accept(in,"false") ^^^ jFalse
   | accept(in,"true") ^^^ jTrue
   | accept(in,"null") ^^^ jNull
-  //| doubleLit(in) ^^ { s => jDouble(s) }
+  | doubleLit(in) ^^ { s => jDouble(s) }
   | intLit(in) ^^ { s => jInt(s) }
   | stringLit(in) ^^ { s => jString(s) }
-  | accept(in,unit('[')) ~> repsep(json2(in), accept(in, unit(','))) <~ accept(in, unit(']')) ^^  { a=>jArray(a) }
+  | chr(in,'[') ~> repsep(json2(in), chr(in,',')) <~ chr(in,']') ^^  { a=>jArray(a) }
+  //| chr(in,'{') ~> repsep((stringLit(in) <~ chr(in,':')) ~ json2(in), chr(in,',')) <~ chr(in,'}') ^^ { a=>jNull }
   )
-
-
-
 
   def json(in: Rep[Input]): Parser[Any] = {
   /*
@@ -158,7 +156,8 @@ object TestJson {
 
       val testcJsonParse = compile(jsonParse)
        //false,true,null,123,1.23,
-      testcJsonParse("[null,false,true,\"hello\",123,[],[[],[]]]".toArray)
+      testcJsonParse("[null,false,true,\"hello\",123,1.23,[],[[],[]]]".toArray)
+      //testcJsonParse("{\"foo\":true,\"bar\":false}".toArray)
 
 /*
       codegen.emitSource(jsonParse _ , "jsonParse", new java.io.PrintWriter(System.out))
