@@ -82,8 +82,9 @@ trait JsonParser extends TokenParsers with RecParsers with StringStructOps with 
       acceptB(in,"false") ^^^ jFalse
     | acceptB(in,"true") ^^^ jTrue
     | acceptB(in,"null") ^^^ jNull
-    | doubleLit(in) ^^ { s => jDouble(s) }
-    | intLit(in) ^^ { s => jInt(s) }
+    //| doubleLit(in) ^^ { s => jDouble(s) }
+    | wholeNumber(in) ^^ { s => jInt(s) }
+    | stringLit(in) ^^ { s => jString(s) }
   )
 
 

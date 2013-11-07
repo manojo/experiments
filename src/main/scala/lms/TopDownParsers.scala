@@ -313,7 +313,7 @@ trait TokenParsers extends TopDownParsers with CharParsers with StringStructOps{
     val len = staticData(s.length)
     val arr = staticData(s.toArray)
     Parser[Boolean]{i =>
-      if(i >= in.length || i + len > in.length) elGen(Failure[Boolean](i))
+      if(i + len > in.length) elGen(Failure[Boolean](i))
       else{
         var count = unit(0); var matches = unit(true)
         while(matches && count < len){

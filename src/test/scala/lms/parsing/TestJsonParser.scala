@@ -17,15 +17,8 @@ trait JsonParserProg extends JsonParser{
     p{x => s = x}
     println(s)
   }
-
-
-  def jsonInt(in: Rep[Array[Char]]): Rep[Unit] = {
-    var s = Failure[JV](unit(-1))
-    val p = json(in).apply(unit(0))
-    p{x => s = x}
-    println(s)
-  }
 */
+
   def testJPrimitives(i: Rep[Int]) = {
     val f = jFalse
     val t = jTrue
@@ -34,13 +27,20 @@ trait JsonParserProg extends JsonParser{
     println(t)
     println(n)
   }
+
+  def primitiveParse(in: Rep[Array[Char]]): Rep[Unit] = {
+    var s = Failure[JV](unit(-1))
+    val p = primitives(in).apply(unit(0))
+    p{x => s = x}
+    println(s)
+  }
 }
 
 class TestJsonParser extends FileDiffSuite {
 
   val prefix = "test-out/"
 
-  def testHttpParser = {
+  def testJsonParser = {
     withOutFile(prefix+"json-parser"){
       new JsonParserProg with RecParsersExp with MyScalaOpsPkgExp with GeneratorOpsExp
        with CharOpsExp with MyIfThenElseExpOpt with StructOpsExpOptCommon
@@ -59,6 +59,19 @@ class TestJsonParser extends FileDiffSuite {
 
         val testcJPrimitives = compile(testJPrimitives)
         testcJPrimitives(1)
+        codegen.reset
+
+        codegen.emitSource(primitiveParse _, "primitiveParse", new java.io.PrintWriter(System.out))
+        codegen.emitDataStructures(new java.io.PrintWriter(System.out))
+        codegen.reset
+
+        val testcPrimitives = compile(primitiveParse)
+        testcPrimitives("23".toArray)
+        //testcPrimitives("2.13".toArray)
+        testcPrimitives("false".toArray)
+        testcPrimitives("null".toArray)
+        testcPrimitives("true".toArray)
+        testcPrimitives("\"hello\"".toArray)
         codegen.reset
 
         //codegen.emitSource(jsonParse _ , "jsonParse", new java.io.PrintWriter(System.out))
