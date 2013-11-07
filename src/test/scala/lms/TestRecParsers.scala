@@ -69,20 +69,26 @@ class TestRecParsers extends FileDiffSuite {
         }
 
         codegen.emitSource(testRecNumber _ , "testRecNumber", new java.io.PrintWriter(System.out))
+        codegen.reset
+
         val testcRecNumber = compile(testRecNumber)
         testcRecNumber("2".toArray)
         testcRecNumber("23".toArray)
         testcRecNumber("2a".toArray)
         testcRecNumber("23b".toArray)
         testcRecNumber("a".toArray)
+        codegen.reset
 
         codegen.emitSource(testRecExpr _ , "testRecExpr", new java.io.PrintWriter(System.out))
+        codegen.reset
+
         val testcRecExpr = compile(testRecExpr)
         testcRecExpr("2".toArray)
         testcRecExpr("2+3".toArray)
         testcRecExpr("2+3*5".toArray)
         testcRecExpr("(2+3)*5".toArray)
         testcRecExpr("(2+3)*5*5".toArray)
+        codegen.reset
 
         //testcRecExpr("[[2]]".toArray)
       }

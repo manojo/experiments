@@ -210,55 +210,85 @@ class TestGeneratorOps extends FileDiffSuite {
 
         codegen.emitSource2(test1 _ , "test1", printWriter)
         codegen.emitDataStructures(printWriter)
+        codegen.reset
+
         val source = new StringWriter
         codegen.emitDataStructures(new PrintWriter(source))
         val testc1 = compile2s(test1, source)
         scala.Console.println(testc1(1,11))
+        codegen.reset
 
         //test2: a map
         codegen.emitSource2(test2 _ , "test2", printWriter)
+        codegen.reset
+
         val testc2 = compile2(test2)
         scala.Console.println(testc2(1,11))
+        codegen.reset
 
         //test3: a sum
         codegen.emitSource2(test3 _ , "test3", printWriter)
+        codegen.reset
+
         val testc3 = compile2(test3)
         scala.Console.println(testc3(1,11))
+        codegen.reset
 
         //test4: a filtersum
         codegen.emitSource2(test4 _ , "test4", printWriter)
+        codegen.reset
+
         val testc4 = compile2(test4)
         scala.Console.println(testc4(1,11))
+        codegen.reset
 
         //test5: a concat
         codegen.emitSource2(test5 _ , "test5", printWriter)
+        codegen.reset
+
         val testc5 = compile2(test5)
         scala.Console.println(testc5(1,11))
+        codegen.reset
 
         //test6: a flatMap
         codegen.emitSource2(test6 _ , "test6", printWriter)
+        codegen.reset
+
         val testc6 = compile2(test6)
         scala.Console.println(testc6(1,6))
+        codegen.reset
 
         //test7: single elem from Array
         codegen.emitSource2(test7 _ , "test7", printWriter)
+        codegen.reset
+
         val testc7 = compile2(test7)
         scala.Console.println(testc7(1,2))
+        codegen.reset
 
         //test8: fromSeq
         codegen.emitSource(test8 _ , "test8", printWriter)
+        codegen.reset
+
         val testc8 = compile(test8)
         scala.Console.println(testc8(1))
+        codegen.reset
 
         //test9
         codegen.emitSource2(test9 _ , "test9", printWriter)
+        codegen.reset
+
         val testc9 = compile2(test9)
         scala.Console.println(testc9(1,10))
+        codegen.reset
 
         //test10: stream fusion intro example
         codegen.emitSource(test10 _ , "test10", printWriter)
+        codegen.reset
+
         val testc10 = compile(test10)
         scala.Console.println(testc10(10))
+        codegen.reset
 
       }
     }

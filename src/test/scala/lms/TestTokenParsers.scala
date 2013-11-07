@@ -59,6 +59,14 @@ trait TokenParsersProg extends TokenParsers{
     println(readVar(s).get.start + unit(", ") + readVar(s).get.length)
   }
 
+  //acceptB
+  def parseStringB(in: Rep[Array[Char]]): Rep[Unit] = {
+    var s = Failure[Boolean](unit(-1))
+    val parser = acceptB(in, "hello").apply(unit(0))
+    parser{x => s = x}
+    println(s)
+  }
+
 }
 
 class TestTokenParsers extends FileDiffSuite {
@@ -82,32 +90,61 @@ class TestTokenParsers extends FileDiffSuite {
         val printWriter = new java.io.PrintWriter(System.out)
 
         codegen.emitSource(keywordParse _ , "keywordParse", printWriter)
+        codegen.reset
+
         val testc1 = compile(keywordParse)
         testc1("true false".toArray)//successful
         testc1("bla".toArray)//fail
+        codegen.reset
 
         codegen.emitSource(twoWordParse _ , "twoWordParse", new java.io.PrintWriter(System.out))
+        codegen.reset
+
         val testc2 = compile(twoWordParse)
         testc2("\"hello\" \"carol\"".toArray)
         testc2("\"hello\" ".toArray)
+        codegen.reset
 
         codegen.emitSource(parseString _ , "parseString", new java.io.PrintWriter(System.out))
+        codegen.reset
+
         val testc4 = compile(parseString)
         testc4("hello21".toArray)
+        codegen.reset
 
         codegen.emitSource(parseWholeNumber _ , "parseWholeNum", new java.io.PrintWriter(System.out))
+        codegen.reset
+
         val testc5 = compile(parseWholeNumber)
         testc5("1234a".toArray)
+        codegen.reset
 
         codegen.emitSource(parseStringStruct _ , "parseStringStruct", new java.io.PrintWriter(System.out))
+        codegen.reset
+
         val testcStringStruct = compile(parseStringStruct)
         testcStringStruct("hello21".toArray)
         testcStringStruct("helloasd".toArray)
+        codegen.reset
 
         codegen.emitSource(parseStringStruct2 _ , "parseStringStruct2", new java.io.PrintWriter(System.out))
+        codegen.reset
+
         val testcStringStruct2 = compile(parseStringStruct2)
         testcStringStruct2("content-length".toArray)
         testcStringStruct2("passing-ast".toArray)
+        codegen.reset
+
+        codegen.emitSource(parseStringB _ , "parseStringB", new java.io.PrintWriter(System.out))
+        codegen.emitDataStructures(new java.io.PrintWriter(System.out))
+        codegen.reset
+
+        val testcParseStringB = compile(parseStringB)
+        testcParseStringB("hello".toArray)
+        testcParseStringB("blah".toArray) //different length
+        testcParseStringB("h3ll0".toArray) //same length
+        codegen.reset
+
 
       }
     }

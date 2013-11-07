@@ -260,36 +260,60 @@ class TestHttpParser extends FileDiffSuite {
         }
 
         codegen.emitSource(decimalParse _ , "decimalParse", new java.io.PrintWriter(System.out))
+        codegen.reset
+
         val testc1 = compile(decimalParse)
         testc1("12.34".toArray)
+        codegen.reset
 
         codegen.emitSource(wildRegexParse _ , "wildRegexParse", new java.io.PrintWriter(System.out))
+        codegen.reset
+
         val testc2 = compile(wildRegexParse)
         testc2("f33l l1ke funkin' it up! (o_^) \\o/ \n".toArray)
+        codegen.reset
 
         codegen.emitSource(crlfParse _ , "crlfParse", new java.io.PrintWriter(System.out))
+        codegen.reset
+
         val testcCrlf = compile(crlfParse)
         testcCrlf("\n".toArray)
+        codegen.reset
 
         codegen.emitSource(wildRegexCrlfParse _ , "wildRegexCrlfParse", new java.io.PrintWriter(System.out))
+        codegen.reset
+
         val testcWrc = compile(wildRegexCrlfParse)
         testcWrc("f33l l1ke funkin' it up! (o_^) \\o/ \n".toArray)
+        codegen.reset
 
         codegen.emitSource(urlCharParse _ , "urlCharParse", new java.io.PrintWriter(System.out))
+        codegen.reset
+
         val testcUrlCharParse = compile(urlCharParse)
         testcUrlCharParse("\n".toArray)
+        codegen.reset
 
         codegen.emitSource(httpNumParse _ , "httpNumParse", new java.io.PrintWriter(System.out))
+        codegen.reset
+
         val testc3 = compile(httpNumParse)
         testc3("HTTP/1.1 200".toArray)
+        codegen.reset
 
         codegen.emitSource(httpNumStatusParse _ , "httpNumStatusParse", new java.io.PrintWriter(System.out))
+        codegen.reset
+
         val testc4 = compile(httpNumStatusParse)
         testc4("HTTP/1.1 200".toArray)
+        codegen.reset
 
         codegen.emitSource(statusParseTemp _ , "statusParseTemp", new java.io.PrintWriter(System.out))
+        codegen.reset
+
         val testcstpTemp = compile(statusParseTemp)
         testcstpTemp("HTTP/1.1 200 ok \n".toArray)
+        codegen.reset
 
       }
     }
@@ -378,16 +402,24 @@ class TestHttpParser extends FileDiffSuite {
            |""".stripMargin
 
         codegen.emitSource(responseParse _ , "responseParse", new java.io.PrintWriter(System.out))
+        codegen.reset
+
         val testcResponse = compile(responseParse)
         testcResponse(httpMessage.toArray)
+        codegen.reset
 
         codegen.emitSource(bodyParse _ , "bodyParse", new java.io.PrintWriter(System.out))
+        codegen.reset
+
         val testcBody = compile(bodyParse)
         testcBody("Make it funky! -Maceo.".toArray)
+        codegen.reset
 
-        //codegen.emitSource(respAndMessageParse _ , "respAndMessageParse", new java.io.PrintWriter(System.out))
-        //codegen.emitDataStructures(new java.io.PrintWriter(System.out))
-        //val testcRespAndMessage = compile(respAndMessageParse)
+        codegen.emitSource(respAndMessageParse _ , "respAndMessageParse", new java.io.PrintWriter(System.out))
+        codegen.emitDataStructures(new java.io.PrintWriter(System.out))
+        codegen.reset
+
+        val testcRespAndMessage = compile(respAndMessageParse)
 
         val messages = scala.List(
           """|HTTP/1.1 200 OK
@@ -444,9 +476,10 @@ class TestHttpParser extends FileDiffSuite {
             |""".stripMargin
         )
 
-        //messages.foreach{msg =>
-        //  testcRespAndMessage(msg.toArray)
-        //}
+        messages.foreach{msg =>
+          testcRespAndMessage(msg.toArray)
+        }
+        codegen.reset
       }
     }
 
@@ -473,40 +506,57 @@ class TestReqParser extends FileDiffSuite {
         }
 
         codegen.emitSource(reqTypeParse _ , "reqTypeParse", new java.io.PrintWriter(System.out))
+        codegen.reset
+
         val testcReqParse = compile(reqTypeParse)
         requestTypesUnRepped.foreach{rType =>
           testcReqParse(rType.toArray)
         }
         testcReqParse("What".toArray) //failure case
+        codegen.reset
 
         codegen.emitSource(hostParse _ , "hostParse", new java.io.PrintWriter(System.out))
+        codegen.reset
+
         val testcHostParse = compile(hostParse)
         testcHostParse("123..asdf3.adf:90".toArray)
         testcHostParse("123..asdf3.adf".toArray)
         testcHostParse(" asd2".toArray) //failure case
         testcHostParse("123..asdf3.adf:a0".toArray) //failure case
+        codegen.reset
 
         codegen.emitSource(reqFragmentParse _ , "reqFragmentParse", new java.io.PrintWriter(System.out))
+        codegen.reset
+
         val testcReqFragmentParse = compile(reqFragmentParse)
         testcReqFragmentParse("##3adsfd.html".toArray)
         testcReqFragmentParse("##3asfd#adf".toArray)
         testcReqFragmentParse("asdf".toArray)
+        codegen.reset
 
         codegen.emitSource(qStringParse _ , "qStringParse", new java.io.PrintWriter(System.out))
+        codegen.reset
+
         val testcQStringParse = compile(qStringParse)
         testcQStringParse("???asdf#sadf".toArray)
         testcQStringParse("???asdf?adsf#asdf".toArray)
         testcQStringParse("???asdf?adsf".toArray)
         testcQStringParse("asd".toArray)
+        codegen.reset
 
         codegen.emitSource(reqPathParse _ , "reqPathParse", new java.io.PrintWriter(System.out))
+        codegen.reset
+
         val testcReqPathParse = compile(reqPathParse)
         testcReqPathParse("???asdf#sadf".toArray)
         testcReqPathParse("##asdfadsf".toArray)
         testcReqPathParse("adsfasd.html???asdf#adsf".toArray)
         testcReqPathParse("asd".toArray)
+        codegen.reset
 
         codegen.emitSource(urlParse _ , "urlParse", new java.io.PrintWriter(System.out))
+        codegen.reset
+
         val testcUrlParse = compile(urlParse)
 
         val urls = scala.List(
@@ -519,6 +569,7 @@ class TestReqParser extends FileDiffSuite {
         urls.foreach{url =>
           testcUrlParse(url.toArray)
         }
+        codegen.reset
 
       }
 

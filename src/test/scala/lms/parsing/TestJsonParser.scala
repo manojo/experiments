@@ -10,7 +10,7 @@ import java.io.FileOutputStream
 
 
 trait JsonParserProg extends JsonParser{
-
+/*
   def jsonParse(in: Rep[Array[Char]]): Rep[Unit] = {
     var s = Failure[(String,String)](unit(-1))
     val p = json(in).apply(unit(0))
@@ -24,6 +24,15 @@ trait JsonParserProg extends JsonParser{
     val p = json(in).apply(unit(0))
     p{x => s = x}
     println(s)
+  }
+*/
+  def testJPrimitives(i: Rep[Int]) = {
+    val f = jFalse
+    val t = jTrue
+    val n = jNull
+    println(f)
+    println(t)
+    println(n)
   }
 }
 
@@ -44,16 +53,18 @@ class TestJsonParser extends FileDiffSuite {
           val IR: self.type = self
         }
 
+        codegen.emitSource(testJPrimitives _, "testJPrimitives", new java.io.PrintWriter(System.out))
+        codegen.emitDataStructures(new java.io.PrintWriter(System.out))
+        codegen.reset
 
-        codegen.emitSource(jsonInt _ , "jsonInt", new java.io.PrintWriter(System.out))
-        val testcJsonInt = compile(jsonInt)
-        testcJsonInt("123".toArray)
+        val testcJPrimitives = compile(testJPrimitives)
+        testcJPrimitives(1)
+        codegen.reset
 
-
-        codegen.emitSource(jsonParse _ , "jsonParse", new java.io.PrintWriter(System.out))
-        val testcJsonParse = compile(jsonParse)
-        testcJsonParse("{}".toArray)
-        testcJsonParse("{\"asdf\" : \"asd\"}".toArray)
+        //codegen.emitSource(jsonParse _ , "jsonParse", new java.io.PrintWriter(System.out))
+        //val testcJsonParse = compile(jsonParse)
+        //testcJsonParse("{}".toArray)
+        //testcJsonParse("{\"asdf\" : \"asd\"}".toArray)
       }
     }
 

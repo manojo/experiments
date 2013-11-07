@@ -155,43 +155,67 @@ class TestSCharParsers extends FileDiffSuite {
         }
 
         codegen.emitSource(test1 _ , "test1", new java.io.PrintWriter(System.out))
+        codegen.reset
+
         val testc1 = compile(test1)
         testc1("hello".toArray)
+        codegen.reset
 
         codegen.emitSource(test2 _ , "test2", new java.io.PrintWriter(System.out))
+        codegen.reset
+
         val testc2 = compile(test2)
         testc2("hello".toArray)
         testc2("1".toArray)
+        codegen.reset
 
         codegen.emitSource(test3 _ , "test3", new java.io.PrintWriter(System.out))
+        codegen.reset
+
         val testc3 = compile(test3)
         testc3("hello".toArray)
         testc2("1".toArray)
+        codegen.reset
 
         codegen.emitSource(test4 _ , "test4", new java.io.PrintWriter(System.out))
+        codegen.reset
+
         val testc4 = compile(test4)
         testc4("12".toArray)
         testc4("hello".toArray)
+        codegen.reset
 
         codegen.emitSource(test5 _ , "test5", new java.io.PrintWriter(System.out))
+        codegen.reset
+
         val testc5 = compile(test5)
         testc5("hello".toArray) //succeeding a ~ b
         testc5("1ello".toArray) //failing left
         testc5("h2llo".toArray) //failing right
+        codegen.reset
 
         codegen.emitSource(test6 _ , "test6", new java.io.PrintWriter(System.out))
+        codegen.reset
+
         val testc6 = compile(test6)
         testc6("hello".toArray)
+        codegen.reset
 
         codegen.emitSource(test7 _ , "test7", new java.io.PrintWriter(System.out))
+        codegen.reset
+
         val testc7 = compile(test7)
         testc7("hello".toArray)
+        codegen.reset
 
         //digit2Int
         codegen.emitSource(test8 _ , "test8", new java.io.PrintWriter(System.out))
+        codegen.reset
+
         val testc8 = compile(test8)
         testc8("1ello".toArray)
         testc8("hello".toArray)
+        codegen.reset
 /*
         codegen.emitSource(test9 _ , "test9", new java.io.PrintWriter(System.out))
         val testc9 = compile(test9)

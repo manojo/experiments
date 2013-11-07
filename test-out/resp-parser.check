@@ -1443,40 +1443,39 @@ x1787
 /*****************************************
   End of Generated Code                  
 *******************************************/
-nVars=2000
-nVars=3000
+nVars=1000
 compilation: ok
 ParseResultAnon1323431030(Anon1323431030(418,0,close,false,false),false,258)
 /*****************************************
   Emitting Generated Code                  
 *******************************************/
 class bodyParse extends ((Array[Char])=>(Unit)) {
-def apply(x3016:Array[Char]): Unit = {
-var x3018: java.lang.String = null
-var x3019: Boolean = true
-var x3020: Int = -1
-val x3022 = 0 + 14
-val x3023 = x3016.length
-val x3024 = x3022 < x3023
-val x3036 = if (x3024) {
-val x3025 = new Anon1680061013(x3016,0,x3022)
-val x3026 = x3025.input.slice(x3025.start,x3025.start+x3025.length).mkString
-x3018 = x3026
-x3019 = false
-x3020 = 14
+def apply(x0:Array[Char]): Unit = {
+var x2: java.lang.String = null
+var x3: Boolean = true
+var x4: Int = -1
+val x6 = 0 + 14
+val x7 = x0.length
+val x8 = x6 < x7
+val x21 = if (x8) {
+val x9 = new Anon1680061013(x0,0,x6)
+val x10 = x9.input.slice(x9.start,x9.start+x9.length).mkString
+x2 = x10
+x3 = false
+x4 = 14
 ()
 } else {
-x3018 = null
-x3019 = true
-x3020 = 0
+x2 = null
+x3 = true
+x4 = 0
 ()
 }
-val x3037 = x3018
-val x3038 = x3019
-val x3039 = x3020
-val x3040 = new ParseResultString(x3037,x3038,x3039)
-val x3041 = println(x3040)
-x3041
+val x22 = x2
+val x23 = x3
+val x24 = x4
+val x25 = new ParseResultString(x22,x23,x24)
+val x26 = println(x25)
+x26
 }
 }
 /*****************************************
@@ -1484,3 +1483,1495 @@ x3041
 *******************************************/
 compilation: ok
 ParseResultString(Make it funky!,false,14)
+nVars=1000
+/*****************************************
+  Emitting Generated Code                  
+*******************************************/
+class respAndMessageParse(px811:Array[Char],px837:Array[Char],px864:Array[Char],px890:Array[Char],px936:Array[Char],px981:Array[Char],px1007:Array[Char],px1035:Array[Char]) extends ((Array[Char])=>(Unit)) {
+def apply(x0:Array[Char]): Unit = {
+var x2: Tuple2Anon1323431030String = null
+var x3: Boolean = true
+var x4: Int = -1
+val x7 = x0.length
+val x8 = 0 >= x7
+val x1268 = if (x8) {
+x2 = null
+x3 = true
+x4 = 0
+()
+} else {
+val x22 = x0(0)
+val x23 = x22 == 'H'
+val x1266 = if (x23) {
+val x24 = 0 + 1
+val x26 = x24 >= x7
+val x1260 = if (x26) {
+x2 = null
+x3 = true
+x4 = 0
+()
+} else {
+val x34 = x0(x24)
+val x35 = x34 == 'T'
+val x1258 = if (x35) {
+val x36 = x24 + 1
+val x38 = x36 >= x7
+val x1252 = if (x38) {
+x2 = null
+x3 = true
+x4 = 0
+()
+} else {
+val x46 = x0(x36)
+val x47 = x46 == 'T'
+val x1250 = if (x47) {
+val x48 = x36 + 1
+val x50 = x48 >= x7
+val x1244 = if (x50) {
+x2 = null
+x3 = true
+x4 = 0
+()
+} else {
+val x58 = x0(x48)
+val x59 = x58 == 'P'
+val x1242 = if (x59) {
+val x60 = x48 + 1
+val x62 = x60 >= x7
+val x1236 = if (x62) {
+x2 = null
+x3 = true
+x4 = 0
+()
+} else {
+val x70 = x0(x60)
+val x71 = x70 == '/'
+val x1234 = if (x71) {
+val x72 = x60 + 1
+val x95 = x72 >= x7
+val x1228 = if (x95) {
+x2 = null
+x3 = true
+x4 = 0
+()
+} else {
+val x103 = x0(x72)
+val x104 = x103 >= '0'
+val x105 = x103 <= '9'
+val x106 = x104 && x105
+val x1226 = if (x106) {
+val x109 = x103 - '0'
+val x110 = x109.toInt
+var x112: Int = x110
+var x113: Boolean = false
+val x107 = x72 + 1
+var x114: Int = x107
+var x116: Int = -1
+var x117: Boolean = true
+var x118: Int = x107
+val x159 = while ({val x119 = x117
+val x120 = x116
+val x121 = x118
+val x122 = x120 != x121
+val x123 = x119 && x122
+x123}) {
+val x125 = x118
+x116 = x125
+val x127 = x125 >= x7
+val x157 = if (x127) {
+x117 = false
+()
+} else {
+val x132 = x0(x125)
+val x133 = x132 >= '0'
+val x134 = x132 <= '9'
+val x135 = x133 && x134
+val x155 = if (x135) {
+val x141 = x112
+val x142 = x113
+val x143 = x114
+val x138 = x132 - '0'
+val x139 = x138.toInt
+val x145 = x141 * 10
+val x146 = x145 + x139
+x112 = x146
+x113 = false
+val x136 = x125 + 1
+x114 = x136
+x118 = x136
+()
+} else {
+x117 = false
+()
+}
+x155
+}
+x157
+}
+val x160 = x112
+val x161 = x113
+val x162 = x114
+val x165 = if (x161) {
+true
+} else {
+x161
+}
+val x1220 = if (x165) {
+x2 = null
+x3 = true
+x4 = 0
+()
+} else {
+val x166 = if (x161) {
+x72
+} else {
+x162
+}
+val x172 = x166 >= x7
+val x1218 = if (x172) {
+x2 = null
+x3 = true
+x4 = 0
+()
+} else {
+val x179 = x0(x166)
+val x180 = x179 == '.'
+val x1216 = if (x180) {
+val x181 = x166 + 1
+val x183 = x181 >= x7
+val x1210 = if (x183) {
+x2 = null
+x3 = true
+x4 = 0
+()
+} else {
+val x190 = x0(x181)
+val x191 = x190 >= '0'
+val x192 = x190 <= '9'
+val x193 = x191 && x192
+val x1208 = if (x193) {
+val x196 = x190 - '0'
+val x197 = x196.toInt
+var x199: Int = x197
+var x200: Boolean = false
+val x194 = x181 + 1
+var x201: Int = x194
+var x203: Int = -1
+var x204: Boolean = true
+var x205: Int = x194
+val x246 = while ({val x206 = x204
+val x207 = x203
+val x208 = x205
+val x209 = x207 != x208
+val x210 = x206 && x209
+x210}) {
+val x212 = x205
+x203 = x212
+val x214 = x212 >= x7
+val x244 = if (x214) {
+x204 = false
+()
+} else {
+val x219 = x0(x212)
+val x220 = x219 >= '0'
+val x221 = x219 <= '9'
+val x222 = x220 && x221
+val x242 = if (x222) {
+val x228 = x199
+val x229 = x200
+val x230 = x201
+val x225 = x219 - '0'
+val x226 = x225.toInt
+val x232 = x228 * 10
+val x233 = x232 + x226
+x199 = x233
+x200 = false
+val x223 = x212 + 1
+x201 = x223
+x205 = x223
+()
+} else {
+x204 = false
+()
+}
+x242
+}
+x244
+}
+val x247 = x199
+val x248 = x200
+val x249 = x201
+val x252 = if (x248) {
+true
+} else {
+x248
+}
+val x258 = if (x252) {
+true
+} else {
+false
+}
+val x264 = if (x258) {
+true
+} else {
+false
+}
+val x1202 = if (x264) {
+x2 = null
+x3 = true
+x4 = 0
+()
+} else {
+var x272: java.lang.String = ""
+var x273: Boolean = false
+val x265 = if (x258) {
+0
+} else {
+val x259 = if (x252) {
+x72
+} else {
+val x253 = if (x248) {
+x181
+} else {
+x249
+}
+x253
+}
+x259
+}
+var x274: Int = x265
+var x276: Int = -1
+var x277: Boolean = true
+var x278: Int = x265
+val x311 = while ({val x279 = x277
+val x280 = x276
+val x281 = x278
+val x282 = x280 != x281
+val x283 = x279 && x282
+x283}) {
+val x285 = x278
+x276 = x285
+val x287 = x285 >= x7
+val x309 = if (x287) {
+x277 = false
+()
+} else {
+val x291 = x0(x285)
+val x292 = x291 == ' '
+val x307 = if (x292) {
+val x295 = x272
+val x296 = x273
+val x297 = x274
+x272 = x295
+x273 = false
+val x293 = x285 + 1
+x274 = x293
+x278 = x293
+()
+} else {
+x277 = false
+()
+}
+x307
+}
+x309
+}
+val x312 = x272
+val x313 = x273
+val x314 = x274
+val x319 = if (x313) {
+true
+} else {
+false
+}
+val x1200 = if (x319) {
+x2 = null
+x3 = true
+x4 = 0
+()
+} else {
+val x320 = if (x313) {
+0
+} else {
+x314
+}
+val x326 = x320 >= x7
+val x1198 = if (x326) {
+x2 = null
+x3 = true
+x4 = 0
+()
+} else {
+val x333 = x0(x320)
+val x334 = x333 >= '0'
+val x335 = x333 <= '9'
+val x336 = x334 && x335
+val x1196 = if (x336) {
+val x339 = x333 - '0'
+val x340 = x339.toInt
+var x342: Int = x340
+var x343: Boolean = false
+val x337 = x320 + 1
+var x344: Int = x337
+var x346: Int = -1
+var x347: Boolean = true
+var x348: Int = x337
+val x389 = while ({val x349 = x347
+val x350 = x346
+val x351 = x348
+val x352 = x350 != x351
+val x353 = x349 && x352
+x353}) {
+val x355 = x348
+x346 = x355
+val x357 = x355 >= x7
+val x387 = if (x357) {
+x347 = false
+()
+} else {
+val x362 = x0(x355)
+val x363 = x362 >= '0'
+val x364 = x362 <= '9'
+val x365 = x363 && x364
+val x385 = if (x365) {
+val x371 = x342
+val x372 = x343
+val x373 = x344
+val x368 = x362 - '0'
+val x369 = x368.toInt
+val x375 = x371 * 10
+val x376 = x375 + x369
+x342 = x376
+x343 = false
+val x366 = x355 + 1
+x344 = x366
+x348 = x366
+()
+} else {
+x347 = false
+()
+}
+x385
+}
+x387
+}
+val x390 = x342
+val x391 = x343
+val x392 = x344
+val x395 = if (x391) {
+true
+} else {
+x391
+}
+val x1190 = if (x395) {
+x2 = null
+x3 = true
+x4 = 0
+()
+} else {
+var x403: Int = 0
+var x404: Boolean = false
+val x396 = if (x391) {
+x320
+} else {
+x392
+}
+var x405: Int = x396
+var x407: Int = -1
+var x408: Boolean = true
+var x409: Int = x396
+val x444 = while ({val x410 = x408
+val x411 = x407
+val x412 = x409
+val x413 = x411 != x412
+val x414 = x410 && x413
+x414}) {
+val x416 = x409
+x407 = x416
+val x418 = x416 >= x7
+val x442 = if (x418) {
+x408 = false
+()
+} else {
+val x422 = x0(x416)
+val x424 = x422 == '\n'
+val x440 = if (x424) {
+x408 = false
+()
+} else {
+val x429 = x403
+val x430 = x404
+val x431 = x405
+val x433 = x429 + 1
+x403 = x433
+x404 = false
+val x427 = x416 + 1
+x405 = x427
+x409 = x427
+()
+}
+x440
+}
+x442
+}
+val x445 = x403
+val x446 = x404
+val x447 = x405
+val x451 = x447 >= x7
+val x1188 = if (x451) {
+x2 = null
+x3 = true
+x4 = 0
+()
+} else {
+val x458 = x0(x447)
+val x459 = x458 == '\n'
+val x1186 = if (x459) {
+var x466: Int = 200
+var x467: Int = 0
+var x468: java.lang.String = "close"
+var x469: Boolean = false
+var x470: Boolean = false
+var x472: Boolean = false
+val x460 = x447 + 1
+var x473: Int = x460
+var x475: Int = -1
+var x476: Boolean = true
+var x477: Int = x460
+val x529 = {x492: (Int) => 
+var x494: Int = 0
+var x495: Boolean = true
+var x496: Int = x492
+val x498 = x492 >= x7
+val x523 = if (x498) {
+x494 = 0
+x495 = true
+x496 = x492
+()
+} else {
+val x503 = x0(x492)
+val x504 = x503 >= 'a'
+val x505 = x503 <= 'z'
+val x506 = x504 && x505
+val x507 = x503 >= 'A'
+val x508 = x503 <= 'Z'
+val x509 = x507 && x508
+val x510 = x506 || x509
+val x521 = if (x510) {
+x494 = x492
+x495 = false
+val x511 = x492 + 1
+x496 = x511
+()
+} else {
+x494 = 0
+x495 = true
+x496 = x492
+()
+}
+x521
+}
+val x524 = x494
+val x525 = x495
+val x526 = x496
+val x527 = new ParseResultInt(x524,x525,x526)
+x527: ParseResultInt
+}
+val x565 = {x486: (Int) => 
+var x488: Int = 0
+var x489: Boolean = true
+var x490: Int = x486
+val x530 = x529(x486)
+val x531 = x530.empty
+val x559 = if (x531) {
+val x532 = x486 >= x7
+val x551 = if (x532) {
+x488 = 0
+x489 = true
+x490 = x486
+()
+} else {
+val x537 = x0(x486)
+val x538 = x537 == '-'
+val x549 = if (x538) {
+x488 = x486
+x489 = false
+val x539 = x486 + 1
+x490 = x539
+()
+} else {
+x488 = 0
+x489 = true
+x490 = x486
+()
+}
+x549
+}
+x551
+} else {
+val x553 = x530.res
+x488 = x553
+x489 = x531
+val x556 = x530.next
+x490 = x556
+()
+}
+val x560 = x488
+val x561 = x489
+val x562 = x490
+val x563 = new ParseResultInt(x560,x561,x562)
+x563: ParseResultInt
+}
+val x811 = px811 // static data: Array(c,o,n,n,e,c,t,i,o,n)
+val x812 = x811.length
+val x837 = px837 // static data: Array(p,r,o,x,y,-,c,o,n,n,e,c,t,i,o,n)
+val x838 = x837.length
+val x864 = px864 // static data: Array(k,e,e,p,-,a,l,i,v,e)
+val x865 = x864.length
+val x890 = px890 // static data: Array(c,l,o,s,e)
+val x891 = x890.length
+val x936 = px936 // static data: Array(c,o,n,t,e,n,t,-,l,e,n,g,t,h)
+val x937 = x936.length
+val x981 = px981 // static data: Array(t,r,a,n,s,f,e,r,-,e,n,c,o,d,i,n,g)
+val x982 = x981.length
+val x1007 = px1007 // static data: Array(c,h,u,n,k,e,d)
+val x1008 = x1007.length
+val x1035 = px1035 // static data: Array(u,p,g,r,a,d,e)
+val x1036 = x1035.length
+val x1113 = while ({val x478 = x476
+val x479 = x475
+val x480 = x477
+val x481 = x479 != x480
+val x482 = x478 && x481
+x482}) {
+val x484 = x477
+x475 = x484
+val x566 = x484 >= x7
+val x1111 = if (x566) {
+x476 = false
+()
+} else {
+val x573 = x0(x484)
+val x574 = x573 >= 'a'
+val x575 = x573 <= 'z'
+val x576 = x574 && x575
+val x577 = x573 >= 'A'
+val x578 = x573 <= 'Z'
+val x579 = x577 && x578
+val x580 = x576 || x579
+val x1109 = if (x580) {
+var x584: Int = 0
+var x585: Boolean = false
+val x581 = x484 + 1
+var x586: Int = x581
+var x588: Int = -1
+var x589: Boolean = true
+var x590: Int = x581
+val x617 = while ({val x591 = x589
+val x592 = x588
+val x593 = x590
+val x594 = x592 != x593
+val x595 = x591 && x594
+x595}) {
+val x597 = x590
+x588 = x597
+val x599 = x565(x597)
+val x600 = x599.empty
+val x615 = if (x600) {
+x589 = false
+()
+} else {
+val x603 = x584
+val x604 = x585
+val x605 = x586
+val x607 = x603 + 1
+x584 = x607
+x585 = false
+val x608 = x599.next
+x586 = x608
+x590 = x608
+()
+}
+x615
+}
+val x618 = x584
+val x619 = x585
+val x620 = x586
+var x630: java.lang.String = ""
+var x631: Boolean = false
+var x632: Int = x620
+var x634: Int = -1
+var x635: Boolean = true
+var x636: Int = x620
+val x669 = while ({val x637 = x635
+val x638 = x634
+val x639 = x636
+val x640 = x638 != x639
+val x641 = x637 && x640
+x641}) {
+val x643 = x636
+x634 = x643
+val x645 = x643 >= x7
+val x667 = if (x645) {
+x635 = false
+()
+} else {
+val x649 = x0(x643)
+val x650 = x649 == ' '
+val x665 = if (x650) {
+val x653 = x630
+val x654 = x631
+val x655 = x632
+x630 = x653
+x631 = false
+val x651 = x643 + 1
+x632 = x651
+x636 = x651
+()
+} else {
+x635 = false
+()
+}
+x665
+}
+x667
+}
+val x670 = x630
+val x671 = x631
+val x672 = x632
+val x1105 = if (x671) {
+x476 = false
+()
+} else {
+val x677 = x672 >= x7
+val x1103 = if (x677) {
+x476 = false
+()
+} else {
+val x683 = x0(x672)
+val x684 = x683 == ':'
+val x1101 = if (x684) {
+var x695: java.lang.String = ""
+var x696: Boolean = false
+val x685 = x672 + 1
+var x697: Int = x685
+var x699: Int = -1
+var x700: Boolean = true
+var x701: Int = x685
+val x734 = while ({val x702 = x700
+val x703 = x699
+val x704 = x701
+val x705 = x703 != x704
+val x706 = x702 && x705
+x706}) {
+val x708 = x701
+x699 = x708
+val x710 = x708 >= x7
+val x732 = if (x710) {
+x700 = false
+()
+} else {
+val x714 = x0(x708)
+val x715 = x714 == ' '
+val x730 = if (x715) {
+val x718 = x695
+val x719 = x696
+val x720 = x697
+x695 = x718
+x696 = false
+val x716 = x708 + 1
+x697 = x716
+x701 = x716
+()
+} else {
+x700 = false
+()
+}
+x730
+}
+x732
+}
+val x735 = x695
+val x736 = x696
+val x737 = x697
+val x1097 = if (x736) {
+x476 = false
+()
+} else {
+var x743: Int = 0
+var x744: Boolean = false
+var x745: Int = x737
+var x747: Int = -1
+var x748: Boolean = true
+var x749: Int = x737
+val x784 = while ({val x750 = x748
+val x751 = x747
+val x752 = x749
+val x753 = x751 != x752
+val x754 = x750 && x753
+x754}) {
+val x756 = x749
+x747 = x756
+val x758 = x756 >= x7
+val x782 = if (x758) {
+x748 = false
+()
+} else {
+val x762 = x0(x756)
+val x764 = x762 == '\n'
+val x780 = if (x764) {
+x748 = false
+()
+} else {
+val x769 = x743
+val x770 = x744
+val x771 = x745
+val x773 = x769 + 1
+x743 = x773
+x744 = false
+val x767 = x756 + 1
+x745 = x767
+x749 = x767
+()
+}
+x780
+}
+x782
+}
+val x785 = x743
+val x786 = x744
+val x787 = x745
+val x791 = x787 >= x7
+val x1095 = if (x791) {
+x476 = false
+()
+} else {
+val x795 = x0(x787)
+val x796 = x795 == '\n'
+val x1093 = if (x796) {
+val x802 = x466
+val x803 = x467
+val x804 = x468
+val x805 = x469
+val x806 = x470
+val x808 = x472
+val x809 = x473
+val x626 = x618 + 1
+val x813 = x626 == x812
+val x836 = if (x813) {
+var x814: Int = 0
+var x815: Boolean = true
+val x833 = while ({val x816 = x814
+val x818 = x815
+val x817 = x816 < x626
+val x819 = x817 && x818
+x819}) {
+val x821 = x814
+val x822 = x821 + x484
+val x823 = x0(x822)
+val x824 = x811(x821)
+val x826 = x823 == x824
+val x829 = if (x826) {
+()
+} else {
+x815 = false
+()
+}
+val x830 = x821 + 1
+x814 = x830
+()
+}
+val x834 = x815
+x834
+} else {
+false
+}
+val x839 = x626 == x838
+val x862 = if (x839) {
+var x840: Int = 0
+var x841: Boolean = true
+val x859 = while ({val x842 = x840
+val x844 = x841
+val x843 = x842 < x626
+val x845 = x843 && x844
+x845}) {
+val x847 = x840
+val x848 = x847 + x484
+val x849 = x0(x848)
+val x850 = x837(x847)
+val x852 = x849 == x850
+val x855 = if (x852) {
+()
+} else {
+x841 = false
+()
+}
+val x856 = x847 + 1
+x840 = x856
+()
+}
+val x860 = x841
+x860
+} else {
+false
+}
+val x863 = x836 || x862
+val x866 = x785 == x865
+val x889 = if (x866) {
+var x867: Int = 0
+var x868: Boolean = true
+val x886 = while ({val x869 = x867
+val x871 = x868
+val x870 = x869 < x785
+val x872 = x870 && x871
+x872}) {
+val x874 = x867
+val x875 = x874 + x737
+val x876 = x0(x875)
+val x877 = x864(x874)
+val x879 = x876 == x877
+val x882 = if (x879) {
+()
+} else {
+x868 = false
+()
+}
+val x883 = x874 + 1
+x867 = x883
+()
+}
+val x887 = x868
+x887
+} else {
+false
+}
+val x892 = x785 == x891
+val x915 = if (x892) {
+var x893: Int = 0
+var x894: Boolean = true
+val x912 = while ({val x895 = x893
+val x897 = x894
+val x896 = x895 < x785
+val x898 = x896 && x897
+x898}) {
+val x900 = x893
+val x901 = x900 + x737
+val x902 = x0(x901)
+val x903 = x890(x900)
+val x905 = x902 == x903
+val x908 = if (x905) {
+()
+} else {
+x894 = false
+()
+}
+val x909 = x900 + 1
+x893 = x909
+()
+}
+val x913 = x894
+x913
+} else {
+false
+}
+val x916 = x889 || x915
+val x917 = x863 && x916
+val x1075 = if (x917) {
+var x918: java.lang.String = ""
+var x919: Int = 0
+val x932 = while ({val x920 = x919
+val x921 = x920 < x785
+x921}) {
+val x923 = x918
+val x924 = x919
+val x925 = x737 + x924
+val x926 = x0(x925)
+val x927 = x923+x926
+x918 = x927
+val x929 = x924 + 1
+x919 = x929
+()
+}
+val x933 = x918
+val x934 = new Anon1323431030(x802,x803,x933,x805,x806)
+x934
+} else {
+val x938 = x626 == x937
+val x961 = if (x938) {
+var x939: Int = 0
+var x940: Boolean = true
+val x958 = while ({val x941 = x939
+val x943 = x940
+val x942 = x941 < x626
+val x944 = x942 && x943
+x944}) {
+val x946 = x939
+val x947 = x946 + x484
+val x948 = x0(x947)
+val x949 = x936(x946)
+val x951 = x948 == x949
+val x954 = if (x951) {
+()
+} else {
+x940 = false
+()
+}
+val x955 = x946 + 1
+x939 = x955
+()
+}
+val x959 = x940
+x959
+} else {
+false
+}
+val x1074 = if (x961) {
+var x962: java.lang.String = ""
+var x963: Int = 0
+val x976 = while ({val x964 = x963
+val x965 = x964 < x785
+x965}) {
+val x967 = x962
+val x968 = x963
+val x969 = x737 + x968
+val x970 = x0(x969)
+val x971 = x967+x970
+x962 = x971
+val x973 = x968 + 1
+x963 = x973
+()
+}
+val x977 = x962
+val x978 = x977.toInt
+val x979 = new Anon1323431030(x802,x978,x804,x805,x806)
+x979
+} else {
+val x983 = x626 == x982
+val x1006 = if (x983) {
+var x984: Int = 0
+var x985: Boolean = true
+val x1003 = while ({val x986 = x984
+val x988 = x985
+val x987 = x986 < x626
+val x989 = x987 && x988
+x989}) {
+val x991 = x984
+val x992 = x991 + x484
+val x993 = x0(x992)
+val x994 = x981(x991)
+val x996 = x993 == x994
+val x999 = if (x996) {
+()
+} else {
+x985 = false
+()
+}
+val x1000 = x991 + 1
+x984 = x1000
+()
+}
+val x1004 = x985
+x1004
+} else {
+false
+}
+val x1009 = x785 == x1008
+val x1032 = if (x1009) {
+var x1010: Int = 0
+var x1011: Boolean = true
+val x1029 = while ({val x1012 = x1010
+val x1014 = x1011
+val x1013 = x1012 < x785
+val x1015 = x1013 && x1014
+x1015}) {
+val x1017 = x1010
+val x1018 = x1017 + x737
+val x1019 = x0(x1018)
+val x1020 = x1007(x1017)
+val x1022 = x1019 == x1020
+val x1025 = if (x1022) {
+()
+} else {
+x1011 = false
+()
+}
+val x1026 = x1017 + 1
+x1010 = x1026
+()
+}
+val x1030 = x1011
+x1030
+} else {
+false
+}
+val x1033 = x1006 && x1032
+val x1068 = if (x1033) {
+x802
+} else {
+val x1037 = x626 == x1036
+val x1060 = if (x1037) {
+var x1038: Int = 0
+var x1039: Boolean = true
+val x1057 = while ({val x1040 = x1038
+val x1042 = x1039
+val x1041 = x1040 < x626
+val x1043 = x1041 && x1042
+x1043}) {
+val x1045 = x1038
+val x1046 = x1045 + x484
+val x1047 = x0(x1046)
+val x1048 = x1035(x1045)
+val x1050 = x1047 == x1048
+val x1053 = if (x1050) {
+()
+} else {
+x1039 = false
+()
+}
+val x1054 = x1045 + 1
+x1038 = x1054
+()
+}
+val x1058 = x1039
+x1058
+} else {
+false
+}
+val x1062 = if (x1060) {
+x802
+} else {
+x802
+}
+x1062
+}
+val x1069 = if (x1033) {
+x803
+} else {
+val x1037 = x626 == x1036
+val x1060 = if (x1037) {
+var x1038: Int = 0
+var x1039: Boolean = true
+val x1057 = while ({val x1040 = x1038
+val x1042 = x1039
+val x1041 = x1040 < x626
+val x1043 = x1041 && x1042
+x1043}) {
+val x1045 = x1038
+val x1046 = x1045 + x484
+val x1047 = x0(x1046)
+val x1048 = x1035(x1045)
+val x1050 = x1047 == x1048
+val x1053 = if (x1050) {
+()
+} else {
+x1039 = false
+()
+}
+val x1054 = x1045 + 1
+x1038 = x1054
+()
+}
+val x1058 = x1039
+x1058
+} else {
+false
+}
+val x1063 = if (x1060) {
+x803
+} else {
+x803
+}
+x1063
+}
+val x1070 = if (x1033) {
+x804
+} else {
+val x1037 = x626 == x1036
+val x1060 = if (x1037) {
+var x1038: Int = 0
+var x1039: Boolean = true
+val x1057 = while ({val x1040 = x1038
+val x1042 = x1039
+val x1041 = x1040 < x626
+val x1043 = x1041 && x1042
+x1043}) {
+val x1045 = x1038
+val x1046 = x1045 + x484
+val x1047 = x0(x1046)
+val x1048 = x1035(x1045)
+val x1050 = x1047 == x1048
+val x1053 = if (x1050) {
+()
+} else {
+x1039 = false
+()
+}
+val x1054 = x1045 + 1
+x1038 = x1054
+()
+}
+val x1058 = x1039
+x1058
+} else {
+false
+}
+val x1064 = if (x1060) {
+x804
+} else {
+x804
+}
+x1064
+}
+val x1071 = if (x1033) {
+true
+} else {
+val x1037 = x626 == x1036
+val x1060 = if (x1037) {
+var x1038: Int = 0
+var x1039: Boolean = true
+val x1057 = while ({val x1040 = x1038
+val x1042 = x1039
+val x1041 = x1040 < x626
+val x1043 = x1041 && x1042
+x1043}) {
+val x1045 = x1038
+val x1046 = x1045 + x484
+val x1047 = x0(x1046)
+val x1048 = x1035(x1045)
+val x1050 = x1047 == x1048
+val x1053 = if (x1050) {
+()
+} else {
+x1039 = false
+()
+}
+val x1054 = x1045 + 1
+x1038 = x1054
+()
+}
+val x1058 = x1039
+x1058
+} else {
+false
+}
+val x1065 = if (x1060) {
+x805
+} else {
+x805
+}
+x1065
+}
+val x1072 = if (x1033) {
+x806
+} else {
+val x1037 = x626 == x1036
+val x1060 = if (x1037) {
+var x1038: Int = 0
+var x1039: Boolean = true
+val x1057 = while ({val x1040 = x1038
+val x1042 = x1039
+val x1041 = x1040 < x626
+val x1043 = x1041 && x1042
+x1043}) {
+val x1045 = x1038
+val x1046 = x1045 + x484
+val x1047 = x0(x1046)
+val x1048 = x1035(x1045)
+val x1050 = x1047 == x1048
+val x1053 = if (x1050) {
+()
+} else {
+x1039 = false
+()
+}
+val x1054 = x1045 + 1
+x1038 = x1054
+()
+}
+val x1058 = x1039
+x1058
+} else {
+false
+}
+val x1066 = if (x1060) {
+true
+} else {
+x806
+}
+x1066
+}
+val x1073 = new Anon1323431030(x1068,x1069,x1070,x1071,x1072)
+x1073
+}
+x1074
+}
+val x1077 = x1075.status
+x466 = x1077
+val x1079 = x1075.contentLength
+x467 = x1079
+val x1081 = x1075.connection
+x468 = x1081
+val x1083 = x1075.chunked
+x469 = x1083
+val x1085 = x1075.upgrade
+x470 = x1085
+x472 = false
+val x797 = x787 + 1
+x473 = x797
+x477 = x797
+()
+} else {
+x476 = false
+()
+}
+x1093
+}
+x1095
+}
+x1097
+} else {
+x476 = false
+()
+}
+x1101
+}
+x1103
+}
+x1105
+} else {
+x476 = false
+()
+}
+x1109
+}
+x1111
+}
+val x1114 = x466
+val x1115 = x467
+val x1116 = x468
+val x1117 = x469
+val x1118 = x470
+val x1120 = x472
+val x1121 = x473
+val x1126 = if (x1120) {
+true
+} else {
+false
+}
+val x1180 = if (x1126) {
+x2 = null
+x3 = true
+x4 = 0
+()
+} else {
+val x1127 = if (x1120) {
+0
+} else {
+x1121
+}
+val x1134 = x1127 >= x7
+val x1178 = if (x1134) {
+x2 = null
+x3 = true
+x4 = 0
+()
+} else {
+val x1140 = x0(x1127)
+val x1141 = x1140 == '\n'
+val x1176 = if (x1141) {
+val x1142 = x1127 + 1
+val x1125 = if (x1120) {
+null
+} else {
+val x394 = if (x391) {
+0
+} else {
+x390
+}
+val x1119 = new Anon1323431030(x1114,x1115,x1116,x1117,x1118)
+val x1123 = new Tuple2IntAnon1323431030(x394,x1119)
+x1123
+}
+val x1146 = x1125._2
+val x1147 = x1146.contentLength
+val x1153 = x1142 + x1147
+val x1154 = x1153 < x7
+val x1170 = if (x1154) {
+val x1145 = x1125._1
+val x1148 = x1146.connection
+val x1149 = x1146.chunked
+val x1150 = x1146.upgrade
+val x1151 = new Anon1323431030(x1145,x1147,x1148,x1149,x1150)
+val x1155 = new Anon1680061013(x0,x1142,x1153)
+val x1156 = x1155.input.slice(x1155.start,x1155.start+x1155.length).mkString
+val x1158 = new Tuple2Anon1323431030String(x1151,x1156)
+x2 = x1158
+x3 = false
+x4 = x1147
+()
+} else {
+x2 = null
+x3 = true
+x4 = 0
+()
+}
+x1170
+} else {
+x2 = null
+x3 = true
+x4 = 0
+()
+}
+x1176
+}
+x1178
+}
+x1180
+} else {
+x2 = null
+x3 = true
+x4 = 0
+()
+}
+x1186
+}
+x1188
+}
+x1190
+} else {
+x2 = null
+x3 = true
+x4 = 0
+()
+}
+x1196
+}
+x1198
+}
+x1200
+}
+x1202
+} else {
+x2 = null
+x3 = true
+x4 = 0
+()
+}
+x1208
+}
+x1210
+} else {
+x2 = null
+x3 = true
+x4 = 0
+()
+}
+x1216
+}
+x1218
+}
+x1220
+} else {
+x2 = null
+x3 = true
+x4 = 0
+()
+}
+x1226
+}
+x1228
+} else {
+x2 = null
+x3 = true
+x4 = 0
+()
+}
+x1234
+}
+x1236
+} else {
+x2 = null
+x3 = true
+x4 = 0
+()
+}
+x1242
+}
+x1244
+} else {
+x2 = null
+x3 = true
+x4 = 0
+()
+}
+x1250
+}
+x1252
+} else {
+x2 = null
+x3 = true
+x4 = 0
+()
+}
+x1258
+}
+x1260
+} else {
+x2 = null
+x3 = true
+x4 = 0
+()
+}
+x1266
+}
+val x1269 = x2
+val x1270 = x3
+val x1271 = x4
+val x1272 = new ParseResultTuple2Anon1323431030String(x1269,x1270,x1271)
+val x1273 = println(x1272)
+x1273
+}
+}
+/*****************************************
+  End of Generated Code                  
+*******************************************/
+
+case class Anon1323431030(status: Int, contentLength: Int, connection: java.lang.String, chunked: Boolean, upgrade: Boolean)
+
+case class Anon1680061013(input: Array[Char], start: Int, length: Int)
+
+case class Tuple2Anon1323431030String(_1: Anon1323431030, _2: java.lang.String)
+
+case class ParseResultInt(res: Int, empty: Boolean, next: Int)
+
+case class ParseResultTuple2Anon1323431030String(res: Tuple2Anon1323431030String, empty: Boolean, next: Int)
+
+case class ParseResultAnon1323431030(res: Anon1323431030, empty: Boolean, next: Int)
+
+case class Tuple2IntAnon1323431030(_1: Int, _2: Anon1323431030)
+
+case class ParseResultString(res: java.lang.String, empty: Boolean, next: Int)
+nVars=1000
+compilation: ok
+ParseResultTuple2Anon1323431030String(Tuple2Anon1323431030String(Anon1323431030(200,0,close,false,false),AA
+),false,0)
+ParseResultTuple2Anon1323431030String(Tuple2Anon1323431030String(Anon1323431030(200,0,close,false,false),4
+Wiki
+4
+pedi
+D
+a in
+
+chunks.
+0
+
+),false,0)
+ParseResultTuple2Anon1323431030String(Tuple2Anon1323431030String(Anon1323431030(200,0,close,false,false),<html>
+<head>
+  <title>An Example Page</title>
+</head>
+<body>
+  Hello World, this is a very simple HTML document.
+</body>
+</html>
+),false,0)

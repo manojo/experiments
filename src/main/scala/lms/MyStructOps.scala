@@ -276,7 +276,6 @@ trait StructOpsExpOptCommon extends StructOpsExpOpt with VariablesExp with IfThe
       struct[T](tagA, elemsNew)
     case _ => super.ifThenElse(cond,a,b)
   }
-
 }
 
 

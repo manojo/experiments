@@ -304,6 +304,30 @@ trait TokenParsers extends TopDownParsers with CharParsers with StringStructOps{
 
   def accept(in: Rep[Input], s: String): Parser[String] = accept(in, s.toList.map{c => unit(c)})
 
+
+  //we can also accept a string and return a boolean value. We only care that
+  //the string can be parsed
+  // TODO: LMS should understand this pattern and replace calls to p ^^^ f
+  // with p_bool ^^^ f
+  def acceptB(in: Rep[Input], s:String): Parser[Boolean] = {
+    val len = staticData(s.length)
+    val arr = staticData(s.toArray)
+    Parser[Boolean]{i =>
+      if(i >= in.length || i + len > in.length) elGen(Failure[Boolean](i))
+      else{
+        var count = unit(0); var matches = unit(true)
+        while(matches && count < len){
+          if(in(i+readVar(count)) != arr(readVar(count))) matches = unit(false)
+          count = readVar(count) + unit(1)
+        }
+
+        if(matches) elGen(Success(unit(true), i+len))
+        else elGen(Failure[Boolean](i))
+      }
+
+    }
+  }
+
   /* specialized rep for retrieving a stringstruct
    * cannot be implemented using a rep because the zero element
    * does not have any notion of the start position

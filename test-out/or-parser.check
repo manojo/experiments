@@ -159,173 +159,173 @@ ParseResultTuple2CharChar(null,true,0)
   Emitting Generated Code                  
 *******************************************/
 class testOr3 extends ((Array[Char])=>(Unit)) {
-def apply(x271:Array[Char]): Unit = {
-var x273: Tuple2Tuple2CharCharChar = null
-var x274: Boolean = true
-var x275: Int = -1
-val x289 = x271.length
-val x336 = {x283: (Int) => 
-var x285: Tuple2CharChar = null
-var x286: Boolean = true
-var x287: Int = x283
-val x290 = x283 >= x289
-val x330 = if (x290) {
-x285 = null
-x286 = true
-x287 = x283
+def apply(x0:Array[Char]): Unit = {
+var x2: Tuple2Tuple2CharCharChar = null
+var x3: Boolean = true
+var x4: Int = -1
+val x18 = x0.length
+val x65 = {x12: (Int) => 
+var x14: Tuple2CharChar = null
+var x15: Boolean = true
+var x16: Int = x12
+val x19 = x12 >= x18
+val x59 = if (x19) {
+x14 = null
+x15 = true
+x16 = x12
 ()
 } else {
-val x296 = x271(x283)
-val x297 = x296 == 'h'
-val x328 = if (x297) {
-val x298 = x283 + 1
-val x300 = x298 >= x289
-val x322 = if (x300) {
-x285 = null
-x286 = true
-x287 = x283
+val x25 = x0(x12)
+val x26 = x25 == 'h'
+val x57 = if (x26) {
+val x27 = x12 + 1
+val x29 = x27 >= x18
+val x51 = if (x29) {
+x14 = null
+x15 = true
+x16 = x12
 ()
 } else {
-val x306 = x271(x298)
-val x307 = x306 == 'e'
-val x320 = if (x307) {
-val x310 = new Tuple2CharChar(x296,x306)
-x285 = x310
-x286 = false
-val x308 = x298 + 1
-x287 = x308
+val x35 = x0(x27)
+val x36 = x35 == 'e'
+val x49 = if (x36) {
+val x39 = new Tuple2CharChar(x25,x35)
+x14 = x39
+x15 = false
+val x37 = x27 + 1
+x16 = x37
 ()
 } else {
-x285 = null
-x286 = true
-x287 = x283
+x14 = null
+x15 = true
+x16 = x12
 ()
 }
-x320
+x49
 }
-x322
+x51
 } else {
-x285 = null
-x286 = true
-x287 = x283
+x14 = null
+x15 = true
+x16 = x12
 ()
 }
-x328
+x57
 }
-val x331 = x285
-val x332 = x286
-val x333 = x287
-val x334 = new ParseResultTuple2CharChar(x331,x332,x333)
-x334: ParseResultTuple2CharChar
+val x60 = x14
+val x61 = x15
+val x62 = x16
+val x63 = new ParseResultTuple2CharChar(x60,x61,x62)
+x63: ParseResultTuple2CharChar
 }
-val x393 = {x277: (Int) => 
-var x279: Tuple2CharChar = null
-var x280: Boolean = true
-var x281: Int = x277
-val x337 = x336(x277)
-val x338 = x337.empty
-val x387 = if (x338) {
-val x339 = x277 >= x289
-val x379 = if (x339) {
-x279 = null
-x280 = true
-x281 = x277
-()
-} else {
-val x345 = x271(x277)
-val x346 = x345 == '1'
-val x377 = if (x346) {
-val x347 = x277 + 1
-val x349 = x347 >= x289
-val x371 = if (x349) {
-x279 = null
-x280 = true
-x281 = x277
+val x122 = {x6: (Int) => 
+var x8: Tuple2CharChar = null
+var x9: Boolean = true
+var x10: Int = x6
+val x66 = x65(x6)
+val x67 = x66.empty
+val x116 = if (x67) {
+val x68 = x6 >= x18
+val x108 = if (x68) {
+x8 = null
+x9 = true
+x10 = x6
 ()
 } else {
-val x355 = x271(x347)
-val x356 = x355 == '2'
-val x369 = if (x356) {
-val x359 = new Tuple2CharChar(x345,x355)
-x279 = x359
-x280 = false
-val x357 = x347 + 1
-x281 = x357
+val x74 = x0(x6)
+val x75 = x74 == '1'
+val x106 = if (x75) {
+val x76 = x6 + 1
+val x78 = x76 >= x18
+val x100 = if (x78) {
+x8 = null
+x9 = true
+x10 = x6
 ()
 } else {
-x279 = null
-x280 = true
-x281 = x277
-()
-}
-x369
-}
-x371
-} else {
-x279 = null
-x280 = true
-x281 = x277
-()
-}
-x377
-}
-x379
-} else {
-val x381 = x337.res
-x279 = x381
-x280 = x338
-val x384 = x337.next
-x281 = x384
-()
-}
-val x388 = x279
-val x389 = x280
-val x390 = x281
-val x391 = new ParseResultTuple2CharChar(x388,x389,x390)
-x391: ParseResultTuple2CharChar
-}
-val x394 = x393(0)
-val x395 = x394.empty
-val x427 = if (x395) {
-x273 = null
-x274 = true
-x275 = 0
+val x84 = x0(x76)
+val x85 = x84 == '2'
+val x98 = if (x85) {
+val x88 = new Tuple2CharChar(x74,x84)
+x8 = x88
+x9 = false
+val x86 = x76 + 1
+x10 = x86
 ()
 } else {
-val x401 = x394.next
-val x402 = x401 >= x289
-val x425 = if (x402) {
-x273 = null
-x274 = true
-x275 = 0
+x8 = null
+x9 = true
+x10 = x6
+()
+}
+x98
+}
+x100
+} else {
+x8 = null
+x9 = true
+x10 = x6
+()
+}
+x106
+}
+x108
+} else {
+val x110 = x66.res
+x8 = x110
+x9 = x67
+val x113 = x66.next
+x10 = x113
+()
+}
+val x117 = x8
+val x118 = x9
+val x119 = x10
+val x120 = new ParseResultTuple2CharChar(x117,x118,x119)
+x120: ParseResultTuple2CharChar
+}
+val x123 = x122(0)
+val x124 = x123.empty
+val x156 = if (x124) {
+x2 = null
+x3 = true
+x4 = 0
 ()
 } else {
-val x408 = x271(x401)
-val x409 = x408 == '3'
-val x423 = if (x409) {
-val x412 = x394.res
-val x413 = new Tuple2Tuple2CharCharChar(x412,x408)
-x273 = x413
-x274 = false
-val x410 = x401 + 1
-x275 = x410
+val x130 = x123.next
+val x131 = x130 >= x18
+val x154 = if (x131) {
+x2 = null
+x3 = true
+x4 = 0
 ()
 } else {
-x273 = null
-x274 = true
-x275 = 0
+val x137 = x0(x130)
+val x138 = x137 == '3'
+val x152 = if (x138) {
+val x141 = x123.res
+val x142 = new Tuple2Tuple2CharCharChar(x141,x137)
+x2 = x142
+x3 = false
+val x139 = x130 + 1
+x4 = x139
+()
+} else {
+x2 = null
+x3 = true
+x4 = 0
 ()
 }
-x423
+x152
 }
-x425
+x154
 }
-val x428 = x273
-val x429 = x274
-val x430 = x275
-val x431 = new ParseResultTuple2Tuple2CharCharChar(x428,x429,x430)
-val x432 = println(x431)
-x432
+val x157 = x2
+val x158 = x3
+val x159 = x4
+val x160 = new ParseResultTuple2Tuple2CharCharChar(x157,x158,x159)
+val x161 = println(x160)
+x161
 }
 }
 /*****************************************

@@ -43,18 +43,27 @@ class TestStringStructOps extends FileDiffSuite {
         val codegen = new MyScalaCodeGenPkg with ScalaGenStringStructOps{ val IR: self.type = self }
 
         codegen.emitSource2(test1 _ , "test1", new java.io.PrintWriter(System.out))
+        codegen.reset
+
         val testc1 = compile2(test1)
         scala.Console.println(testc1("hello".toArray, "asfd".toArray))
         scala.Console.println(testc1("hello".toArray, "hello".toArray))
         scala.Console.println(testc1("hello".toArray, "hella".toArray))
+        codegen.reset
 
         codegen.emitSource(test2 _ , "test2", new java.io.PrintWriter(System.out))
+        codegen.reset
+
         val testc2 = compile(test2)
         scala.Console.println(testc2("hello".toArray))
+        codegen.reset
 
         codegen.emitSource(test3 _ , "test3", new java.io.PrintWriter(System.out))
+        codegen.reset
+
         val testc3 = compile(test3)
         scala.Console.println(testc3("hello".toArray))
+        codegen.reset
 
       }
     }

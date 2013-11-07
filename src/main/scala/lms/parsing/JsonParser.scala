@@ -67,7 +67,7 @@ trait JsonParser extends TokenParsers with RecParsers with StringStructOps with 
     repToS_f(acceptIf(in, {x:Rep[Char] => x == unit(' ') || x == unit('\n')}))// ^^^ {unit("")}
 
   def json2(in:Rep[Input]): Parser[JV] = rec("json2",
-    accept(in,"false") ^^^ jFalse
+    (accept(in,"false") ^^^ jFalse
   | accept(in,"true") ^^^ jTrue
   | accept(in,"null") ^^^ jNull
   | doubleLit(in) ^^ { s => jDouble(s) }
@@ -75,7 +75,17 @@ trait JsonParser extends TokenParsers with RecParsers with StringStructOps with 
   | stringLit(in) ^^ { s => jString(s) }
   | chr(in,'[') ~> repsep(json2(in), chr(in,',')) <~ chr(in,']') ^^  { a=>jArray(a) }
   | chr(in,'{') ~> repsep((stringLit(in) <~ chr(in,':')) ~ json2(in) ^^ {x=> jNull }, chr(in,',')) <~ chr(in,'}') ^^ { l=> jNull /*jObject(l)*/ } // XXX: fix this
+  ))
+
+  // true | false | null | doubleLit | intLit | stringLit
+  def primitives(in: Rep[Input]): Parser[JV] = (
+      acceptB(in,"false") ^^^ jFalse
+    | acceptB(in,"true") ^^^ jTrue
+    | acceptB(in,"null") ^^^ jNull
+    | doubleLit(in) ^^ { s => jDouble(s) }
+    | intLit(in) ^^ { s => jInt(s) }
   )
+
 
   def json(in: Rep[Input]): Parser[Any] = {
   /*

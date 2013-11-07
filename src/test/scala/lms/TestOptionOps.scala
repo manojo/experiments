@@ -71,29 +71,47 @@ class TestOptionOps extends FileDiffSuite {
           with lms.ScalaGenStructOps{ val IR: self.type = self }
 
         codegen.emitSource(test1 _ , "test1", new java.io.PrintWriter(System.out))
+        codegen.reset
+
         val testc1 = compile(test1)
         testc1(3)
+        codegen.reset
 
         codegen.emitSource(test2 _ , "test2", new java.io.PrintWriter(System.out))
+        codegen.reset
+
         val testc2 = compile(test2)
         testc2(3)
+        codegen.reset
 
         codegen.emitSource(test3 _ , "test3", new java.io.PrintWriter(System.out))
+        codegen.reset
+
         val testc3 = compile(test3)
         testc3(3)
+        codegen.reset
 
         codegen.emitSource(test4 _ , "test4", new java.io.PrintWriter(System.out))
+        codegen.reset
+
         val testc4 = compile(test4)
         testc4(3)
+        codegen.reset
 
         codegen.emitSource(testFilter _ , "testFilter", new java.io.PrintWriter(System.out))
+        codegen.reset
+
         val testcFilter = compile(testFilter)
         testcFilter(3)
         testcFilter(2)
+        codegen.reset
 
         codegen.emitSource(testFilterNone _ , "testFilterNone", new java.io.PrintWriter(System.out))
+        codegen.reset
+
         val testcFilterNone = compile(testFilterNone)
         testcFilterNone(3)
+        codegen.reset
 
       }
     }
