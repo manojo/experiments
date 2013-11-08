@@ -475,7 +475,7 @@ x370 = x354
 } else {
 val x358 = x0(x354)
 val x359 = x358 == '\n'
-println("how many times!: "+x359)
+println("checking for line break "+x359)
 var x364: Boolean = false
 var x365: Int = 0
 if (x359) {
