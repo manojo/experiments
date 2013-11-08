@@ -4,7 +4,8 @@ import scala.reflect.SourceContext
 
 trait StringStructOps extends StructOps with While with IfThenElse
 with NumericOps with ArrayOps with Equal with StringOps with OrderingOps
-with BooleanOps with MiscOps with StaticData with LiftVariables{
+with BooleanOps with CharOps with PrimitiveOps with StaticData with MiscOps
+with LiftVariables{
   type StringStruct = Record{
     val input: Array[Char]
     val start: Int
@@ -18,6 +19,9 @@ with BooleanOps with MiscOps with StaticData with LiftVariables{
       val length = len
     }
 
+  def toLower(c: Rep[Char]): Rep[Char] =
+    (c.toInt | unit(0x20)).toChar
+
 
   //unsound operation in general, we need to have the same input !!
 /*  def infix_+(l: Rep[StringStruct], r: Rep[StringStruct])(implicit pos: SourceContext)
@@ -25,13 +29,14 @@ with BooleanOps with MiscOps with StaticData with LiftVariables{
   def stringStruct_plus(l: Rep[StringStruct], r: Rep[StringStruct])(implicit pos: SourceContext) : Rep[StringStruct]
     = String(in = l.input, st = l.start, len = (r.length:Rep[Int]))
 */
+  /*FIXME: for now always assume r is lower cased*/
   def __equal(l: Rep[StringStruct], r: Rep[Array[Char]])(implicit pos: SourceContext): Rep[Boolean] = {
     if(l.length == r.length){
       val in :Rep[Array[Char]] = l.input
       val st = l.start
       var i = unit(0); var tmp = unit(true)
       while(i < l.length && tmp){
-        if(in(i + st) != r(i)){
+        if(toLower(in(i + st)) != r(i)){
           tmp = unit(false)
         }
         i = i + unit(1)
@@ -65,14 +70,14 @@ with BooleanOps with MiscOps with StaticData with LiftVariables{
 
 trait StringStructOpsExp extends StringStructOps with StructOpsExpOptCommon with WhileExp with IfThenElseExpOpt
 with BooleanOpsExp with NumericOpsExp with ArrayOpsExp with EqualExpOpt with StringOpsExp with OrderingOpsExp
-with MiscOpsExp with VariablesExp with StaticDataExp {
+with CharOpsExp with PrimitiveOpsExp with MiscOpsExp with VariablesExp with StaticDataExp {
   case class StringStructToString(s:Rep[StringStruct]) extends Def[String]
   def infix_toStr(s: Rep[StringStruct])(implicit pos: SourceContext) = StringStructToString(s)
 }
 
 trait ScalaGenStringStructOps extends ScalaGenBase with ScalaGenStructOps with ScalaGenWhile with ScalaGenIfThenElse
 with ScalaGenNumericOps with ScalaGenArrayOps with ScalaGenEqual with ScalaGenStringOps with ScalaGenOrderingOps
-with ScalaGenBooleanOps with ScalaGenMiscOps with ScalaGenVariables with ScalaGenStaticData{
+with ScalaGenBooleanOps with ScalaGenCharOps with ScalaGenPrimitiveOps with ScalaGenMiscOps with ScalaGenVariables with ScalaGenStaticData{
   val IR: StringStructOpsExp
   import IR._
 
@@ -84,7 +89,7 @@ with ScalaGenBooleanOps with ScalaGenMiscOps with ScalaGenVariables with ScalaGe
 
 trait CGenStringStructOps extends CGenBase with CGenStructOps with CGenWhile with CGenIfThenElse
 with CGenNumericOps with CGenArrayOps with CGenEqual with CGenStringOps with CGenOrderingOps
-with CGenBooleanOps with CGenMiscOps with CGenVariables with CGenStaticData{
+with CGenBooleanOps with CGenCharOps with CGenPrimitiveOps with CGenMiscOps with CGenVariables with CGenStaticData{
   val IR: StringStructOpsExp
   import IR._
 

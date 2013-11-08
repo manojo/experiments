@@ -142,9 +142,6 @@ trait HttpComponents extends lms.StructOps with SetOps{
 
 trait HttpParser extends TokenParsers with HttpComponents with StringStructOps{
 
-  def toLower(c: Rep[Char]): Rep[Char] =
-    (c.toInt | unit(0x20)).toChar
-
   def capitalLetter(in:Rep[Input]) = {
     acceptIf(in, {
       c: Rep[Char] => c >= unit('A') && c <= unit('Z')
@@ -196,7 +193,7 @@ trait HttpParser extends TokenParsers with HttpComponents with StringStructOps{
   //def body(in:Rep[Input], n:Rep[Int]) =
   //  repNFold(acceptAll(in), n)(unit(""), (res: Rep[String], c: Rep[Char]) => res + c)
   def body(in:Rep[Input], n:Rep[Int]) = Parser[String] { i =>
-    if (i+n<in.length) elGen(Success[String](String(in,i,i+n).toStr,n))
+    if (i+n<in.length) elGen(Success[String](String(in,i,n).toStr,i+n))
     else elGen(Failure[String](i))
   }
 

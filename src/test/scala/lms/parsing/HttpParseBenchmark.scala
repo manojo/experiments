@@ -106,6 +106,32 @@ class HttpParseBenchmark extends PerformanceTest
     }
   }
 
+  //staged parser static
+  val stagedParserStatic2 = new ResponseParseStatic2(
+    "connection".toArray,
+    "proxy-connection".toArray,
+    "keep-alive".toArray,
+    "close".toArray,
+    "content-length".toArray,
+    "transfer-encoding".toArray,
+    "chunked".toArray,
+    "upgrade".toArray
+  )
+
+  performance of "RespAndMessageParserStatic2" in {
+    measure method "parse" config(
+      //exec.minWarmupRuns -> 500,
+      //exec.maxWarmupRuns -> 500
+      //exec.benchRuns -> 15
+      //exec.independentSamples -> 1
+    ) in {
+      using(range)/*.config(exec.jvmflags -> "-XX:+PrintCompilation").*/ in {j =>
+        for(i <- 1 to j; m <- messages)
+          stagedParserStatic2.apply(m)
+      }
+    }
+  }
+
 //hand written, folding
 
   val handWrittenParser = HandWrittenParserWrapper.getParser

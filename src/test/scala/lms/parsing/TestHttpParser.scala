@@ -129,7 +129,7 @@ trait HttpParserProg extends HttpParser{
   def bodyParse(in: Rep[Array[Char]]): Rep[Unit] = {
     var s = Failure[String](unit(-1))
     //parsing "make it funky!"
-    val parser = body(in, unit(14)).apply(unit(0))
+    val parser = body(in, unit(0)).apply(unit(0))
     parser{x => s = x}
     println(s)
   }
@@ -334,7 +334,9 @@ class TestHttpParser extends FileDiffSuite {
           val IR: self.type = self
         }
 
-        //codegen.emitSource(statusParse _ , "statusParse", new java.io.PrintWriter(System.out))
+        codegen.emitSource(statusParse _ , "statusParse", new java.io.PrintWriter(System.out))
+        codegen.reset
+
         val testcStatus = compile(statusParse)
 
         val statusMessages = scala.List(
@@ -345,16 +347,22 @@ class TestHttpParser extends FileDiffSuite {
           |""".stripMargin
         )
 
-        //statusMessages.foreach{sm =>
-        //  testcStatus(sm.toArray)
-        //}
+        statusMessages.foreach{sm =>
+          testcStatus(sm.toArray)
+        }
+        codegen.reset
 
-        //codegen.emitSource(headerNameParse _ , "headerNameParse", new java.io.PrintWriter(System.out))
-        //val testcHeaderName = compile(headerNameParse)
-        //testcHeaderName("Date \n".toArray)
+        codegen.emitSource(headerNameParse _ , "headerNameParse", new java.io.PrintWriter(System.out))
+        codegen.reset
 
-        //codegen.emitSource(headerParse _ , "headerParse", new java.io.PrintWriter(System.out))
-        //val testcHeader = compile(headerParse)
+        val testcHeaderName = compile(headerNameParse)
+        testcHeaderName("Date \n".toArray)
+        codegen.reset
+
+        codegen.emitSource(headerParse _ , "headerParse", new java.io.PrintWriter(System.out))
+        codegen.reset
+
+        val testcHeader = compile(headerParse)
 
         val headers = scala.List(
         """|Date: Mon, 23 May 2005 22:38:34 GMT
@@ -376,17 +384,21 @@ class TestHttpParser extends FileDiffSuite {
            |""".stripMargin
         )
 
-        //headers.foreach{h =>
-        //  testcHeader(h.toArray)
-        //}
+        headers.foreach{h =>
+          testcHeader(h.toArray)
+        }
 
         //an invalid header
-        //testcHeader("Date: Mon, 23 May 2005 22:38:34 GMT".toArray)
+        testcHeader("Date: Mon, 23 May 2005 22:38:34 GMT".toArray)
+        codegen.reset
 
-        //val allHeaders = headers.mkString
-        //codegen.emitSource(headersParse _, "headersParse", new java.io.PrintWriter(System.out))
-        //val testcHeaders = compile(headersParse)
-        //testcHeaders(allHeaders.toArray)
+        val allHeaders = headers.mkString
+        codegen.emitSource(headersParse _, "headersParse", new java.io.PrintWriter(System.out))
+        codegen.reset
+
+        val testcHeaders = compile(headersParse)
+        testcHeaders(allHeaders.toArray)
+        codegen.reset
 
         //a status and some headers
         val httpMessage =

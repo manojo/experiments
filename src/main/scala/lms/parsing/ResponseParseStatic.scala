@@ -41,6 +41,17 @@ object TestResponseStatic{
       "upgrade".toArray//, "upgrade".length
     )
 
+    val stagedParserStatic2 = new ResponseParseStatic2(
+      "connection".toArray,// "connection".length,
+      "proxy-connection".toArray,// "proxy-connection".length,
+      "keep-alive".toArray, //"keep-alive".length,
+      "close".toArray, //"close".length,
+      "content-length".toArray, //"content-length".length,
+      "transfer-encoding".toArray, //"transfer-encoding".length,
+      "chunked".toArray, //"chunked".length,
+      "upgrade".toArray//, "upgrade".length
+    )
+
 
     val fileNames = List(1,2,3,4,6).map{x=> "tweet"+x}
 
@@ -56,13 +67,14 @@ object TestResponseStatic{
       out.toArray :: acc
     }
 
-    for(k <- 1 to 50){
-      val now = System.nanoTime
-      for(i <- 1 to 100; m <- messages){
+    //for(k <- 1 to 50){
+    //  val now = System.nanoTime
+    //  for(i <- 1 to 100; m <- messages){
         stagedParserStatic.apply(resp.toArray)
-      }
-      println("time taken: " + (System.nanoTime - now))
-    }
+        stagedParserStatic2.apply(resp.toArray)
+    //  }
+    //  println("time taken: " + (System.nanoTime - now))
+    //}
   }
 }
 /*****************************************
@@ -1410,8 +1422,8 @@ val x1650 = x492
 val x1651 = x493
 val x1652 = x494
 val x1653 = new ParseResultAnon1323431030(x1650,x1651,x1652)
-//val x1654 = println(x1653)
-//x1654
+val x1654 = println(x1653)
+x1654
 ()
 }
 }

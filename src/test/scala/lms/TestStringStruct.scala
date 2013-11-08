@@ -63,6 +63,8 @@ class TestStringStructOps extends FileDiffSuite {
 
         val testc3 = compile(test3)
         scala.Console.println(testc3("hello".toArray))
+        scala.Console.println(testc3("asdf".toArray))
+        scala.Console.println(testc3("HELLO".toArray))
         codegen.reset
 
       }
