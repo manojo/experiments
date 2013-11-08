@@ -303,14 +303,14 @@ class TestHttpParser extends FileDiffSuite {
   def testRespParser = {
     withOutFile(prefix+"resp-parser"){
       new HttpParserProg with MyScalaOpsPkgExp with CharOpsExp
-      with MyIfThenElseExpOpt with StructOpsExpOptCommon
+      with MyIfThenElseExpOpt with StructOpsExpOptCommon //StructOpsFatExpOptCommon
       with ParseResultOpsExp with OptionOpsExp
       with StringStructOpsExp with MyScalaCompile{self =>
 
         val codegen = new MyScalaCodeGenPkg with ScalaGenCharOps
-        with ScalaGenParseResultOps with ScalaGenStructOps
+        with ScalaGenParseResultOps with ScalaGenStructOps //ScalaGenFatStructOps
         with ScalaGenOptionOps with ScalaGenStringStructOps
-        with ScalaGenIfThenElse{
+        with ScalaGenIfThenElse /*Fat*/{
           val IR: self.type = self
         }
 
