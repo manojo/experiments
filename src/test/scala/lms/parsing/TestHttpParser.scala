@@ -112,7 +112,7 @@ trait HttpParserProg extends HttpParser{
   //body parse
   def bodyParse(in: Rep[Array[Char]]): Rep[Unit] = {
     //parsing "make it funky!"
-    val parser = body(in, unit(14))
+    val parser = body(in, unit(0))
     val res = parser(unit(0))
     println(res)
   }
@@ -303,18 +303,18 @@ class TestHttpParser extends FileDiffSuite {
   def testRespParser = {
     withOutFile(prefix+"resp-parser"){
       new HttpParserProg with MyScalaOpsPkgExp with CharOpsExp
-      with MyIfThenElseExpOpt with StructOpsFatExpOptCommon
+      with MyIfThenElseExpOpt with StructOpsExpOptCommon
       with ParseResultOpsExp with OptionOpsExp
       with StringStructOpsExp with MyScalaCompile{self =>
 
         val codegen = new MyScalaCodeGenPkg with ScalaGenCharOps
-        with ScalaGenParseResultOps with ScalaGenFatStructOps
+        with ScalaGenParseResultOps with ScalaGenStructOps
         with ScalaGenOptionOps with ScalaGenStringStructOps
-        with ScalaGenIfThenElseFat{
+        with ScalaGenIfThenElse{
           val IR: self.type = self
         }
 
-        codegen.emitSource(statusParse _ , "statusParse", new java.io.PrintWriter(System.out))
+        //codegen.emitSource(statusParse _ , "statusParse", new java.io.PrintWriter(System.out))
         codegen.reset
 
         val testcStatus = compile(statusParse)
@@ -327,19 +327,19 @@ class TestHttpParser extends FileDiffSuite {
           |""".stripMargin
         )
 
-        statusMessages.foreach{sm =>
-          testcStatus(sm.toArray)
-        }
+        //statusMessages.foreach{sm =>
+        //  testcStatus(sm.toArray)
+        //}
         codegen.reset
 
-        codegen.emitSource(headerNameParse _ , "headerNameParse", new java.io.PrintWriter(System.out))
+        //codegen.emitSource(headerNameParse _ , "headerNameParse", new java.io.PrintWriter(System.out))
         codegen.reset
 
-        val testcHeaderName = compile(headerNameParse)
-        testcHeaderName("Date \n".toArray)
+        //val testcHeaderName = compile(headerNameParse)
+        //testcHeaderName("Date \n".toArray)
         codegen.reset
 
-        codegen.emitSource(headerParse _ , "headerParse", new java.io.PrintWriter(System.out))
+        //codegen.emitSource(headerParse _ , "headerParse", new java.io.PrintWriter(System.out))
         codegen.reset
 
         val testcHeader = compile(headerParse)
@@ -364,16 +364,17 @@ class TestHttpParser extends FileDiffSuite {
            |""".stripMargin
         )
 
-        headers.foreach{h =>
-          testcHeader(h.toArray)
-        }
+        //headers.foreach{h =>
+        //  testcHeader(h.toArray)
+        //}
 
         //an invalid header
-        testcHeader("Date: Mon, 23 May 2005 22:38:34 GMT".toArray)
+        //testcHeader("Date: Mon, 23 May 2005 22:38:34 GMT".toArray)
         codegen.reset
 
-        val allHeaders = headers.mkString
+        val allHeaders = scala.List(headers.head, headers.last).mkString
         codegen.emitSource(headersParse _, "headersParse", new java.io.PrintWriter(System.out))
+        codegen.emitDataStructures(new java.io.PrintWriter(System.out))
         codegen.reset
 
         val testcHeaders = compile(headersParse)
@@ -393,22 +394,22 @@ class TestHttpParser extends FileDiffSuite {
            |
            |""".stripMargin
 
-        codegen.emitSource(responseParse _ , "responseParse", new java.io.PrintWriter(System.out))
+        //codegen.emitSource(responseParse _ , "responseParse", new java.io.PrintWriter(System.out))
         codegen.reset
 
-        val testcResponse = compile(responseParse)
-        testcResponse(httpMessage.toArray)
+        //val testcResponse = compile(responseParse)
+        //testcResponse(httpMessage.toArray)
         codegen.reset
 
-        codegen.emitSource(bodyParse _ , "bodyParse", new java.io.PrintWriter(System.out))
+        //codegen.emitSource(bodyParse _ , "bodyParse", new java.io.PrintWriter(System.out))
         codegen.reset
 
-        val testcBody = compile(bodyParse)
-        testcBody("Make it funky! -Maceo.".toArray)
+        //val testcBody = compile(bodyParse)
+        //testcBody("Make it funky! -Maceo.".toArray)
         codegen.reset
 
-        codegen.emitSource(respAndMessageParse _ , "respAndMessageParse", new java.io.PrintWriter(System.out))
-        codegen.emitDataStructures(new java.io.PrintWriter(System.out))
+        //codegen.emitSource(respAndMessageParse _ , "respAndMessageParse", new java.io.PrintWriter(System.out))
+        //codegen.emitDataStructures(new java.io.PrintWriter(System.out))
         codegen.reset
 
         val testcRespAndMessage = compile(respAndMessageParse)
@@ -468,9 +469,9 @@ class TestHttpParser extends FileDiffSuite {
             |""".stripMargin
         )
 
-        messages.foreach{msg =>
-          testcRespAndMessage(msg.toArray)
-        }
+        //messages.foreach{msg =>
+        //  testcRespAndMessage(msg.toArray)
+        //}
         codegen.reset
       }
     }
@@ -487,12 +488,12 @@ class TestReqParser extends FileDiffSuite {
   def testReqParser = {
 
     withOutFile(prefix+"req-parser"){
-      new HttpParserProg with MyScalaOpsPkgExp with GeneratorOpsExp
+      new HttpParserProg with MyScalaOpsPkgExp
         with CharOpsExp with MyIfThenElseExpOpt with StructOpsExpOptCommon
         with ParseResultOpsExp with SetOpsExp with OptionOpsExp with StringStructOpsExp
         with MyScalaCompile{self =>
 
-        val codegen = new MyScalaCodeGenPkg with ScalaGenGeneratorOps
+        val codegen = new MyScalaCodeGenPkg
          with ScalaGenCharOps with ScalaGenParseResultOps with ScalaGenStructOps
          with ScalaGenSetOps with ScalaGenOptionOps with ScalaGenStringStructOps{
           val IR: self.type = self

@@ -6,10 +6,10 @@ def apply(x0:Array[Char], x1:Array[Char]): Boolean = {
 val x2 = x0.length
 val x4 = x1.length
 val x5 = x2 == x4
-val x28 = if (x5) {
+val x31 = if (x5) {
 var x6: Int = 0
 var x7: Boolean = true
-val x25 = while ({val x8 = x6
+val x28 = while ({val x8 = x6
 val x10 = x7
 val x9 = x8 < x2
 val x11 = x9 && x10
@@ -17,24 +17,27 @@ x11}) {
 val x13 = x6
 val x14 = x13 + 0
 val x15 = x0(x14)
-val x16 = x1(x13)
-val x18 = x15 == x16
-val x21 = if (x18) {
+val x16 = x15.toInt
+val x17 = x16 | 32
+val x18 = x17.toChar
+val x19 = x1(x13)
+val x21 = x18 == x19
+val x24 = if (x21) {
 ()
 } else {
 x7 = false
 ()
 }
-val x22 = x13 + 1
-x6 = x22
+val x25 = x13 + 1
+x6 = x25
 ()
 }
-val x26 = x7
-x26
+val x29 = x7
+x29
 } else {
 false
 }
-x28
+x31
 }
 }
 /*****************************************
@@ -53,10 +56,10 @@ val x1 = x0.length
 val x3 = Array('a','b')
 val x4 = x3.length
 val x5 = x1 == x4
-val x28 = if (x5) {
+val x31 = if (x5) {
 var x6: Int = 0
 var x7: Boolean = true
-val x25 = while ({val x8 = x6
+val x28 = while ({val x8 = x6
 val x10 = x7
 val x9 = x8 < x1
 val x11 = x9 && x10
@@ -64,24 +67,27 @@ x11}) {
 val x13 = x6
 val x14 = x13 + 0
 val x15 = x0(x14)
-val x16 = x3(x13)
-val x18 = x15 == x16
-val x21 = if (x18) {
+val x16 = x15.toInt
+val x17 = x16 | 32
+val x18 = x17.toChar
+val x19 = x3(x13)
+val x21 = x18 == x19
+val x24 = if (x21) {
 ()
 } else {
 x7 = false
 ()
 }
-val x22 = x13 + 1
-x6 = x22
+val x25 = x13 + 1
+x6 = x25
 ()
 }
-val x26 = x7
-x26
+val x29 = x7
+x29
 } else {
 false
 }
-x28
+x31
 }
 }
 /*****************************************
@@ -98,10 +104,10 @@ val x1 = x0.length
 val x3 = px3 // static data: Array(h,e,l,l,o)
 val x4 = x3.length
 val x5 = x1 == x4
-val x28 = if (x5) {
+val x31 = if (x5) {
 var x6: Int = 0
 var x7: Boolean = true
-val x25 = while ({val x8 = x6
+val x28 = while ({val x8 = x6
 val x10 = x7
 val x9 = x8 < x1
 val x11 = x9 && x10
@@ -109,28 +115,33 @@ x11}) {
 val x13 = x6
 val x14 = x13 + 0
 val x15 = x0(x14)
-val x16 = x3(x13)
-val x18 = x15 == x16
-val x21 = if (x18) {
+val x16 = x15.toInt
+val x17 = x16 | 32
+val x18 = x17.toChar
+val x19 = x3(x13)
+val x21 = x18 == x19
+val x24 = if (x21) {
 ()
 } else {
 x7 = false
 ()
 }
-val x22 = x13 + 1
-x6 = x22
+val x25 = x13 + 1
+x6 = x25
 ()
 }
-val x26 = x7
-x26
+val x29 = x7
+x29
 } else {
 false
 }
-x28
+x31
 }
 }
 /*****************************************
   End of Generated Code                  
 *******************************************/
 compilation: ok
+true
+false
 true

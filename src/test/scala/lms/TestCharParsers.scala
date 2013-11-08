@@ -109,6 +109,13 @@ trait CharParsersProg extends CharParsers{
     println(res)
   }
 
+  def test12(in: Rep[Array[Char]]): Rep[Unit] = {
+    val parser =
+      repFold(digit(in)~digit(in))(make_tuple2(unit('a'),unit('a')), (x: Rep[(Char,Char)], y: Rep[(Char,Char)]) => y)
+    val res = parser(unit(0))
+    println(res)
+  }
+
   //cond
   def testCond(in: Rep[Array[Char]], n :Rep[Int]): Rep[Unit] = {
     val parser: Parser[Char] =
@@ -247,6 +254,13 @@ class TestCharParsers extends FileDiffSuite {
         testc11("12345".toArray)
         testc11("asd".toArray)
         testc11("".toArray)
+        codegen.reset
+
+        codegen.emitSource(test12 _ , "test12", new java.io.PrintWriter(System.out))
+        codegen.reset
+
+        val testc12 = compile(test12)
+        testc12("1234".toArray)
         codegen.reset
 
         val printWriter = new java.io.PrintWriter(System.out)

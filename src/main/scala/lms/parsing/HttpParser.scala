@@ -172,13 +172,16 @@ trait HttpParser extends TokenParsers with HttpComponents with StringStructOps w
     repFold(p)(unit(""), (res: Rep[String], x: Rep[Char]) => res + toLower(x))
 
   def headerName(in: Rep[Input]): Parser[StringStruct] =
-    letterIdx(in)~stringStruct(in, letterIdx(in) | acceptIdx(in, unit('-'))) ^^ {
+    letterIdx(in)~
+    stringStruct(in, acceptIfIdx(in, (x: Rep[Char])=> isLetter(x) || x == unit('-'))) ^^ {
       x: Rep[(Int, StringStruct)] => String(in, st = x._1, len = x._2.length + unit(1))
     }
 
   //TODO: do filtering based on input. Option[(String,String)]
   def header(in: Rep[Input]): Parser[(StringStruct, StringStruct)] =
-    (headerName(in)<~(whitespaces(in)~accept(in,":")))~(whitespaces(in)~>wildRegex(in)<~crlf(in))
+    (headerName(in)<~(whitespaces(in)~accept(in,":")))~(whitespaces(in)~>wildRegex(in)<~crlf(in)) ^^ { x =>
+      println(unit("parsed a header")); x
+    }
 
   def headers(in: Rep[Input]): Parser[Response] = repFold(header(in))(Response(),
     (res: Rep[Response], hds: Rep[(StringStruct,StringStruct)]) => collect(res, hds._1, hds._2)
@@ -193,11 +196,11 @@ trait HttpParser extends TokenParsers with HttpComponents with StringStructOps w
   //def body(in:Rep[Input], n:Rep[Int]) =
   //  repNFold(acceptAll(in), n)(unit(""), (res: Rep[String], c: Rep[Char]) => res + c)
   def body(in:Rep[Input], n:Rep[Int]) = Parser[String] { i =>
-    if (i+n<in.length) Success[String](String(in,i,i+n).toStr,n)
+    if (i+n<in.length) Success[String](String(in,i,n).toStr,i+n)
     else Failure[String](i)
   }
 
-  def collect(res: Rep[Response], hName: Rep[StringStruct], prop: Rep[StringStruct]) : Rep[Response] =
+  def collect(res: Rep[Response], hName: Rep[StringStruct], prop: Rep[StringStruct]) : Rep[Response] ={
     if((hName == "connection" || hName == "proxy-connection")
       && (prop == "keep-alive" || prop == "close")
     ){
@@ -216,6 +219,7 @@ trait HttpParser extends TokenParsers with HttpComponents with StringStructOps w
     }else {
       res
     }
+  }
 
   def respAndMessage(in: Rep[Input]): Parser[(Response,String)] = response(in) >> { rsp =>
     body(in, rsp.contentLength) ^^ {txt: Rep[String] => make_tuple2(rsp, txt)}
