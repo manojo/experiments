@@ -9,51 +9,50 @@ import scala.virtualization.lms.common._
 import scala.virtualization.lms.internal.Effects
 
 
-trait TopDownParsers extends MyScalaOpsPkg with GeneratorOps with LiftVariables
+trait TopDownParsers extends MyScalaOpsPkg with LiftVariables
   with StructOps with ParseResultOps with OptionOps with Functions {
   type Input = Array[Char]
   type Pos = Int
 
-  abstract class Parser[+T:Manifest] extends (Rep[Int] => Generator[ParseResult[T]]){self =>
+  abstract class Parser[+T:Manifest] extends (Rep[Int] => Rep[ParseResult[T]]){self =>
 
     private def flatMap[U:Manifest](f: Rep[T] => Parser[U]) = Parser[U]{ pos =>
-      self(pos).flatMap{x: Rep[ParseResult[T]] =>{
-        if(x.isEmpty) elGen(Failure[U](pos))
-        else f(x.get).apply(x.next).map{x => if(x.isEmpty) Failure[U](pos) else x}
-      }
+      val tmp = self(pos)
+      if(tmp.isEmpty) Failure[U](pos)
+      else {
+        val x = f(tmp.get).apply(tmp.next)
+        if(x.isEmpty) Failure[U](pos) else x
       }
     }
 
     def >>[U:Manifest](f: Rep[T] => Parser[U]) = flatMap(f)
 
     def ~[U: Manifest](that: Parser[U]) = Parser[(T,U)]{pos =>
-      self(pos).flatMap{x: Rep[ParseResult[T]] =>
-        if(x.isEmpty) elGen(Failure[(T,U)](pos))
-        else that(x.next).map{y: Rep[ParseResult[U]] =>
-          if(y.isEmpty) Failure[(T,U)](pos)
-          else Success(make_tuple2(x.get, y.get), y.next)
-        }
+      val x = self(pos)
+      if(x.isEmpty) Failure[(T,U)](pos)
+      else {
+        val y = that(x.next)
+        if(y.isEmpty) Failure[(T,U)](pos)
+        else Success(make_tuple2(x.get,y.get), y.next)
       }
     }
 
     def ~> [U:Manifest](that: => Parser[U]) = Parser[U]{pos =>
-      self(pos).flatMap{x: Rep[ParseResult[T]] =>
-        if(x.isEmpty) elGen(Failure[U](pos)) else that(x.next)
-      }
+      val x = self(pos)
+      if(x.isEmpty) Failure[U](pos) else that(x.next)
     }
 
     def <~ [U:Manifest](that: => Parser[U]) = Parser[T]{pos =>
-      self(pos).flatMap{ x:Rep[ParseResult[T]] =>
-        if(x.isEmpty) elGen(x) else that(x.next).map{
-          y: Rep[ParseResult[U]] =>
-            if(y.isEmpty) Failure[T](pos) else Success(x.get,y.next)
-        }
+      val x = self(pos)
+      if(x.isEmpty) x else {
+        val y = that(x.next)
+        if(y.isEmpty) Failure[T](pos) else Success(x.get, y.next)
       }
     }
 
 
     private def map[U:Manifest](f : Rep[T] => Rep[U]) = Parser[U]{ pos =>
-      self(pos).map{x => x map f}
+      self(pos) map f
     }
 
     def ^^[U:Manifest](f: Rep[T] => Rep[U]) = self.map(f)
@@ -62,20 +61,17 @@ trait TopDownParsers extends MyScalaOpsPkg with GeneratorOps with LiftVariables
     def | [U>:T:Manifest](that: Parser[U]) = {
       val p = Parser[U]{ pos =>
         val tmpSelf = toplevel(self)
-
-        tmpSelf(pos).flatMap{x =>
-          if(x.isEmpty) that(pos) else elGen(x.asInstanceOf[Rep[ParseResult[U]]])
-        }
+        val x = tmpSelf(pos)
+        if(x.isEmpty) that(pos) else x.asInstanceOf[Rep[ParseResult[U]]]
       }
       toplevel(p)
     }
 
     def filter(p: Rep[T] => Rep[Boolean]) = Parser[T]{pos =>
-      self(pos).map{ x =>
-        if(x.isEmpty) x
-        else if (p(x.get)) x
-        else Failure[T](x.next)
-      }
+      val x = self(pos)
+      if(x.isEmpty) x
+      else if (p(x.get)) x
+      else Failure[T](x.next)
     }
   }
 
@@ -86,29 +82,24 @@ trait TopDownParsers extends MyScalaOpsPkg with GeneratorOps with LiftVariables
   }*/
 
   def repFold[T:Manifest, U:Manifest](p : => Parser[T])(z: Rep[U], f: (Rep[U], Rep[T]) => Rep[U]) = Parser[U]{ pos =>
-    /** This is tremendously tricky: the code that goes into the generator
-     cannot be taken outside if it is to be bound properly */
-    Generator{ g =>
-      var s = Success[U](z, pos)
+    var old = unit(-1)
+    var continue = unit(true)
+    var cur = pos
 
-      var old = unit(-1)
-      var continue = unit(true)
-      var cur = pos
+    var s = Success[U](z, pos)
 
-      while(continue && old != cur){
-        old = cur
-        p(cur).apply{ x: Rep[ParseResult[T]] =>
-          if(x.isEmpty) continue = unit(false)
-          else{s = Success(f(readVar(s).get, x.get), x.next); cur = x.next}
-        }
-      }
-
-      g(readVar(s))
+    while(continue && old != cur){
+      old = cur
+      val x = p(cur)
+      if(x.isEmpty) continue = unit(false)
+      else{s = Success(f(readVar(s).get, x.get), x.next); cur = x.next}
     }
+
+    s
   }
 
   //repN fold. TODO: make sure we do not cross the input length
-  def repNFold[T:Manifest, U:Manifest](p : => Parser[T], n:Rep[Int])(z: Rep[U], f: (Rep[U], Rep[T]) => Rep[U]) = Parser[U]{ pos =>
+/*  def repNFold[T:Manifest, U:Manifest](p : => Parser[T], n:Rep[Int])(z: Rep[U], f: (Rep[U], Rep[T]) => Rep[U]) = Parser[U]{ pos =>
     Generator{ g =>
       var s = Success[U](z, pos)
 
@@ -128,50 +119,42 @@ trait TopDownParsers extends MyScalaOpsPkg with GeneratorOps with LiftVariables
       g(readVar(s))
     }
   }
-
+*/
   //rep can be expressed as a fold
   def rep[T:Manifest](p : => Parser[T]) =
     repFold(p)(List[T]().asInstanceOf[Rep[List[T]]],
       {(ls : Rep[List[T]], t: Rep[T]) => ls ++ List(t) }
     )
-
+/*
   def repsep[T:Manifest,U:Manifest](p: => Parser[T], q: =>Parser[U]): Parser[List[T]] =
     (p ~ rep(q ~>  p)) ^^ {x => x._1 :: x._2 } | success(List[T]())
-
+*/
   //a 'conditional' parser
   def __ifThenElse[A: Manifest](cond: Rep[Boolean], thenp: => Parser[A], elsep: => Parser[A]): Parser[A] = Parser[A]{
     i => if(cond) thenp(i) else elsep(i)
   }
 
   def opt[T:Manifest](p: Parser[T]) = Parser[Option[T]]{pos =>
-    p(pos).map{x =>
-      if(x.isEmpty) Success(none[T](), x.next)
-      else Success(Some(x.get), x.next)
-    }
+    val x = p(pos)
+    if(x.isEmpty) Success(none[T](), x.next)
+    else Success(Some(x.get), x.next)
   }
 
-  def Parser[T:Manifest](f: Rep[Int] => Generator[ParseResult[T]]) = new Parser[T]{
+  def Parser[T:Manifest](f: Rep[Int] => Rep[ParseResult[T]]) = new Parser[T]{
     def apply(i: Rep[Int]) = f(i)
   }
 
   //making a function of a non-recursive parser
   def toplevel[T:Manifest](p: Parser[T]) : Parser[T] = {
-
-    val f  = doLambda{ (i:Rep[Int]) => {
-        var init = Failure[T](i)
-        p(i){x => init = x}
-        readVar(init)
-      }
-    }
-
-    val res = Parser[T]{ i => elGen(f(i))}
+    val f  = doLambda{ (i:Rep[Int]) => p(i)}
+    val res = Parser[T]{ i => f(i)}
     res
   }
 
   /**
    * a Success combinator
    */
-  def success[T:Manifest](v:Rep[T]) = Parser[T]{i => elGen(Success(v, i))}
+  def success[T:Manifest](v:Rep[T]) = Parser[T]{i => Success(v, i)}
 }
 
 trait CharParsers extends TopDownParsers with CharOps with StringStructOps {
@@ -195,32 +178,32 @@ trait CharParsers extends TopDownParsers with CharOps with StringStructOps {
   def accept(in:Rep[Input], e: Rep[Elem]): Parser[Char] = acceptIf(in, (c: Rep[Char]) => c == e)
 
   def acceptIf(in:Rep[Input], p: Rep[Elem] => Rep[Boolean]) = Parser[Char]{ i =>
-    if(i >= in.length) elGen(Failure[Char](i))
-    else if(p(in(i))) elGen(Success(in(i), i+unit(1)))
-    else elGen(Failure[Char](i))
+    if(i >= in.length) Failure[Char](i)
+    else if(p(in(i))) Success(in(i), i+unit(1))
+    else Failure[Char](i)
   }
 
   def acceptAll(in: Rep[Input]) = Parser[Char]{i =>
-    if(i >= in.length) elGen(Failure[Char](i))
-    else elGen(Success[Char](in(i), i+unit(1)))
+    if(i >= in.length) Failure[Char](i)
+    else Success[Char](in(i), i+unit(1))
   }
 
   //acceptIf, returning the index of the element found
   def acceptIdx(in:Rep[Input], e: Rep[Elem]): Parser[Int] = acceptIfIdx(in, (c: Rep[Char]) => c == e)
 
   def acceptIfIdx(in:Rep[Input], p: Rep[Elem] => Rep[Boolean]) = Parser[Int]{ i =>
-    if(i >= in.length) elGen(Failure[Int](i))
-    else if(p(in(i))) elGen(Success(i, i+unit(1)))
-    else elGen(Failure[Int](i))
+    if(i >= in.length) Failure[Int](i)
+    else if(p(in(i))) Success(i, i+unit(1))
+    else Failure[Int](i)
   }
 
   def acceptAllIdx(in: Rep[Input]) = Parser[Int]{i =>
-    if(i >= in.length) elGen(Failure[Int](i))
-    else elGen(Success[Int](i, i+unit(1)))
+    if(i >= in.length) Failure[Int](i)
+    else Success[Int](i, i+unit(1))
   }
 
   // Non empty sequence of characters matching predicate 'p'
-  def str(in:Rep[Input],p:Rep[Elem]=>Rep[Boolean], empty:Boolean=false) = Parser[StringStruct] { pos:Rep[Int] =>
+/*  def str(in:Rep[Input],p:Rep[Elem]=>Rep[Boolean], empty:Boolean=false) = Parser[StringStruct] { pos:Rep[Int] =>
     Generator{ g =>
       val l = in.length
       val e = __newVar(pos)
@@ -232,12 +215,15 @@ trait CharParsers extends TopDownParsers with CharOps with StringStructOps {
       }
     }
   }
+  */
 }
+
 
 trait TokenParsers extends TopDownParsers with CharParsers with StringStructOps{
 
-  def processIdent(s: Rep[String]) = if(s == unit("true") || s == unit("null") || s == unit("false")) unit("Keyword(") + s + unit(")")
-                                     else unit("NoToken")
+  def processIdent(s: Rep[String]) =
+    if(s == unit("true") || s == unit("null") || s == unit("false")) unit("Keyword(") + s + unit(")")
+    else unit("NoToken")
 
   def keyword(in:Rep[Input]) : Parser[String] = letter(in) ~ repToS( letter(in) /*| digit(in)*/ ) ^^ {
     x : Rep[(Char, String)] => processIdent(x._1 + x._2)
@@ -254,14 +240,13 @@ trait TokenParsers extends TopDownParsers with CharParsers with StringStructOps{
 
   // the syntax for parsing double is too lousy, everything becomes double
   def chr(in:Rep[Input],c:Char) = accept(in, unit(c))
-  def intLit(in:Rep[Input]) : Parser[Int] = opt(chr(in,'-')) ~ str(in,c=>c>=unit('0')&&c<=unit('9')) ^^ { case x => val v=x._2.toStr.toInt; if (x._1.isDefined) v*unit(-1) else v  }
-  def doubleLit(in:Rep[Input]) : Parser[Double] = str(in,c=>c>=unit('0')&&c<=unit('9') || c==unit('-') || c==unit('.') || c==unit('e') || c==unit('E')) ^^ { _.toStr.toDouble }
-  def stringLit(in:Rep[Input]) : Parser[String] = chr(in,'"') ~> str(in,_ != unit('"') ,true) <~ chr(in,'"') ^^ { _.toStr }
-    /*
-    accept(in, unit('\"')) ~> repToS( acceptIf(in, (x:Rep[Char]) => x != unit('\"'))) <~ accept(in, unit('\"')) ^^ {
-      xs: Rep[String] => unit("StringLit(") + xs + unit(")")
-    }
-    */
+  //def intLit(in:Rep[Input]) : Parser[Int] = opt(chr(in,'-')) ~ str(in,c=>c>=unit('0')&&c<=unit('9')) ^^ { case x => val v=x._2.toStr.toInt; if (x._1.isDefined) v*unit(-1) else v  }
+  //def doubleLit(in:Rep[Input]) : Parser[Double] = str(in,c=>c>=unit('0')&&c<=unit('9') || c==unit('-') || c==unit('.') || c==unit('e') || c==unit('E')) ^^ { _.toStr.toDouble }
+  def stringLit(in:Rep[Input]) : Parser[String] = (
+    accept(in, unit('\"')) ~>
+    repToS( acceptIf(in, (x:Rep[Char]) => x != unit('\"')))
+    <~ accept(in, unit('\"'))
+  )
 
   def whitespaces(in: Rep[Input]) : Parser[String] =
     repToS(acceptIf(in, {x:Rep[Char] => x == unit(' ') || x == unit('\n')})) ^^^ {unit("")}
@@ -296,13 +281,14 @@ trait TokenParsers extends TopDownParsers with CharParsers with StringStructOps{
   */
 
   def accept(in: Rep[Input], cs: List[Rep[Char]]): Parser[String] = cs match {
-    case Nil => Parser{i => elGen(Success(unit(""), i))}
+    case Nil => Parser{i => Success(unit(""), i)}
     case x::xs => accept(in, x) ~ accept(in, xs) ^^ {
       y: Rep[(Char, String)] => y._1 + y._2
     }
   }
 
-  def accept(in: Rep[Input], s: String): Parser[String] = accept(in, s.toList.map{c => unit(c)})
+  def accept(in: Rep[Input], s: String): Parser[String] =
+    accept(in, s.toList.map{c => unit(c)})
 
 
   //we can also accept a string and return a boolean value. We only care that
@@ -313,7 +299,7 @@ trait TokenParsers extends TopDownParsers with CharParsers with StringStructOps{
     val len = staticData(s.length)
     val arr = staticData(s.toArray)
     Parser[Boolean]{i =>
-      if(i + len > in.length) elGen(Failure[Boolean](i))
+      if(i + len > in.length) Failure[Boolean](i)
       else{
         var count = unit(0); var matches = unit(true)
         while(matches && count < len){
@@ -321,8 +307,8 @@ trait TokenParsers extends TopDownParsers with CharParsers with StringStructOps{
           count = readVar(count) + unit(1)
         }
 
-        if(matches) elGen(Success(unit(true), i+len))
-        else elGen(Failure[Boolean](i))
+        if(matches) Success(unit(true), i+len)
+        else Failure[Boolean](i)
       }
 
     }
@@ -333,35 +319,33 @@ trait TokenParsers extends TopDownParsers with CharParsers with StringStructOps{
    * does not have any notion of the start position
    */
   def stringStruct(in: Rep[Input], p : Parser[Int]) = Parser[StringStruct]{ pos =>
-    Generator{ g =>
-      var s = Success[Int](unit(0), pos)
+    var s = Success[Int](unit(0), pos)
 
-      var old = unit(-1)
-      var continue = unit(true)
-      var cur = pos
+    var old = unit(-1)
+    var continue = unit(true)
+    var cur = pos
 
-      while(continue && old != cur){
-        old = cur
-        p(cur).apply{ x: Rep[ParseResult[Int]] =>
-          if(x.isEmpty) continue = unit(false)
-          else{
-            s = Success(readVar(s).get + unit(1), x.next)
-            cur = x.next
-          }
-        }
+    while(continue && old != cur){
+      old = cur
+      val x = p(cur)
+      if(x.isEmpty) continue = unit(false)
+      else{
+        s = Success(readVar(s).get + unit(1), x.next)
+        cur = x.next
       }
-
-      g(Success[StringStruct](String(in, pos, readVar(s).get), readVar(s).next))
     }
+
+    Success[StringStruct](String(in, pos, readVar(s).get), readVar(s).next)
   }
+
 }
 
 trait RecParsers extends TopDownParsers{
   def rec[T:Manifest](name: String, p: => Parser[T]): Parser[T]
 }
 
-trait RecParsersExp extends RecParsers with MyScalaOpsPkgExp with GeneratorOpsExp
-  with StructOpsExp with ParseResultOpsExp with OptionOpsExp with FunctionsExp{
+trait RecParsersExp extends RecParsers with MyScalaOpsPkgExp with StructOpsExp
+with ParseResultOpsExp with OptionOpsExp with FunctionsExp{
 
   import scala.collection.mutable.HashSet
   val store = new scala.collection.mutable.HashMap[String, Sym[_]]
@@ -371,7 +355,7 @@ trait RecParsersExp extends RecParsers with MyScalaOpsPkgExp with GeneratorOpsEx
       case Some(f) =>
         scala.Console.println("contains")
         val realf = f.asInstanceOf[Exp[Int => ParseResult[T]]]
-        Parser[T]{i => elGen(realf(i))}
+        Parser[T]{i => realf(i)}
 
       case None =>
         scala.Console.println("not contains")
@@ -379,15 +363,10 @@ trait RecParsersExp extends RecParsers with MyScalaOpsPkgExp with GeneratorOpsEx
         val funSym = fresh[Int => ParseResult[T]]
 
         store += (name -> funSym)
-        val f = (i: Rep[Int]) => {
-          var init = Failure[T](i)
-          p(i){x => init = x}
-          readVar(init)
-        }
-
+        val f = (i: Rep[Int]) => p(i)
         val g = createDefinition(funSym,doLambdaDef(f))
         store -= name
-        Parser[T]{i => elGen(funSym(i))}
+        Parser[T]{i => funSym(i)}
     }
   }
 }

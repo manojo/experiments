@@ -13,58 +13,51 @@ trait TokenParsersProg extends TokenParsers{
 
   //keyword parse
   def keywordParse(in: Rep[Array[Char]]): Rep[Unit] = {
-    var s = Failure[String](unit(-1))
-    val parser = keyword(in).apply(unit(0))
-    parser{x => s = x}
-    println(s)
+    val parser = keyword(in)
+    val res = parser(unit(0))
+    println(res)
   }
 
   //two word parse
   def twoWordParse(in: Rep[Array[Char]]): Rep[Unit] = {
-    var s = Failure[(String, String)](unit(-1))
-    val parser = ((stringLit(in) <~ whitespaces(in)) ~ stringLit(in)).apply(unit(0))
-    parser{x => s = x}
-    println(s)
+    val parser = ((stringLit(in) <~ whitespaces(in)) ~ stringLit(in))
+    val res = parser(unit(0))
+    println(res)
   }
 
   //parse string
   def parseString(in: Rep[Array[Char]]): Rep[Unit] = {
-    var s = Failure[String](unit(-1))
-    val parser = accept(in, "hello").apply(unit(0))
-    parser{x => s = x}
-    println(s)
+    val parser = accept(in, "hello")
+    val res = parser(unit(0))
+    println(res)
   }
 
   //wholeNum
   def parseWholeNumber(in: Rep[Array[Char]]): Rep[Unit] = {
-    var s = Failure[Int](unit(-1))
-    val parser = wholeNumber(in).apply(unit(0))
-    parser{x => s = x}
-    println(s)
+    val parser = wholeNumber(in)
+    val res = parser(unit(0))
+    println(res)
   }
 
   //stringStruct
   def parseStringStruct(in: Rep[Array[Char]]): Rep[Unit] = {
-    var s = Failure[StringStruct](unit(-1))
-    val parser = stringStruct(in, letterIdx(in)).apply(unit(0))
-    parser{x => s = x}
-    println(readVar(s).get.start + unit(", ") + readVar(s).get.length)
+    val parser = stringStruct(in, letterIdx(in)) ^^ {x => make_tuple2(x.start, x.length)}
+    val res = parser(unit(0))
+    println(res)
   }
 
   //stringStruct
   def parseStringStruct2(in: Rep[Array[Char]]): Rep[Unit] = {
-    var s = Failure[StringStruct](unit(-1))
-    val parser = stringStruct(in, letterIdx(in) | acceptIdx(in, unit('-'))).apply(unit(0))
-    parser{x => s = x}
-    println(readVar(s).get.start + unit(", ") + readVar(s).get.length)
+    val parser = stringStruct(in, letterIdx(in) | acceptIdx(in, unit('-'))) ^^ {x => make_tuple2(x.start, x.length)}
+    val res = parser(unit(0))
+    println(res)
   }
 
   //acceptB
   def parseStringB(in: Rep[Array[Char]]): Rep[Unit] = {
-    var s = Failure[Boolean](unit(-1))
-    val parser = acceptB(in, "hello").apply(unit(0))
-    parser{x => s = x}
-    println(s)
+    val parser = acceptB(in, "hello")
+    val res = parser(unit(0))
+    println(res)
   }
 
 }
@@ -75,15 +68,17 @@ class TestTokenParsers extends FileDiffSuite {
 
   def testTokenParsers = {
     withOutFile(prefix+"token-parser"){
-       new TokenParsersProg with MyScalaOpsPkgExp with GeneratorOpsExp
-        with CharOpsExp with MyIfThenElseExpOpt with StructOpsExpOptCommon
-        with ParseResultOpsExp with OptionOpsExp with StringStructOpsExp with MyScalaCompile{self =>
+       new TokenParsersProg with MyScalaOpsPkgExp with CharOpsExp
+       with MyIfThenElseExpOpt with StructOpsFatExpOptCommon
+       with ParseResultOpsExp with OptionOpsExp
+       with StringStructOpsExp with MyScalaCompile{self =>
 
         //dumpGeneratedCode = true
 
-        val codegen = new MyScalaCodeGenPkg with ScalaGenGeneratorOps
-         with ScalaGenCharOps with ScalaGenParseResultOps
-         with ScalaGenStructOps with ScalaGenOptionOps with ScalaGenStringStructOps{
+        val codegen = new MyScalaCodeGenPkg with ScalaGenCharOps
+        with ScalaGenParseResultOps with ScalaGenFatStructOps
+        with ScalaGenOptionOps with ScalaGenStringStructOps
+        with ScalaGenIfThenElseFat{
           val IR: self.type = self
         }
 

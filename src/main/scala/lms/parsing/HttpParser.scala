@@ -140,10 +140,7 @@ trait HttpComponents extends lms.StructOps with SetOps{
 }
 
 
-trait HttpParser extends TokenParsers with HttpComponents with StringStructOps{
-
-  def toLower(c: Rep[Char]): Rep[Char] =
-    (c.toInt | unit(0x20)).toChar
+trait HttpParser extends TokenParsers with HttpComponents with StringStructOps with MiscOps{
 
   def capitalLetter(in:Rep[Input]) = {
     acceptIf(in, {
@@ -196,8 +193,8 @@ trait HttpParser extends TokenParsers with HttpComponents with StringStructOps{
   //def body(in:Rep[Input], n:Rep[Int]) =
   //  repNFold(acceptAll(in), n)(unit(""), (res: Rep[String], c: Rep[Char]) => res + c)
   def body(in:Rep[Input], n:Rep[Int]) = Parser[String] { i =>
-    if (i+n<in.length) elGen(Success[String](String(in,i,i+n).toStr,n))
-    else elGen(Failure[String](i))
+    if (i+n<in.length) Success[String](String(in,i,i+n).toStr,n)
+    else Failure[String](i)
   }
 
   def collect(res: Rep[Response], hName: Rep[StringStruct], prop: Rep[StringStruct]) : Rep[Response] =
@@ -207,6 +204,7 @@ trait HttpParser extends TokenParsers with HttpComponents with StringStructOps{
       Response(st = res.status, cL = res.contentLength, conn = prop.mkString,
         ch = res.chunked, up = res.upgrade)
     }else if(hName == "content-length"){
+      println(unit("adfadsfasfds"))
       Response(st = res.status, cL = prop.mkString.toInt, conn = res.connection,
         ch = res.chunked, up = res.upgrade)
     }else if(hName == "transfer-encoding" && prop == "chunked"){

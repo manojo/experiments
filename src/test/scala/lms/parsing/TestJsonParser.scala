@@ -1,4 +1,4 @@
-package lms.parsing
+/*package lms.parsing
 
 import lms._
 import scala.virtualization.lms.common._
@@ -84,3 +84,4 @@ class TestJsonParser extends FileDiffSuite {
     assertFileEqualsCheck(prefix+"json-parser")
   }
 }
+*/

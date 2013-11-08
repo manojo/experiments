@@ -13,133 +13,121 @@ trait CharParsersProg extends CharParsers{
 
   //simple acceptIf filter
   def test1(in: Rep[Array[Char]]): Rep[Unit] = {
-    var s = Failure[Char](unit(-1))
-    val parser = acceptIf(in, x => x == unit('h')).apply(unit(0))
-    parser{x: Rep[ParseResult[Char]] => s = x}
-    println(s)
+    val parser = acceptIf(in, x => x == unit('h'))
+    val res = parser(unit(0))
+    println(res)
   }
 
   //accept function: generates the exact same code as test1
   def test2(in: Rep[Array[Char]]): Rep[Unit] = {
-    var s = Failure[Char](unit(-1))
-    val parser = accept(in, unit('h')).apply(unit(0))
-    parser{x: Rep[ParseResult[Char]] => s = x}
-    println(s)
+    val parser = accept(in, unit('h'))
+    val res = parser(unit(0))
+    println(res)
   }
 
   //parsing a single letter
   def test3(in: Rep[Array[Char]]): Rep[Unit] = {
-    var s = Failure[Char](unit(-1))
-    val parser = letter(in).apply(unit(0))
-    parser{x: Rep[ParseResult[Char]] => s = x}
-    println(s)
+    val parser = letter(in)
+    val res = parser(unit(0))
+    println(res)
   }
 
   //parsing a single digit
   def test4(in: Rep[Array[Char]]): Rep[Unit] = {
-    var s = Failure[Char](unit(-1))
-    val parser = digit(in).apply(unit(0))
-    parser{x: Rep[ParseResult[Char]] => s = x}
-    println(s)
+    val parser = digit(in)
+    val res = parser(unit(0))
+    println(res)
   }
 
   //two letters
   def test5(in: Rep[Array[Char]]): Rep[Unit] = {
-    var s = Failure[(Char,Char)](unit(-1))
-    val parser = (letter(in)~letter(in)).apply(unit(0))
-    parser{x: Rep[ParseResult[(Char,Char)]] => s = x}
-    println(s)
+    val parser = (letter(in)~letter(in))
+    val res = parser(unit(0))
+    println(res)
   }
 
   //ignoring left result
   def test6(in: Rep[Array[Char]]): Rep[Unit] = {
-    var s = Failure[Char](unit(-1))
-    val parser = (letter(in)~>letter(in)).apply(unit(0))
-    parser{x: Rep[ParseResult[Char]] => s = x}
-    println(s)
+    val parser = (letter(in)~>letter(in))
+    val res = parser(unit(0))
+    println(res)
   }
 
   //ignoring right result
   def test7(in: Rep[Array[Char]]): Rep[Unit] = {
-    var s = Failure[Char](unit(-1))
-    val parser = (letter(in)<~letter(in)).apply(unit(0))
-    parser{x: Rep[ParseResult[Char]] => s = x}
-    println(s)
+    val parser = (letter(in)<~letter(in))
+    val res = parser(unit(0))
+    println(res)
   }
 
   //digit to int
   def test8(in: Rep[Array[Char]]): Rep[Unit] = {
-    var s = Failure[Int](unit(-1))
-    val parser = digit2Int(in).apply(unit(0))
-    parser{x: Rep[ParseResult[Int]] => s = x}
-    println(s)
+    val parser = digit2Int(in)
+    val res = parser(unit(0))
+    println(res)
   }
 
   //or
   def test9(in: Rep[Array[Char]]): Rep[Unit] = {
-    var s = Failure[Char](unit(-1))
-    val parser = (letter(in) | digit(in)).apply(unit(0))
-    parser{x: Rep[ParseResult[Char]] => s = x}
-    println(s)
+    val parser = (letter(in) | digit(in))
+    val res = parser(unit(0))
+    println(res)
   }
 
   //or2: testing that or creates functions
   def testOr2(in: Rep[Array[Char]]): Rep[Unit] = {
-    var s = Failure[(Char,Char)](unit(-1))
     val parser =
       ((accept(in, unit('h'))~accept(in, unit('e'))) |
-       (accept(in, unit('1'))~accept(in, unit('2')))).apply(unit(0))
-    parser{x => s = x}
-    println(s)
+       (accept(in, unit('1'))~accept(in, unit('2'))))
+    val res = parser(unit(0))
+    println(res)
   }
 
   //or3: (a | b) ~ c
   def testOr3(in: Rep[Array[Char]]): Rep[Unit] = {
-    var s = Failure[((Char,Char),Char)](unit(-1))
     val parser =
       (((accept(in, unit('h'))~accept(in, unit('e'))) |
         (accept(in, unit('1'))~accept(in, unit('2')))
        ) ~ accept(in, unit('3'))
-      ).apply(unit(0))
-    parser{x => s = x}
-    println(s)
+      )
+    val res = parser(unit(0))
+    println(res)
   }
 
   //rep
   def test10(in: Rep[Array[Char]]): Rep[Unit] = {
-    var s = Failure[String](unit(-1))
-    val parser = (rep(letter(in)) ^^ {x: Rep[List[Char]] => x.mkString}).apply(unit(0))
-    parser{x: Rep[ParseResult[String]] => s = x}
-    println(s)
+    val parser = (rep(letter(in)) ^^ {x: Rep[List[Char]] => x.mkString})
+    val res = parser(unit(0))
+    println(res)
   }
 
   //repFold
   def test11(in: Rep[Array[Char]]): Rep[Unit] = {
-    var s = Failure[Int](unit(-1))
-    val parser = repFold(digit2Int(in))(unit(0), (x: Rep[Int], y :Rep[Int]) => x + y) .apply(unit(0))
-    parser{x: Rep[ParseResult[Int]] => s = x}
-    println(s)
+    val parser =
+      repFold(digit2Int(in))(unit(0), (x: Rep[Int], y :Rep[Int]) => x + y)
+    val res = parser(unit(0))
+    println(res)
   }
 
   //cond
   def testCond(in: Rep[Array[Char]], n :Rep[Int]): Rep[Unit] = {
-    var s = Failure[Char](unit(-1))
-    val parser: Parser[Char] = if(n < unit(3)) accept(in, unit('b')) else accept(in, unit('c'))
-    parser(unit(0)).apply{x: Rep[ParseResult[Char]] => s = x}
-    println(s)
+    val parser: Parser[Char] =
+      if(n < unit(3)) accept(in, unit('b'))
+      else accept(in, unit('c'))
+    val res = parser(unit(0))
+    println(res)
   }
 
 
   //bind
   def testBind(in: Rep[Array[Char]]): Rep[Unit] = {
-    var s = Failure[String](unit(-1))
     val parser = letter(in) >> { x: Rep[Char] =>
       if(x == unit('a')) accept(in, unit('b')) ^^ { y: Rep[Char] => x+unit(", ")+y}
       else accept(in, unit('d')) ^^ { y: Rep[Char] => x+unit(", ")+y}
     }
 
-    parser(unit(0)).apply{x: Rep[ParseResult[String]] => s = x}
-    println(s)
+    val res = parser(unit(0))
+    println(res)
   }
 }
 
@@ -149,15 +137,15 @@ class TestCharParsers extends FileDiffSuite {
 
   def testSimpleParsers = {
     withOutFile(prefix+"char-parser"){
-       new CharParsersProg with MyScalaOpsPkgExp with GeneratorOpsExp
-        with CharOpsExp with MyIfThenElseExpOpt with StructOpsExpOptCommon
+       new CharParsersProg with MyScalaOpsPkgExp with CharOpsExp
+        with MyIfThenElseExpOpt with StructOpsFatExpOptCommon
         with ParseResultOpsExp with FunctionsExp with OptionOpsExp
         with StringStructOpsExp with MyScalaCompile { self =>
 
-        val codegen = new MyScalaCodeGenPkg with ScalaGenGeneratorOps
-          with ScalaGenCharOps with ScalaGenParseResultOps with ScalaGenStructOps
+        val codegen = new MyScalaCodeGenPkg with ScalaGenCharOps
+          with ScalaGenParseResultOps with ScalaGenFatStructOps
           with ScalaGenFunctions with ScalaGenOptionOps
-          with ScalaGenStringStructOps {
+          with ScalaGenStringStructOps with ScalaGenIfThenElseFat{
             val IR: self.type = self
         }
 
@@ -290,15 +278,15 @@ class TestCharParsers extends FileDiffSuite {
 
   def testOr{
     withOutFile(prefix+"or-parser"){
-      new CharParsersProg with MyScalaOpsPkgExp with GeneratorOpsExp
-       with CharOpsExp with MyIfThenElseExpOpt with StructOpsExpOptCommon
-       with ParseResultOpsExp with FunctionsExp with OptionOpsExp
-       with StringStructOpsExp with MyScalaCompile { self =>
+      new CharParsersProg with MyScalaOpsPkgExp with CharOpsExp
+      with MyIfThenElseExpOpt with StructOpsFatExpOptCommon
+      with ParseResultOpsExp with FunctionsExp with OptionOpsExp
+      with StringStructOpsExp with MyScalaCompile { self =>
 
-        val codegen = new MyScalaCodeGenPkg with ScalaGenGeneratorOps
-          with ScalaGenCharOps with ScalaGenParseResultOps with ScalaGenStructOps
-          with ScalaGenFunctions with ScalaGenStringStructOps
-          with ScalaGenOptionOps {
+        val codegen = new MyScalaCodeGenPkg with ScalaGenCharOps
+        with ScalaGenParseResultOps with ScalaGenFatStructOps
+        with ScalaGenFunctions with ScalaGenStringStructOps
+        with ScalaGenOptionOps with ScalaGenIfThenElseFat{
             val IR: self.type = self
         }
 

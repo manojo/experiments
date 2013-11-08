@@ -37,17 +37,15 @@ trait RecParsersProg extends TokenParsers with RecParsers{
   }
 
   def testRecNumber(in: Rep[Array[Char]]): Rep[Unit] = {
-    var s = Failure[Int](unit(-1))
-    val p = recNumber(in).apply(unit(0))
-    p{x => s = x}
-    println(s)
+    val p = recNumber(in)
+    val res = p(unit(0))
+    println(res)
   }
 
   def testRecExpr(in: Rep[Array[Char]]): Rep[Unit] = {
-    var s = Failure[Int](unit(-1))
-    val p = recExpr(in).apply(unit(0))
-    p{x => s = x}
-    println(s)
+    val p = recExpr(in)
+    val res = p(unit(0))
+    println(res)
   }
 
 }
@@ -57,14 +55,15 @@ class TestRecParsers extends FileDiffSuite {
 
   def testRec = {
     withOutFile(prefix+"rec-parser") {
-      new RecParsersProg with RecParsersExp with MyScalaOpsPkgExp with GeneratorOpsExp
-       with CharOpsExp with MyIfThenElseExpOpt with StructOpsExpOptCommon
-       with ParseResultOpsExp with FunctionsExp with OptionOpsExp with StringStructOpsExp
-       with MyScalaCompile{self =>
+      new RecParsersProg with RecParsersExp with MyScalaOpsPkgExp
+      with CharOpsExp with MyIfThenElseExpOpt with StructOpsFatExpOptCommon
+      with ParseResultOpsExp with FunctionsExp with OptionOpsExp
+      with StringStructOpsExp with MyScalaCompile{self =>
 
-        val codegen = new MyScalaCodeGenPkg with ScalaGenGeneratorOps
-          with ScalaGenCharOps with ScalaGenParseResultOps with ScalaGenStructOps
-          with ScalaGenFunctions with ScalaGenOptionOps with ScalaGenStringStructOps{
+        val codegen = new MyScalaCodeGenPkg with ScalaGenCharOps
+        with ScalaGenParseResultOps with ScalaGenFatStructOps
+        with ScalaGenFunctions with ScalaGenOptionOps
+        with ScalaGenStringStructOps with ScalaGenIfThenElseFat{
           val IR: self.type = self
         }
 
@@ -89,11 +88,8 @@ class TestRecParsers extends FileDiffSuite {
         testcRecExpr("(2+3)*5".toArray)
         testcRecExpr("(2+3)*5*5".toArray)
         codegen.reset
-
-        //testcRecExpr("[[2]]".toArray)
       }
     }
     assertFileEqualsCheck(prefix+"rec-parser")
   }
 }
-

@@ -1,4 +1,4 @@
-package lms.parsing
+/*package lms.parsing
 
 import lms._
 import scala.virtualization.lms.common._
@@ -178,3 +178,4 @@ object TestJson {
     }
   }
 }
+*/
