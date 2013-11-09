@@ -319,8 +319,7 @@ trait TokenParsers extends TopDownParsers with CharParsers with StringStructOps{
    * does not have any notion of the start position
    */
   def stringStruct(in: Rep[Input], p : Parser[Int]) = Parser[StringStruct]{ pos =>
-    var s = Success[Int](unit(0), pos)
-
+    println(unit("enter stringStruct {"))
     var old = unit(-1)
     var continue = unit(true)
     var cur = pos
@@ -328,14 +327,13 @@ trait TokenParsers extends TopDownParsers with CharParsers with StringStructOps{
     while(continue && old != cur){
       old = cur
       val x = p(cur)
-      if(x.isEmpty) continue = unit(false)
-      else{
-        s = Success(readVar(s).get + unit(1), x.next)
-        cur = x.next
-      }
+      if (x.isEmpty) continue = unit(false)
+      else cur = x.next
     }
 
-    Success[StringStruct](String(in, pos, readVar(s).get), readVar(s).next)
+    // println(unit("} exit stringStruct: '") + String(in, pos, cur - pos).mkString +
+    //  unit(" = ") + String(in, pos, readVar(s).get).mkString + unit("'"))
+    Success[StringStruct](String(in, pos, cur - pos), cur)
   }
 
 }

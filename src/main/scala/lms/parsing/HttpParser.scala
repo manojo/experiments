@@ -171,16 +171,17 @@ trait HttpParser extends TokenParsers with HttpComponents with StringStructOps w
   def repToSLower(p: Parser[Char]) : Parser[String] =
     repFold(p)(unit(""), (res: Rep[String], x: Rep[Char]) => res + toLower(x))
 
-  def headerName(in: Rep[Input]): Parser[StringStruct] =
+  def headerName(in: Rep[Input]): Parser[StringStruct] = { println(unit("headerName:"))
     letterIdx(in)~
     stringStruct(in, acceptIfIdx(in, (x: Rep[Char])=> isLetter(x) || x == unit('-'))) ^^ {
       x: Rep[(Int, StringStruct)] => String(in, st = x._1, len = x._2.length + unit(1))
     }
+  }
 
   //TODO: do filtering based on input. Option[(String,String)]
   def header(in: Rep[Input]): Parser[(StringStruct, StringStruct)] =
     (headerName(in)<~(whitespaces(in)~accept(in,":")))~(whitespaces(in)~>wildRegex(in)<~crlf(in)) ^^ { x =>
-      println(unit("parsed a header")); x
+      println(unit("parsed a header: '") + x._1.mkString + unit(": ") + x._2.mkString + unit("'")); x
     }
 
   def headers(in: Rep[Input]): Parser[Response] = repFold(header(in))(Response(),
