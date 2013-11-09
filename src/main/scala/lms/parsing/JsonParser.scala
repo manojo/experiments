@@ -8,7 +8,8 @@ import java.io.PrintWriter
 import java.io.StringWriter
 import java.io.FileOutputStream
 
-trait JsonParser extends TokenParsers with RecParsers with StringStructOps with CastingOpsExp /*with FunctionsRecursiveExp*/ {
+trait JsonParser extends TokenParsers with RecParsers with StringStructOps with CastingOps
+ /*with FunctionsRecursiveExp*/ {
   final val kNull = unit(0)
   final val kFalse = unit(1)
   final val kTrue = unit(2)
@@ -16,7 +17,8 @@ trait JsonParser extends TokenParsers with RecParsers with StringStructOps with 
   final val kDouble = unit(4)
   final val kString = unit(5)
   final val kArray = unit(6)
-  final val kObject = unit(7)
+  final val kMember = unit(7)
+  final val kObject = unit(8)
 
   type JV = Record { val kind:Int; val data:Any }
   def JV(k:Rep[Int], d:Rep[Any]) = new Record {
@@ -53,29 +55,31 @@ trait JsonParser extends TokenParsers with RecParsers with StringStructOps with 
     else unit("<bad kind: ")+jv.kind+unit(">")
   }
 
-  def jFalse = JV(kFalse,unit(null))
-  def jTrue = JV(kTrue,unit(null))
-  def jNull = JV(kNull,unit(null))
+  def jFalse = JV(kFalse,unit(ZeroVal[Any]))
+  def jTrue = JV(kTrue,unit(ZeroVal[Any]))
+  def jNull = JV(kNull,unit(ZeroVal[Any]))
   def jInt(n:Rep[Int]) = JV(kInt,n)
   def jDouble(n:Rep[Double]) = JV(kDouble,n)
   def jString(s:Rep[String]) = JV(kString,s)
   def jArray(a:Rep[List[JV]]) = JV(kArray,a)
-  def jObject(a:Rep[List[(String,JV)]]) = JV(kObject,a)
+  def jMember(a:Rep[(String,JV)]) = JV(kMember, a)
+  //FIXME: absolutely not the right way to do this
+  def jObject(a:Rep[List[JV]]) = JV(kObject,a)
 
   //local whitespaces
   override def whitespaces(in: Rep[Input]) : Parser[String] =
     repToS_f(acceptIf(in, {x:Rep[Char] => x == unit(' ') || x == unit('\n')}))// ^^^ {unit("")}
 
-  def json2(in:Rep[Input]): Parser[JV] = rec("json2",
-    (accept(in,"false") ^^^ jFalse
-  | accept(in,"true") ^^^ jTrue
-  | accept(in,"null") ^^^ jNull
-  | doubleLit(in) ^^ { s => jDouble(s) }
-  | intLit(in) ^^ { s => jInt(s) }
-  | stringLit(in) ^^ { s => jString(s) }
-  | chr(in,'[') ~> repsep(json2(in), chr(in,',')) <~ chr(in,']') ^^  { a=>jArray(a) }
-  | chr(in,'{') ~> repsep((stringLit(in) <~ chr(in,':')) ~ json2(in) ^^ {x=> jNull }, chr(in,',')) <~ chr(in,'}') ^^ { l=> jNull /*jObject(l)*/ } // XXX: fix this
-  ))
+  //def json2(in:Rep[Input]): Parser[JV] = rec("json2",
+  //  (accept(in,"false") ^^^ jFalse
+  //| accept(in,"true") ^^^ jTrue
+  //| accept(in,"null") ^^^ jNull
+  //| doubleLit(in) ^^ { s => jDouble(s) }
+  //| intLit(in) ^^ { s => jInt(s) }
+  //| stringLit(in) ^^ { s => jString(s) }
+  //| chr(in,'[') ~> repsep(json2(in), chr(in,',')) <~ chr(in,']') ^^  { a=>jArray(a) }
+  //| chr(in,'{') ~> repsep((stringLit(in) <~ chr(in,':')) ~ json2(in) ^^ {x=> jNull }, chr(in,',')) <~ chr(in,'}') ^^ { l=> jNull /*jObject(l)*/ } // XXX: fix this
+  //))
 
   // true | false | null | doubleLit | intLit | stringLit
   def primitives(in: Rep[Input]): Parser[JV] = (
@@ -88,36 +92,38 @@ trait JsonParser extends TokenParsers with RecParsers with StringStructOps with 
   )
 
 
-  def json(in: Rep[Input]): Parser[Any] = {
-  /*
-    def value = ( //wholeNumber(in) ^^ { x=>valInt(x) }
-              //|
-              accept(in,"null") ^^^ valNull
-              //|  accept(in,"false") ^^^ valFalse
-              //|  accept(in,"true") ^^^ valTrue
-              )
-  */
-    //def value = rec("json",
-    //  obj | arr | stringLit(in) | wholeNumber(in) //|
-    //  //"null", "true", "false"
-    //)
+  def json(in: Rep[Input]): Parser[JV] = {
 
-    //def arr: Parser[List[Any]] =
-    //  (accept(in,unit('[')) ~> whitespaces(in)) ~>
-    //  repsep(value, accept(in, unit(',')) ~> whitespaces(in)) <~
-    //  (accept(in, unit(']')) ~> whitespaces(in))
+    //Original grammar
+    //def value : Parser[Any] = obj | arr | stringLiteral |
+    //          floatingPointNumber |
+    //          "null" | "true" | "false"
+    //def obj : Parser[Any] = "{"~repsep(member, ",")~"}"
+    //def arr : Parser[Any] = "["~repsep(value, ",")~"]"
+    //def member: Parser[Any] = stringLiteral~":"~value
 
-    //def obj: Parser[List[Any]] =
-    //  (accept(in,unit('{')) ~> whitespaces(in)) ~>
-    //  repsep(member, accept(in, unit(',')) ~> whitespaces(in)) <~
-    //  (accept(in, unit('}')) ~> whitespaces(in))
+    def value: Parser[JV] = rec("value",
+      obj | arr | primitives(in)
+    )
 
-    def member: Parser[Any] =
-      (stringLit(in) <~
-      (whitespaces(in) <~ accept(in, unit(':')) ~ whitespaces(in))) ~
-      stringLit(in)
+    def arr: Parser[JV] = (
+      chr(in,'[') ~>
+      repsep(value, chr(in, ',')) <~
+      chr(in, ']')
+    ) ^^ {x =>jArray(x.AsInstanceOf[List[JV]])}
 
-    member//value
+    def member: Parser[JV] = (
+      (stringLit(in)
+      <~ (whitespaces(in) <~ accept(in, unit(':')) ~ whitespaces(in)))
+      ~ value
+    ) ^^ {x => jMember(x)}
+
+    def obj: Parser[JV] =
+      (chr(in,'{') ~> repsep(member, chr(in, ',')) <~ chr(in, '}'))^^{
+        x => jObject(x)
+      }
+
+    value
   }
 
   override def stringLit(in:Rep[Input]): Parser[String] =
@@ -127,7 +133,7 @@ trait JsonParser extends TokenParsers with RecParsers with StringStructOps with 
 }
 
 
-
+/*
 object TestJson {
   def main(args:Array[String]) {
     new JsonParser with RecParsersExp with MyScalaOpsPkgExp with GeneratorOpsExp
@@ -178,3 +184,4 @@ object TestJson {
     }
   }
 }
+*/

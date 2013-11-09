@@ -23,14 +23,23 @@ trait JsonParserProg extends JsonParser{
     val f = jFalse
     val t = jTrue
     val n = jNull
+    val a = jArray(List(jTrue))
     println(f)
     println(t)
     println(n)
+    println(a)
   }
 
   def primitiveParse(in: Rep[Array[Char]]): Rep[Unit] = {
     var s = Failure[JV](unit(-1))
     val p = primitives(in).apply(unit(0))
+    p{x => s = x}
+    println(s)
+  }
+
+  def memberParse(in: Rep[Array[Char]]): Rep[Unit] = {
+    var s = Failure[JV](unit(-1))
+    val p = json(in).apply(unit(0))
     p{x => s = x}
     println(s)
   }
@@ -45,16 +54,16 @@ class TestJsonParser extends FileDiffSuite {
       new JsonParserProg with RecParsersExp with MyScalaOpsPkgExp with GeneratorOpsExp
        with CharOpsExp with MyIfThenElseExpOpt with StructOpsExpOptCommon
        with ParseResultOpsExp with FunctionsExp with OptionOpsExp with StringStructOpsExp
-       with MyScalaCompile{self =>
+       with CastingOpsExp with MyScalaCompile{self =>
 
         val codegen = new MyScalaCodeGenPkg with ScalaGenGeneratorOps
           with ScalaGenCharOps with ScalaGenParseResultOps with ScalaGenStructOps
-          with ScalaGenFunctions with ScalaGenOptionOps with ScalaGenStringStructOps{
+          with ScalaGenFunctions with ScalaGenOptionOps with ScalaGenStringStructOps
+          with ScalaGenCastingOps{
           val IR: self.type = self
         }
 
         codegen.emitSource(testJPrimitives _, "testJPrimitives", new java.io.PrintWriter(System.out))
-        codegen.emitDataStructures(new java.io.PrintWriter(System.out))
         codegen.reset
 
         val testcJPrimitives = compile(testJPrimitives)
@@ -62,7 +71,6 @@ class TestJsonParser extends FileDiffSuite {
         codegen.reset
 
         codegen.emitSource(primitiveParse _, "primitiveParse", new java.io.PrintWriter(System.out))
-        codegen.emitDataStructures(new java.io.PrintWriter(System.out))
         codegen.reset
 
         val testcPrimitives = compile(primitiveParse)
@@ -72,6 +80,23 @@ class TestJsonParser extends FileDiffSuite {
         testcPrimitives("null".toArray)
         testcPrimitives("true".toArray)
         testcPrimitives("\"hello\"".toArray)
+        codegen.reset
+
+        codegen.emitSource(memberParse _, "memberParse", new java.io.PrintWriter(System.out))
+        codegen.emitDataStructures(new java.io.PrintWriter(System.out))
+        codegen.reset
+
+        val testcMember = compile(memberParse)
+        val jsonMsgs = scala.List(
+          "3","true","false","null","\"hi\"",
+          "[3]","[3,[2],[[1]]]",
+          "{\"hi\" : 2,\"hey\" : {\"hey\" : 2}}"
+        )
+
+        jsonMsgs.foreach{msg =>
+          testcMember(msg.toArray)
+        }
+
         codegen.reset
 
         //codegen.emitSource(jsonParse _ , "jsonParse", new java.io.PrintWriter(System.out))

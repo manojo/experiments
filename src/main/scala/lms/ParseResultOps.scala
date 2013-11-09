@@ -62,7 +62,8 @@ trait ParseResultOps extends Base with IfThenElse with BooleanOps {
 */
 }
 
-trait ParseResultOpsExp extends ParseResultOps with IfThenElseExp with BooleanOpsExp with StructOpsExpOpt {
+trait ParseResultOpsExp extends ParseResultOps with IfThenElseExp
+  with BooleanOpsExp with StructOpsExpOpt with CastingOpsExp{
 
   //implicit def make_parseResult[A:Manifest](pr: ParseResult[A])(implicit pos: SourceContext): Exp[ParseResult[A]]
   //  = struct(classTag[ParseResult[A]], "res" -> pr.res, "empty" -> pr.isEmpty, "next" -> pr.next)
@@ -110,7 +111,11 @@ trait ParseResultOpsExp extends ParseResultOps with IfThenElseExp with BooleanOp
   }
 
   def Failure[T:Manifest](next: Rep[Int]): Exp[ParseResult[T]]
-    = struct(classTag[ParseResult[T]], "res" -> unit(ZeroVal[T]), "empty" -> unit(true), "next" -> next)
+    = struct(classTag[ParseResult[T]],
+      "res" -> rep_asinstanceof(unit(null), manifest[Null], manifest[T]),//unit(ZeroVal[T]),
+      "empty" -> unit(true),
+      "next" -> next
+      )
 }
 
 trait ParseResultGenBase extends GenericCodegen with BaseGenStructOps{
@@ -122,5 +127,7 @@ trait ParseResultGenBase extends GenericCodegen with BaseGenStructOps{
   }
 }
 
-trait ScalaGenParseResultOps extends ScalaGenBase with ParseResultGenBase with ScalaGenStructOps { val IR: ParseResultOpsExp }
-trait CGenParseResultOps extends CGenBase with ParseResultGenBase with CGenStructOps { val IR: ParseResultOpsExp }
+trait ScalaGenParseResultOps extends ScalaGenBase with ParseResultGenBase
+  with ScalaGenStructOps with ScalaGenCastingOps{ val IR: ParseResultOpsExp }
+trait CGenParseResultOps extends CGenBase with ParseResultGenBase
+  with CGenStructOps with CGenCastingOps{ val IR: ParseResultOpsExp }
