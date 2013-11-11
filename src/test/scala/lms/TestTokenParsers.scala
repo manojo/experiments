@@ -43,6 +43,14 @@ trait TokenParsersProg extends TokenParsers{
     println(s)
   }
 
+  //doubleLit
+  def parseDoubleLit(in: Rep[Array[Char]]): Rep[Unit] = {
+    var s = Failure[Double](unit(-1))
+    val parser = doubleLit(in).apply(unit(0))
+    parser{x => s = x}
+    println(s)
+  }
+
   //stringStruct
   def parseStringStruct(in: Rep[Array[Char]]): Rep[Unit] = {
     var s = Failure[StringStruct](unit(-1))
@@ -117,6 +125,15 @@ class TestTokenParsers extends FileDiffSuite {
 
         val testc5 = compile(parseWholeNumber)
         testc5("1234a".toArray)
+        testc5("-123".toArray)
+        codegen.reset
+
+        codegen.emitSource(parseDoubleLit _ , "parseDoubleLit", new java.io.PrintWriter(System.out))
+        codegen.reset
+
+        val testcDoubleLit = compile(parseDoubleLit)
+        testcDoubleLit("55.932083999999996".toArray)
+        testcDoubleLit("-55.932083999999996".toArray)
         codegen.reset
 
         codegen.emitSource(parseStringStruct _ , "parseStringStruct", new java.io.PrintWriter(System.out))

@@ -76,7 +76,7 @@ trait JsonParser extends TokenParsers with RecParsers with StringStructOps with 
       acceptB(in,"false") ^^^ jFalse
     | acceptB(in,"true") ^^^ jTrue
     | acceptB(in,"null") ^^^ jNull
-    | decimalNumber(in) ^^ { s => jDouble((unit("")+s._1+unit(".")+s._2).toDouble)}
+    | doubleLit(in) ^^ { s => jDouble(s)}
     | intLit(in) ^^ { s => jInt(s) }
     | stringLit(in) ^^ { s => jString(s) }
   )
@@ -131,6 +131,7 @@ trait JsonParser extends TokenParsers with RecParsers with StringStructOps with 
     accept(in, unit('\\')) ~> acceptIf(in, c =>
       c == '\\' || c == '\'' || c == '\"' || c =='b'
     ||c == 'f' || c == 'n' || c == 'r' || c =='t'
+    ||c == '/'
     )
   }
 

@@ -244,7 +244,7 @@ trait TokenParsers extends TopDownParsers with CharParsers with StringStructOps{
   }
 
   def numeric(in:Rep[Input]) : Parser[String] = digit(in) ~ repToS(digit(in)) ^^ {
-    x : Rep[(Char, String)] => unit("NumericLit(") + (x._1 + x._2) + unit(")")
+    x : Rep[(Char, String)] => (x._1 + x._2)
   }
 
   def wholeNumber(in: Rep[Input]): Parser[Int] =
@@ -262,9 +262,15 @@ trait TokenParsers extends TopDownParsers with CharParsers with StringStructOps{
   def decimalNumber(in: Rep[Input]): Parser[(Int,Int)] =
     wholeNumber(in)~(accept(in, unit('.'))~>wholeNumber(in))
 
-  // the syntax for parsing double is too lousy, everything becomes double
   def chr(in:Rep[Input],c:Char) = accept(in, unit(c))
-  //def doubleLit(in:Rep[Input]) : Parser[Double] = str(in,c=>c>=unit('0')&&c<=unit('9') || c==unit('-') || c==unit('.') || c==unit('e') || c==unit('E')) ^^ { _.toStr.toDouble }
+
+  def doubleLit(in:Rep[Input]) : Parser[Double] = (
+    ((opt(chr(in,'-'))~numeric(in)) ^^ {x: Rep[(Option[Char], String)] => if(x._1.isDefined) x._1.get + x._2 else x._2})
+    ~ (chr(in,'.')~> numeric(in))
+  ) ^^ {x => (x._1 + x._2).toDouble}
+    // c==unit('e') || c==unit('E')) ^^ { _.toStr.toDouble }
+
+
   def stringLit(in:Rep[Input]) : Parser[String] = chr(in,'"') ~> str(in,_ != unit('"') ,true) <~ chr(in,'"') ^^ { _.toStr }
     /*
     accept(in, unit('\"')) ~> repToS( acceptIf(in, (x:Rep[Char]) => x != unit('\"'))) <~ accept(in, unit('\"')) ^^ {
@@ -388,6 +394,7 @@ trait RecParsersExp extends RecParsers with MyScalaOpsPkgExp with GeneratorOpsEx
         val funSym = fresh[Int => ParseResult[T]]
 
         store += (name -> funSym)
+
         val f = (i: Rep[Int]) => {
           var init = Failure[T](i)
           p(i){x => init = x}

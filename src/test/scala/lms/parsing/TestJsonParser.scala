@@ -76,11 +76,14 @@ class TestJsonParser extends FileDiffSuite {
         val testcPrimitives = compile(primitiveParse)
         testcPrimitives("23".toArray)
         testcPrimitives("2.13".toArray)
+        testcPrimitives("-22.13".toArray)
         testcPrimitives("false".toArray)
         testcPrimitives("null".toArray)
         testcPrimitives("true".toArray)
         testcPrimitives("\"hello\"".toArray)
         testcPrimitives("\"\\\"hello\"".toArray)
+        testcPrimitives("\"\\/hello\"".toArray)
+        testcPrimitives("\"\u003c\"".toArray)
         codegen.reset
 
         codegen.emitSource(jsonParse _, "jsonParse", new java.io.PrintWriter(System.out))
@@ -89,7 +92,10 @@ class TestJsonParser extends FileDiffSuite {
 
         val testcJson = compile(jsonParse)
         val jsonMsgs = scala.List(
-          "3","true","false","null","\"hi\"","122.343", "-32",
+          "3","-32",
+          "55.932083999999996", "-55.932083999999996",
+          "true","false","null",
+          "\"hi\"", "\"\\\"hello\"", "\"\\/hello\"",
           "[3]","[3,[2],[[1]]]",
           "{\"hi\" : 2,\"hey\" : {\"hey\" : 2}}",
           """{

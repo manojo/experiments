@@ -600,6 +600,660 @@ x94
 *******************************************/
 compilation: ok
 ParseResultInt(1234,false,4)
+ParseResultInt(0,true,0)
+/*****************************************
+  Emitting Generated Code                  
+*******************************************/
+class parseDoubleLit extends ((Array[Char])=>(Unit)) {
+def apply(x0:Array[Char]): Unit = {
+var x2: Double = 0.0
+var x3: Boolean = true
+var x4: Int = -1
+val x6 = x0.length
+val x7 = 0 >= x6
+val x482 = if (x7) {
+x2 = 0.0
+x3 = true
+x4 = 0
+()
+} else {
+val x21 = x0(0)
+val x22 = x21 == '-'
+val x480 = if (x22) {
+val x23 = 0 + 1
+val x27 = x23 >= x6
+val x258 = if (x27) {
+x2 = 0.0
+x3 = true
+x4 = 0
+()
+} else {
+val x35 = x0(x23)
+val x36 = x35 >= '0'
+val x37 = x35 <= '9'
+val x38 = x36 && x37
+val x256 = if (x38) {
+var x42: java.lang.String = ""
+var x43: Boolean = false
+val x39 = x23 + 1
+var x44: Int = x39
+var x46: Int = -1
+var x47: Boolean = true
+var x48: Int = x39
+val x84 = while ({val x49 = x47
+val x50 = x46
+val x51 = x48
+val x52 = x50 != x51
+val x53 = x49 && x52
+x53}) {
+val x55 = x48
+x46 = x55
+val x57 = x55 >= x6
+val x82 = if (x57) {
+x47 = false
+()
+} else {
+val x61 = x0(x55)
+val x62 = x61 >= '0'
+val x63 = x61 <= '9'
+val x64 = x62 && x63
+val x80 = if (x64) {
+val x67 = x42
+val x68 = x43
+val x69 = x44
+val x71 = x67+x61
+x42 = x71
+x43 = false
+val x65 = x55 + 1
+x44 = x65
+x48 = x65
+()
+} else {
+x47 = false
+()
+}
+x80
+}
+x82
+}
+val x85 = x42
+val x86 = x43
+val x87 = x44
+val x92 = if (x86) {
+true
+} else {
+false
+}
+val x101 = if (x92) {
+true
+} else {
+false
+}
+val x107 = if (x101) {
+true
+} else {
+false
+}
+val x119 = if (x107) {
+true
+} else {
+false
+}
+val x250 = if (x119) {
+x2 = 0.0
+x3 = true
+x4 = 0
+()
+} else {
+val x108 = if (x101) {
+0
+} else {
+val x93 = if (x86) {
+x23
+} else {
+x87
+}
+val x102 = if (x92) {
+x93
+} else {
+x93
+}
+x102
+}
+val x120 = if (x107) {
+x108
+} else {
+x108
+}
+val x126 = x120 >= x6
+val x248 = if (x126) {
+x2 = 0.0
+x3 = true
+x4 = 0
+()
+} else {
+val x133 = x0(x120)
+val x134 = x133 == '.'
+val x246 = if (x134) {
+val x135 = x120 + 1
+val x137 = x135 >= x6
+val x240 = if (x137) {
+x2 = 0.0
+x3 = true
+x4 = 0
+()
+} else {
+val x145 = x0(x135)
+val x146 = x145 >= '0'
+val x147 = x145 <= '9'
+val x148 = x146 && x147
+val x238 = if (x148) {
+var x152: java.lang.String = ""
+var x153: Boolean = false
+val x149 = x135 + 1
+var x154: Int = x149
+var x156: Int = -1
+var x157: Boolean = true
+var x158: Int = x149
+val x194 = while ({val x159 = x157
+val x160 = x156
+val x161 = x158
+val x162 = x160 != x161
+val x163 = x159 && x162
+x163}) {
+val x165 = x158
+x156 = x165
+val x167 = x165 >= x6
+val x192 = if (x167) {
+x157 = false
+()
+} else {
+val x171 = x0(x165)
+val x172 = x171 >= '0'
+val x173 = x171 <= '9'
+val x174 = x172 && x173
+val x190 = if (x174) {
+val x177 = x152
+val x178 = x153
+val x179 = x154
+val x181 = x177+x171
+x152 = x181
+x153 = false
+val x175 = x165 + 1
+x154 = x175
+x158 = x175
+()
+} else {
+x157 = false
+()
+}
+x190
+}
+x192
+}
+val x195 = x152
+val x196 = x153
+val x197 = x154
+val x202 = if (x196) {
+true
+} else {
+false
+}
+val x211 = if (x202) {
+true
+} else {
+false
+}
+val x217 = if (x211) {
+true
+} else {
+false
+}
+val x226 = if (x217) {
+0.0
+} else {
+val x216 = if (x211) {
+null
+} else {
+val x118 = if (x107) {
+null
+} else {
+val x106 = if (x101) {
+null
+} else {
+val x25 = new OptionChar(x21,true)
+val x100 = if (x92) {
+null
+} else {
+val x91 = if (x86) {
+null
+} else {
+val x89 = new Tuple2CharString(x35,x85)
+x89
+}
+val x96 = x91._1
+val x97 = x91._2
+val x98 = x96+x97
+x98
+}
+val x104 = new Tuple2OptionCharString(x25,x100)
+x104
+}
+val x111 = x106._1
+val x113 = x111.defined
+val x116 = if (x113) {
+val x112 = x106._2
+val x114 = x111.value
+val x115 = x114+x112
+x115
+} else {
+val x112 = x106._2
+x112
+}
+x116
+}
+val x210 = if (x202) {
+null
+} else {
+val x201 = if (x196) {
+null
+} else {
+val x199 = new Tuple2CharString(x145,x195)
+x199
+}
+val x206 = x201._1
+val x207 = x201._2
+val x208 = x206+x207
+x208
+}
+val x214 = new Tuple2StringString(x118,x210)
+x214
+}
+val x221 = x216._1
+val x222 = x216._2
+val x223 = x221+x222
+val x224 = x223.toDouble
+x224
+}
+x2 = x226
+val x227 = if (x217) {
+true
+} else {
+false
+}
+x3 = x227
+val x218 = if (x211) {
+0
+} else {
+val x203 = if (x196) {
+x135
+} else {
+x197
+}
+val x212 = if (x202) {
+x203
+} else {
+x203
+}
+x212
+}
+val x228 = if (x217) {
+x218
+} else {
+x218
+}
+x4 = x228
+()
+} else {
+x2 = 0.0
+x3 = true
+x4 = 0
+()
+}
+x238
+}
+x240
+} else {
+x2 = 0.0
+x3 = true
+x4 = 0
+()
+}
+x246
+}
+x248
+}
+x250
+} else {
+x2 = 0.0
+x3 = true
+x4 = 0
+()
+}
+x256
+}
+x258
+} else {
+val x260 = x21 >= '0'
+val x261 = x21 <= '9'
+val x262 = x260 && x261
+val x478 = if (x262) {
+var x264: java.lang.String = ""
+var x265: Boolean = false
+val x23 = 0 + 1
+var x266: Int = x23
+var x268: Int = -1
+var x269: Boolean = true
+var x270: Int = x23
+val x306 = while ({val x271 = x269
+val x272 = x268
+val x273 = x270
+val x274 = x272 != x273
+val x275 = x271 && x274
+x275}) {
+val x277 = x270
+x268 = x277
+val x279 = x277 >= x6
+val x304 = if (x279) {
+x269 = false
+()
+} else {
+val x283 = x0(x277)
+val x284 = x283 >= '0'
+val x285 = x283 <= '9'
+val x286 = x284 && x285
+val x302 = if (x286) {
+val x289 = x264
+val x290 = x265
+val x291 = x266
+val x293 = x289+x283
+x264 = x293
+x265 = false
+val x287 = x277 + 1
+x266 = x287
+x270 = x287
+()
+} else {
+x269 = false
+()
+}
+x302
+}
+x304
+}
+val x307 = x264
+val x308 = x265
+val x309 = x266
+val x314 = if (x308) {
+true
+} else {
+false
+}
+val x323 = if (x314) {
+true
+} else {
+false
+}
+val x329 = if (x323) {
+true
+} else {
+false
+}
+val x341 = if (x329) {
+true
+} else {
+false
+}
+val x472 = if (x341) {
+x2 = 0.0
+x3 = true
+x4 = 0
+()
+} else {
+val x330 = if (x323) {
+0
+} else {
+val x315 = if (x308) {
+0
+} else {
+x309
+}
+val x324 = if (x314) {
+x315
+} else {
+x315
+}
+x324
+}
+val x342 = if (x329) {
+x330
+} else {
+x330
+}
+val x348 = x342 >= x6
+val x470 = if (x348) {
+x2 = 0.0
+x3 = true
+x4 = 0
+()
+} else {
+val x355 = x0(x342)
+val x356 = x355 == '.'
+val x468 = if (x356) {
+val x357 = x342 + 1
+val x359 = x357 >= x6
+val x462 = if (x359) {
+x2 = 0.0
+x3 = true
+x4 = 0
+()
+} else {
+val x367 = x0(x357)
+val x368 = x367 >= '0'
+val x369 = x367 <= '9'
+val x370 = x368 && x369
+val x460 = if (x370) {
+var x374: java.lang.String = ""
+var x375: Boolean = false
+val x371 = x357 + 1
+var x376: Int = x371
+var x378: Int = -1
+var x379: Boolean = true
+var x380: Int = x371
+val x416 = while ({val x381 = x379
+val x382 = x378
+val x383 = x380
+val x384 = x382 != x383
+val x385 = x381 && x384
+x385}) {
+val x387 = x380
+x378 = x387
+val x389 = x387 >= x6
+val x414 = if (x389) {
+x379 = false
+()
+} else {
+val x393 = x0(x387)
+val x394 = x393 >= '0'
+val x395 = x393 <= '9'
+val x396 = x394 && x395
+val x412 = if (x396) {
+val x399 = x374
+val x400 = x375
+val x401 = x376
+val x403 = x399+x393
+x374 = x403
+x375 = false
+val x397 = x387 + 1
+x376 = x397
+x380 = x397
+()
+} else {
+x379 = false
+()
+}
+x412
+}
+x414
+}
+val x417 = x374
+val x418 = x375
+val x419 = x376
+val x424 = if (x418) {
+true
+} else {
+false
+}
+val x433 = if (x424) {
+true
+} else {
+false
+}
+val x439 = if (x433) {
+true
+} else {
+false
+}
+val x448 = if (x439) {
+0.0
+} else {
+val x438 = if (x433) {
+null
+} else {
+val x340 = if (x329) {
+null
+} else {
+val x328 = if (x323) {
+null
+} else {
+val x9 = null.asInstanceOf[Char]
+val x10 = new OptionChar(x9,false)
+val x322 = if (x314) {
+null
+} else {
+val x313 = if (x308) {
+null
+} else {
+val x311 = new Tuple2CharString(x21,x307)
+x311
+}
+val x318 = x313._1
+val x319 = x313._2
+val x320 = x318+x319
+x320
+}
+val x326 = new Tuple2OptionCharString(x10,x322)
+x326
+}
+val x333 = x328._1
+val x335 = x333.defined
+val x338 = if (x335) {
+val x334 = x328._2
+val x336 = x333.value
+val x337 = x336+x334
+x337
+} else {
+val x334 = x328._2
+x334
+}
+x338
+}
+val x432 = if (x424) {
+null
+} else {
+val x423 = if (x418) {
+null
+} else {
+val x421 = new Tuple2CharString(x367,x417)
+x421
+}
+val x428 = x423._1
+val x429 = x423._2
+val x430 = x428+x429
+x430
+}
+val x436 = new Tuple2StringString(x340,x432)
+x436
+}
+val x443 = x438._1
+val x444 = x438._2
+val x445 = x443+x444
+val x446 = x445.toDouble
+x446
+}
+x2 = x448
+val x449 = if (x439) {
+true
+} else {
+false
+}
+x3 = x449
+val x440 = if (x433) {
+0
+} else {
+val x425 = if (x418) {
+x357
+} else {
+x419
+}
+val x434 = if (x424) {
+x425
+} else {
+x425
+}
+x434
+}
+val x450 = if (x439) {
+x440
+} else {
+x440
+}
+x4 = x450
+()
+} else {
+x2 = 0.0
+x3 = true
+x4 = 0
+()
+}
+x460
+}
+x462
+} else {
+x2 = 0.0
+x3 = true
+x4 = 0
+()
+}
+x468
+}
+x470
+}
+x472
+} else {
+x2 = 0.0
+x3 = true
+x4 = 0
+()
+}
+x478
+}
+x480
+}
+val x483 = x2
+val x484 = x3
+val x485 = x4
+val x486 = new ParseResultDouble(x483,x484,x485)
+val x487 = println(x486)
+x487
+}
+}
+/*****************************************
+  End of Generated Code                  
+*******************************************/
+compilation: ok
+ParseResultDouble(5.5932084E16,false,18)
+ParseResultDouble(-5.5932084E16,false,19)
 /*****************************************
   Emitting Generated Code                  
 *******************************************/
@@ -896,6 +1550,10 @@ x53
   End of Generated Code                  
 *******************************************/
 
+case class ParseResultDouble(res: Double, empty: Boolean, next: Int)
+
+case class OptionChar(value: Char, defined: Boolean)
+
 case class Tuple2StringString(_1: java.lang.String, _2: java.lang.String)
 
 case class ParseResultBoolean(res: Boolean, empty: Boolean, next: Int)
@@ -907,6 +1565,8 @@ case class Anon1680061013(input: Array[Char], start: Int, length: Int)
 case class ParseResultInt(res: Int, empty: Boolean, next: Int)
 
 case class Tuple2CharString(_1: Char, _2: java.lang.String)
+
+case class Tuple2OptionCharString(_1: OptionChar, _2: java.lang.String)
 
 case class ParseResultString(res: java.lang.String, empty: Boolean, next: Int)
 compilation: ok

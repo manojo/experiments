@@ -13,7 +13,8 @@ scalaVersion := "2.10.2-RC1"
 resolvers ++= Seq(
   ScalaToolsSnapshots, //needed for custom build of scala test
   "ScalaTest" at "https://oss.sonatype.org/content/groups/public",
-  "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
+  "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
+  "spray" at "http://repo.spray.io/"
 )
 
 libraryDependencies ++= Seq(
@@ -22,7 +23,8 @@ libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "2.0.RC3" % "test",
   //"org.scalatest" % "scalatest_2.10.0" % "2.0.M5" % "test"
   "commons-codec" % "commons-codec" % "1.6",
-  "com.github.axel22" %% "scalameter" % "0.4-M2" excludeAll (ExclusionRule(organization = "org.scala-lang"))
+  "com.github.axel22" %% "scalameter" % "0.4-M2" excludeAll (ExclusionRule(organization = "org.scala-lang")),
+  "io.spray" %%  "spray-json" % "1.2.5"
 )
 
 autoCompilerPlugins := true

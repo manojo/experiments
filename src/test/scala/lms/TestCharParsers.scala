@@ -15,7 +15,7 @@ trait CharParsersProg extends CharParsers{
   def test1(in: Rep[Array[Char]]): Rep[Unit] = {
     var s = Failure[Char](unit(-1))
     val parser = acceptIf(in, x => x == unit('h')).apply(unit(0))
-    parser{x: Rep[ParseResult[Char]] => s = x}
+    parser{x => s = x}
     println(s)
   }
 
@@ -23,21 +23,21 @@ trait CharParsersProg extends CharParsers{
   def test2(in: Rep[Array[Char]]): Rep[Unit] = {
     var s = Failure[Char](unit(-1))
     val parser = accept(in, unit('h')).apply(unit(0))
-    parser{x: Rep[ParseResult[Char]] => s = x}
+    parser{x => s = x}
     println(s)
   }
 
   def test2b(in: Rep[Array[Char]]): Rep[Unit] = {
     var s = Failure[Char](unit(-1))
     val parser = accept(in, unit('\\')).apply(unit(0))
-    parser{x: Rep[ParseResult[Char]] => s = x}
+    parser{x => s = x}
     println(s)
   }
 
   def test2c(in: Rep[Array[Char]]): Rep[Unit] = {
     var s = Failure[Char](unit(-1))
     val parser = accept(in, unit('\'')).apply(unit(0))
-    parser{x: Rep[ParseResult[Char]] => s = x}
+    parser{x => s = x}
     println(s)
   }
 
@@ -45,7 +45,7 @@ trait CharParsersProg extends CharParsers{
   def test3(in: Rep[Array[Char]]): Rep[Unit] = {
     var s = Failure[Char](unit(-1))
     val parser = letter(in).apply(unit(0))
-    parser{x: Rep[ParseResult[Char]] => s = x}
+    parser{x => s = x}
     println(s)
   }
 
@@ -53,7 +53,7 @@ trait CharParsersProg extends CharParsers{
   def test4(in: Rep[Array[Char]]): Rep[Unit] = {
     var s = Failure[Char](unit(-1))
     val parser = digit(in).apply(unit(0))
-    parser{x: Rep[ParseResult[Char]] => s = x}
+    parser{x => s = x}
     println(s)
   }
 
@@ -61,7 +61,7 @@ trait CharParsersProg extends CharParsers{
   def test5(in: Rep[Array[Char]]): Rep[Unit] = {
     var s = Failure[(Char,Char)](unit(-1))
     val parser = (letter(in)~letter(in)).apply(unit(0))
-    parser{x: Rep[ParseResult[(Char,Char)]] => s = x}
+    parser{x => s = x}
     println(s)
   }
 
@@ -69,7 +69,7 @@ trait CharParsersProg extends CharParsers{
   def test6(in: Rep[Array[Char]]): Rep[Unit] = {
     var s = Failure[Char](unit(-1))
     val parser = (letter(in)~>letter(in)).apply(unit(0))
-    parser{x: Rep[ParseResult[Char]] => s = x}
+    parser{x => s = x}
     println(s)
   }
 
@@ -77,7 +77,7 @@ trait CharParsersProg extends CharParsers{
   def test7(in: Rep[Array[Char]]): Rep[Unit] = {
     var s = Failure[Char](unit(-1))
     val parser = (letter(in)<~letter(in)).apply(unit(0))
-    parser{x: Rep[ParseResult[Char]] => s = x}
+    parser{x => s = x}
     println(s)
   }
 
@@ -85,7 +85,7 @@ trait CharParsersProg extends CharParsers{
   def test8(in: Rep[Array[Char]]): Rep[Unit] = {
     var s = Failure[Int](unit(-1))
     val parser = digit2Int(in).apply(unit(0))
-    parser{x: Rep[ParseResult[Int]] => s = x}
+    parser{x => s = x}
     println(s)
   }
 
@@ -93,7 +93,7 @@ trait CharParsersProg extends CharParsers{
   def test9(in: Rep[Array[Char]]): Rep[Unit] = {
     var s = Failure[Char](unit(-1))
     val parser = (letter(in) | digit(in)).apply(unit(0))
-    parser{x: Rep[ParseResult[Char]] => s = x}
+    parser{x => s = x}
     println(s)
   }
 
@@ -123,7 +123,7 @@ trait CharParsersProg extends CharParsers{
   def test10(in: Rep[Array[Char]]): Rep[Unit] = {
     var s = Failure[String](unit(-1))
     val parser = (rep(letter(in)) ^^ {x: Rep[List[Char]] => x.mkString}).apply(unit(0))
-    parser{x: Rep[ParseResult[String]] => s = x}
+    parser{x => s = x}
     println(s)
   }
 
@@ -131,7 +131,7 @@ trait CharParsersProg extends CharParsers{
   def test11(in: Rep[Array[Char]]): Rep[Unit] = {
     var s = Failure[Int](unit(-1))
     val parser = repFold(digit2Int(in))(unit(0), (x: Rep[Int], y :Rep[Int]) => x + y) .apply(unit(0))
-    parser{x: Rep[ParseResult[Int]] => s = x}
+    parser{x => s = x}
     println(s)
   }
 
@@ -139,7 +139,7 @@ trait CharParsersProg extends CharParsers{
   def testCond(in: Rep[Array[Char]], n :Rep[Int]): Rep[Unit] = {
     var s = Failure[Char](unit(-1))
     val parser: Parser[Char] = if(n < unit(3)) accept(in, unit('b')) else accept(in, unit('c'))
-    parser(unit(0)).apply{x: Rep[ParseResult[Char]] => s = x}
+    parser(unit(0)).apply{x => s = x}
     println(s)
   }
 
@@ -152,7 +152,7 @@ trait CharParsersProg extends CharParsers{
       else accept(in, unit('d')) ^^ { y: Rep[Char] => x+unit(", ")+y}
     }
 
-    parser(unit(0)).apply{x: Rep[ParseResult[String]] => s = x}
+    parser(unit(0)).apply{x => s = x}
     println(s)
   }
 }

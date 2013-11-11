@@ -30,7 +30,8 @@ trait ScalaGenCharOps extends ScalaGenBase {
   val charMap = scala.collection.immutable.Map(
     '\n' -> "\\n",
     ''' -> "\\'",
-    '\\' -> "\\\\"
+    '\\' -> "\\\\"//,
+    //'/' -> "\\/"
   )
 
   override def emitNode(sym: Sym[Any], rhs: Def[Any]) = rhs match {

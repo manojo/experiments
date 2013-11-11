@@ -19,7 +19,7 @@ object JsonParser extends JSON{
 
   val addressbook=
 """{
-"\"address book": {
+"address book": {
 "name": "John Smith",
 "address": {
 "street": "10 Market Street",
