@@ -837,46 +837,44 @@ def apply(x0:Array[Char]): Unit = {
 var x2: Boolean = false
 var x3: Boolean = true
 var x4: Int = -1
-val x8 = x0.length
-val x9 = 0 >= x8
 val x6 = px6 // static data: 5
-val x10 = 0 + x6
-val x11 = x10 > x8
-val x12 = x9 || x11
-val x50 = if (x12) {
+val x8 = 0 + x6
+val x9 = x0.length
+val x10 = x8 > x9
+val x48 = if (x10) {
 x2 = false
 x3 = true
 x4 = 0
 ()
 } else {
-var x18: Int = 0
-var x19: Boolean = true
+var x16: Int = 0
+var x17: Boolean = true
 val x7 = px7 // static data: Array(h,e,l,l,o)
-val x37 = while ({val x20 = x19
-val x21 = x18
-val x22 = x21 < x6
-val x23 = x20 && x22
-x23}) {
-val x25 = x18
-val x26 = 0 + x25
-val x27 = x0(x26)
-val x28 = x7(x25)
-val x30 = x27 == x28
-val x33 = if (x30) {
+val x35 = while ({val x18 = x17
+val x19 = x16
+val x20 = x19 < x6
+val x21 = x18 && x20
+x21}) {
+val x23 = x16
+val x24 = 0 + x23
+val x25 = x0(x24)
+val x26 = x7(x23)
+val x28 = x25 == x26
+val x31 = if (x28) {
 ()
 } else {
-x19 = false
+x17 = false
 ()
 }
-val x34 = x25 + 1
-x18 = x34
+val x32 = x23 + 1
+x16 = x32
 ()
 }
-val x38 = x19
-val x48 = if (x38) {
+val x36 = x17
+val x46 = if (x36) {
 x2 = true
 x3 = false
-x4 = x10
+x4 = x8
 ()
 } else {
 x2 = false
@@ -884,14 +882,14 @@ x3 = true
 x4 = 0
 ()
 }
-x48
+x46
 }
-val x51 = x2
-val x52 = x3
-val x53 = x4
-val x54 = new ParseResultBoolean(x51,x52,x53)
-val x55 = println(x54)
-x55
+val x49 = x2
+val x50 = x3
+val x51 = x4
+val x52 = new ParseResultBoolean(x49,x50,x51)
+val x53 = println(x52)
+x53
 }
 }
 /*****************************************

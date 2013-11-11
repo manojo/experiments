@@ -152,10 +152,6 @@ trait HttpParser extends TokenParsers with HttpComponents with StringStructOps{
   override def whitespaces(in: Rep[Input]) : Parser[String] =
     repToS_f(accept(in, unit(' ')))// ^^^ {unit("")}
 
-  //just keep the major and minor disctinction
-  def decimalNumber(in: Rep[Input]): Parser[(Int,Int)] =
-    wholeNumber(in)~(accept(in, unit('.'))~>wholeNumber(in))
-
   def wildChar(in:Rep[Input]) = acceptIfIdx(in, {
     x: Rep[Char] => x != unit('\n')
   })

@@ -27,6 +27,20 @@ trait CharParsersProg extends CharParsers{
     println(s)
   }
 
+  def test2b(in: Rep[Array[Char]]): Rep[Unit] = {
+    var s = Failure[Char](unit(-1))
+    val parser = accept(in, unit('\\')).apply(unit(0))
+    parser{x: Rep[ParseResult[Char]] => s = x}
+    println(s)
+  }
+
+  def test2c(in: Rep[Array[Char]]): Rep[Unit] = {
+    var s = Failure[Char](unit(-1))
+    val parser = accept(in, unit('\'')).apply(unit(0))
+    parser{x: Rep[ParseResult[Char]] => s = x}
+    println(s)
+  }
+
   //parsing a single letter
   def test3(in: Rep[Array[Char]]): Rep[Unit] = {
     var s = Failure[Char](unit(-1))
@@ -174,6 +188,22 @@ class TestCharParsers extends FileDiffSuite {
         val testc2 = compile(test2)
         testc2("hello".toArray)
         testc2("1".toArray)
+        codegen.reset
+
+        codegen.emitSource(test2b _ , "test2b", new java.io.PrintWriter(System.out))
+        codegen.reset
+
+        val testc2b = compile(test2b)
+        testc2b("\\asd".toArray)
+        testc2b("1".toArray)
+        codegen.reset
+
+        codegen.emitSource(test2c _ , "test2c", new java.io.PrintWriter(System.out))
+        codegen.reset
+
+        val testc2c = compile(test2c)
+        testc2c("\\asd".toArray)
+        testc2c("1".toArray)
         codegen.reset
 
         codegen.emitSource(test3 _ , "test3", new java.io.PrintWriter(System.out))

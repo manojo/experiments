@@ -112,7 +112,7 @@ trait ParseResultOpsExp extends ParseResultOps with IfThenElseExp
 
   def Failure[T:Manifest](next: Rep[Int]): Exp[ParseResult[T]]
     = struct(classTag[ParseResult[T]],
-      "res" -> rep_asinstanceof(unit(null), manifest[Null], manifest[T]),//unit(ZeroVal[T]),
+      "res" -> unit(ZeroVal[T]),
       "empty" -> unit(true),
       "next" -> next
       )

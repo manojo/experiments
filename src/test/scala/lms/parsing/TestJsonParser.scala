@@ -37,7 +37,7 @@ trait JsonParserProg extends JsonParser{
     println(s)
   }
 
-  def memberParse(in: Rep[Array[Char]]): Rep[Unit] = {
+  def jsonParse(in: Rep[Array[Char]]): Rep[Unit] = {
     var s = Failure[JV](unit(-1))
     val p = json(in).apply(unit(0))
     p{x => s = x}
@@ -75,34 +75,45 @@ class TestJsonParser extends FileDiffSuite {
 
         val testcPrimitives = compile(primitiveParse)
         testcPrimitives("23".toArray)
-        //testcPrimitives("2.13".toArray)
+        testcPrimitives("2.13".toArray)
         testcPrimitives("false".toArray)
         testcPrimitives("null".toArray)
         testcPrimitives("true".toArray)
         testcPrimitives("\"hello\"".toArray)
+        testcPrimitives("\"\\\"hello\"".toArray)
         codegen.reset
 
-        codegen.emitSource(memberParse _, "memberParse", new java.io.PrintWriter(System.out))
+        codegen.emitSource(jsonParse _, "jsonParse", new java.io.PrintWriter(System.out))
         codegen.emitDataStructures(new java.io.PrintWriter(System.out))
         codegen.reset
 
-        val testcMember = compile(memberParse)
+        val testcJson = compile(jsonParse)
         val jsonMsgs = scala.List(
-          "3","true","false","null","\"hi\"",
+          "3","true","false","null","\"hi\"","122.343", "-32",
           "[3]","[3,[2],[[1]]]",
-          "{\"hi\" : 2,\"hey\" : {\"hey\" : 2}}"
+          "{\"hi\" : 2,\"hey\" : {\"hey\" : 2}}",
+          """{
+          "address book": {
+          "name": "John Smith",
+          "address": {
+          "street": "10 Market Street",
+          "city" : "San Francisco, CA",
+          "zip" : 94111
+          },
+          "phone Nums": [
+          "408 338-4238",
+          "408 111-6892"
+          ]
+          }
+          }
+          """
         )
 
         jsonMsgs.foreach{msg =>
-          testcMember(msg.toArray)
+          testcJson(msg.toArray)
         }
 
         codegen.reset
-
-        //codegen.emitSource(jsonParse _ , "jsonParse", new java.io.PrintWriter(System.out))
-        //val testcJsonParse = compile(jsonParse)
-        //testcJsonParse("{}".toArray)
-        //testcJsonParse("{\"asdf\" : \"asd\"}".toArray)
       }
     }
 

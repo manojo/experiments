@@ -252,10 +252,19 @@ trait TokenParsers extends TopDownParsers with CharParsers with StringStructOps{
       repFold(digit2Int(in))(x, (res:Rep[Int], y: Rep[Int]) => (res * unit(10) + y))
   }
 
+  def intLit(in:Rep[Input]) : Parser[Int] =
+    opt(chr(in,'-')) ~ wholeNumber(in) ^^ { x =>
+      if(x._1.isDefined) unit(-1) * x._2 else x._2
+    }
+
+
+  //just keep the major and minor disctinction
+  def decimalNumber(in: Rep[Input]): Parser[(Int,Int)] =
+    wholeNumber(in)~(accept(in, unit('.'))~>wholeNumber(in))
+
   // the syntax for parsing double is too lousy, everything becomes double
   def chr(in:Rep[Input],c:Char) = accept(in, unit(c))
-  def intLit(in:Rep[Input]) : Parser[Int] = opt(chr(in,'-')) ~ str(in,c=>c>=unit('0')&&c<=unit('9')) ^^ { case x => val v=x._2.toStr.toInt; if (x._1.isDefined) v*unit(-1) else v  }
-  def doubleLit(in:Rep[Input]) : Parser[Double] = str(in,c=>c>=unit('0')&&c<=unit('9') || c==unit('-') || c==unit('.') || c==unit('e') || c==unit('E')) ^^ { _.toStr.toDouble }
+  //def doubleLit(in:Rep[Input]) : Parser[Double] = str(in,c=>c>=unit('0')&&c<=unit('9') || c==unit('-') || c==unit('.') || c==unit('e') || c==unit('E')) ^^ { _.toStr.toDouble }
   def stringLit(in:Rep[Input]) : Parser[String] = chr(in,'"') ~> str(in,_ != unit('"') ,true) <~ chr(in,'"') ^^ { _.toStr }
     /*
     accept(in, unit('\"')) ~> repToS( acceptIf(in, (x:Rep[Char]) => x != unit('\"'))) <~ accept(in, unit('\"')) ^^ {

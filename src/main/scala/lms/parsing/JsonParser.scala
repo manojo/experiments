@@ -9,7 +9,7 @@ import java.io.StringWriter
 import java.io.FileOutputStream
 
 trait JsonParser extends TokenParsers with RecParsers with StringStructOps with CastingOps
- /*with FunctionsRecursiveExp*/ {
+ with CharOps/*with FunctionsRecursiveExp*/ {
   final val kNull = unit(0)
   final val kFalse = unit(1)
   final val kTrue = unit(2)
@@ -62,6 +62,7 @@ trait JsonParser extends TokenParsers with RecParsers with StringStructOps with 
   def jDouble(n:Rep[Double]) = JV(kDouble,n)
   def jString(s:Rep[String]) = JV(kString,s)
   def jArray(a:Rep[List[JV]]) = JV(kArray,a)
+  //FIXME: creating a struct for this is necessary for good code gen
   def jMember(a:Rep[(String,JV)]) = JV(kMember, a)
   //FIXME: absolutely not the right way to do this
   def jObject(a:Rep[List[JV]]) = JV(kObject,a)
@@ -70,24 +71,13 @@ trait JsonParser extends TokenParsers with RecParsers with StringStructOps with 
   override def whitespaces(in: Rep[Input]) : Parser[String] =
     repToS_f(acceptIf(in, {x:Rep[Char] => x == unit(' ') || x == unit('\n')}))// ^^^ {unit("")}
 
-  //def json2(in:Rep[Input]): Parser[JV] = rec("json2",
-  //  (accept(in,"false") ^^^ jFalse
-  //| accept(in,"true") ^^^ jTrue
-  //| accept(in,"null") ^^^ jNull
-  //| doubleLit(in) ^^ { s => jDouble(s) }
-  //| intLit(in) ^^ { s => jInt(s) }
-  //| stringLit(in) ^^ { s => jString(s) }
-  //| chr(in,'[') ~> repsep(json2(in), chr(in,',')) <~ chr(in,']') ^^  { a=>jArray(a) }
-  //| chr(in,'{') ~> repsep((stringLit(in) <~ chr(in,':')) ~ json2(in) ^^ {x=> jNull }, chr(in,',')) <~ chr(in,'}') ^^ { l=> jNull /*jObject(l)*/ } // XXX: fix this
-  //))
-
   // true | false | null | doubleLit | intLit | stringLit
   def primitives(in: Rep[Input]): Parser[JV] = (
       acceptB(in,"false") ^^^ jFalse
     | acceptB(in,"true") ^^^ jTrue
     | acceptB(in,"null") ^^^ jNull
-    //| doubleLit(in) ^^ { s => jDouble(s) }
-    | wholeNumber(in) ^^ { s => jInt(s) }
+    | decimalNumber(in) ^^ { s => jDouble((unit("")+s._1+unit(".")+s._2).toDouble)}
+    | intLit(in) ^^ { s => jInt(s) }
     | stringLit(in) ^^ { s => jString(s) }
   )
 
@@ -107,9 +97,9 @@ trait JsonParser extends TokenParsers with RecParsers with StringStructOps with 
     )
 
     def arr: Parser[JV] = (
-      chr(in,'[') ~>
-      repsep(value, chr(in, ',')) <~
-      chr(in, ']')
+      (chr(in,'[') ~> whitespaces(in)) ~>
+      repsep(value, whitespaces(in) ~> chr(in, ',') ~> whitespaces(in)) <~
+      (whitespaces(in) ~> chr(in, ']'))
     ) ^^ {x =>jArray(x.AsInstanceOf[List[JV]])}
 
     def member: Parser[JV] = (
@@ -118,18 +108,40 @@ trait JsonParser extends TokenParsers with RecParsers with StringStructOps with 
       ~ value
     ) ^^ {x => jMember(x)}
 
-    def obj: Parser[JV] =
-      (chr(in,'{') ~> repsep(member, chr(in, ',')) <~ chr(in, '}'))^^{
-        x => jObject(x)
-      }
+    def obj: Parser[JV] = (
+      (chr(in,'{') ~> whitespaces(in)) ~>
+      repsep(member, whitespaces(in) ~> chr(in, ',') ~> whitespaces(in)) <~
+      (whitespaces(in) ~> chr(in, '}'))
+    ) ^^ { x => jObject(x)}
 
     value
   }
 
   override def stringLit(in:Rep[Input]): Parser[String] =
     accept(in, unit('\"')) ~>
-    repToS(acceptIf(in, (x:Rep[Char]) => x != unit('\"'))) <~
-    accept(in, unit('\"'))
+    repFold( escQuotes(in) ^^ { x=> unit("")+x } | uChars(in) |
+      acceptIf(in, x => x != unit('\"') && x != unit('\\'))^^{ x=> unit("")+x}
+    )(unit(""), (acc: Rep[String], x: Rep[String]) => acc + x
+    ) <~ accept(in, unit('\"'))
+
+    //  repToS(acceptIf(in, (x:Rep[Char]) => x != unit('\"'))) <~
+    //accept(in, unit('\"'))
+
+  def escQuotes(in: Rep[Input]): Parser[Char] = {
+    accept(in, unit('\\')) ~> acceptIf(in, c =>
+      c == '\\' || c == '\'' || c == '\"' || c =='b'
+    ||c == 'f' || c == 'n' || c == 'r' || c =='t'
+    )
+  }
+
+  def uChars(in: Rep[Input]): Parser[String] = {
+    accept(in, unit('\\')) ~> accept(in, unit('u')) ~>
+    repNFold(hex(in), unit(4))(unit(""), (acc: Rep[String],x:Rep[Char]) => acc + x)
+  }
+
+  def hex(in:Rep[Input]) = acceptIf(in,
+    c => isDigit(c) ||  (c >= unit('A') && c <= unit('F'))
+  )
 }
 
 

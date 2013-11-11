@@ -27,10 +27,21 @@ trait ScalaGenCharOps extends ScalaGenBase {
   val IR: CharOpsExp
   import IR._
 
+  val charMap = scala.collection.immutable.Map(
+    '\n' -> "\\n",
+    ''' -> "\\'",
+    '\\' -> "\\\\"
+  )
+
   override def emitNode(sym: Sym[Any], rhs: Def[Any]) = rhs match {
     case CharToInt(c) => emitValDef(sym, "%s.toInt".format(quote(c)))
     case IntToChar(i) => emitValDef(sym, "%s.toChar".format(quote(i)))
     case _ => super.emitNode(sym, rhs)
+  }
+
+  override def quote(x: Exp[Any]) : String = x match {
+    case Const(c: Char) => "'"+charMap.getOrElse(c,c)+"'"
+    case _ => super.quote(x)
   }
 }
 
