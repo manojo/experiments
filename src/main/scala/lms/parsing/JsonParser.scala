@@ -55,7 +55,7 @@ trait JsonParser extends TokenParsers with RecParsers with StringStructOps with 
     else if (jv.kind==kDouble) unit("")+jv.data
     else if (jv.kind==kString) unit("\"")+jv.data+unit("\"")
     else if (jv.kind==kArray) unit("[")+jv.data.AsInstanceOf[List[JV]].map(x=>jStr(x)).mkString(unit(","))+unit("]")
-    else if (jv.kind==kObject) unit("{")+jv.data.AsInstanceOf[List[(String,JV)]].map(x=>unit("\"")+x._1+unit("\":")+x._2).mkString(unit(","))+unit("}")
+    else if (jv.kind==kObject) unit("{")+jv.data.AsInstanceOf[List[JV]].map{y=> val x=y.data.AsInstanceOf[(String,JV)]; unit("\"")+x._1+unit("\":")+jStr(x._2)}.mkString(unit(","))+unit("}")
     else unit("<bad kind: ")+jv.kind+unit(">")
   }
 
@@ -168,7 +168,7 @@ trait JsonParser extends TokenParsers with RecParsers with StringStructOps with 
       if (in(p)==unit('\\') && p+unit(1)<end) {
         val c = in(p+1)
         if (c=='u' && p+unit(5)<end) {
-          val x = unhex(in(p+2))*unit(1000) + unhex(in(p+3))*unit(100) + unhex(in(p+4))*unit(10) + unhex(in(p+5))
+          val x = unhex(in(p+2))*unit(0x1000) + unhex(in(p+3))*unit(0x100) + unhex(in(p+4))*unit(0x10) + unhex(in(p+5))
           a(n)=x.toChar; p+=4;
         }
         else if (c==unit('b')) a(n)=unit('\b')

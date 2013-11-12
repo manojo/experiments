@@ -42,7 +42,7 @@ trait JsonParserProg extends JsonParser{
     val p = json(in).apply(unit(0))
     p{x => s = x}
     println(s)
-    //println(unit("Parsed chars: ")+parseresult_next(s))
+    //println(unit("Parsed data: ")+parseresult_get(s).mkString)
   }
 }
 
