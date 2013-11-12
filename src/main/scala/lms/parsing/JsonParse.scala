@@ -3,12 +3,15 @@ package lms.parsing
 import java.io.{BufferedReader, FileReader, Serializable}
 import scala.collection.mutable.ArrayBuffer
 
+// To rebuild from sources, use:
+// sbt ';test:run-main lms.parsing.TestJson;run-main lms.parsing.TestJsonParse'
+
 object TestJsonParse{
   val jsonparser = new JsonParse(
     "false".length,"false".toArray,
     "true".length,"true".toArray,
-    "null".toArray,
-    print = true
+    "null".toArray //,
+    //print = true
   )
 
   val fileNames = List(1,2,3,4,6).map{x=> "just_tweet"+x}
@@ -48,7 +51,7 @@ object TestJsonParse{
     }
   }
 }
-
+/*
 case class OptionChar(value: Char, defined: Boolean)
 case class Tuple2OptionCharInt(_1: OptionChar, _2: Int)
 case class Tuple2StringAnon6507737(_1: java.lang.String, _2: Anon6507737)
@@ -3677,3 +3680,4 @@ if(print){
 } else {()}
 }
 }
+*/

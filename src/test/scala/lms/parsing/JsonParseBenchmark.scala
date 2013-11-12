@@ -50,8 +50,8 @@ class JsonParseBenchmark extends PerformanceTest
   val stagedJsonParser = new JsonParse(
     "false".length,"false".toArray,
     "true".length,"true".toArray,
-    "null".toArray,
-    print = false
+    "null".toArray //,
+    //print = false
   )
 
   performance of "StagedJsonParser" in {

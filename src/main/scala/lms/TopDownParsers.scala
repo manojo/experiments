@@ -132,8 +132,8 @@ trait TopDownParsers extends MyScalaOpsPkg with GeneratorOps with LiftVariables
   //rep can be expressed as a fold
   def rep[T:Manifest](p : => Parser[T]) =
     repFold(p)(List[T]().asInstanceOf[Rep[List[T]]],
-      {(ls : Rep[List[T]], t: Rep[T]) => ls ++ List(t) }
-    )
+      {(ls : Rep[List[T]], t: Rep[T]) => t :: ls }
+    ) ^^ { x => x.reverse }
 
   def repsep[T:Manifest,U:Manifest](p: => Parser[T], q: =>Parser[U]): Parser[List[T]] =
     (p ~ rep(q ~>  p)) ^^ {x => x._1 :: x._2 } | success(List[T]())
