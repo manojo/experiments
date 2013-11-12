@@ -611,7 +611,7 @@ var x3: Boolean = true
 var x4: Int = -1
 val x6 = x0.length
 val x7 = 0 >= x6
-val x482 = if (x7) {
+val x484 = if (x7) {
 x2 = 0.0
 x3 = true
 x4 = 0
@@ -619,10 +619,10 @@ x4 = 0
 } else {
 val x21 = x0(0)
 val x22 = x21 == '-'
-val x480 = if (x22) {
+val x482 = if (x22) {
 val x23 = 0 + 1
 val x27 = x23 >= x6
-val x258 = if (x27) {
+val x259 = if (x27) {
 x2 = 0.0
 x3 = true
 x4 = 0
@@ -632,7 +632,7 @@ val x35 = x0(x23)
 val x36 = x35 >= '0'
 val x37 = x35 <= '9'
 val x38 = x36 && x37
-val x256 = if (x38) {
+val x257 = if (x38) {
 var x42: java.lang.String = ""
 var x43: Boolean = false
 val x39 = x23 + 1
@@ -699,7 +699,7 @@ true
 } else {
 false
 }
-val x250 = if (x119) {
+val x251 = if (x119) {
 x2 = 0.0
 x3 = true
 x4 = 0
@@ -726,7 +726,7 @@ x108
 x108
 }
 val x126 = x120 >= x6
-val x248 = if (x126) {
+val x249 = if (x126) {
 x2 = 0.0
 x3 = true
 x4 = 0
@@ -734,10 +734,10 @@ x4 = 0
 } else {
 val x133 = x0(x120)
 val x134 = x133 == '.'
-val x246 = if (x134) {
+val x247 = if (x134) {
 val x135 = x120 + 1
 val x137 = x135 >= x6
-val x240 = if (x137) {
+val x241 = if (x137) {
 x2 = 0.0
 x3 = true
 x4 = 0
@@ -747,7 +747,7 @@ val x145 = x0(x135)
 val x146 = x145 >= '0'
 val x147 = x145 <= '9'
 val x148 = x146 && x147
-val x238 = if (x148) {
+val x239 = if (x148) {
 var x152: java.lang.String = ""
 var x153: Boolean = false
 val x149 = x135 + 1
@@ -809,7 +809,7 @@ true
 } else {
 false
 }
-val x226 = if (x217) {
+val x227 = if (x217) {
 0.0
 } else {
 val x216 = if (x211) {
@@ -869,19 +869,20 @@ x208
 val x214 = new Tuple2StringString(x118,x210)
 x214
 }
-val x221 = x216._1
 val x222 = x216._2
-val x223 = x221+x222
-val x224 = x223.toDouble
-x224
+val x221 = x216._1
+val x223 = x221+"."
+val x224 = x223+x222
+val x225 = x224.toDouble
+x225
 }
-x2 = x226
-val x227 = if (x217) {
+x2 = x227
+val x228 = if (x217) {
 true
 } else {
 false
 }
-x3 = x227
+x3 = x228
 val x218 = if (x211) {
 0
 } else {
@@ -897,12 +898,12 @@ x203
 }
 x212
 }
-val x228 = if (x217) {
+val x229 = if (x217) {
 x218
 } else {
 x218
 }
-x4 = x228
+x4 = x229
 ()
 } else {
 x2 = 0.0
@@ -910,350 +911,351 @@ x3 = true
 x4 = 0
 ()
 }
-x238
+x239
 }
-x240
+x241
 } else {
 x2 = 0.0
 x3 = true
 x4 = 0
 ()
 }
-x246
+x247
 }
-x248
+x249
 }
-x250
+x251
 } else {
 x2 = 0.0
 x3 = true
 x4 = 0
 ()
 }
-x256
+x257
 }
-x258
+x259
 } else {
-val x260 = x21 >= '0'
-val x261 = x21 <= '9'
-val x262 = x260 && x261
-val x478 = if (x262) {
-var x264: java.lang.String = ""
-var x265: Boolean = false
+val x261 = x21 >= '0'
+val x262 = x21 <= '9'
+val x263 = x261 && x262
+val x480 = if (x263) {
+var x265: java.lang.String = ""
+var x266: Boolean = false
 val x23 = 0 + 1
-var x266: Int = x23
-var x268: Int = -1
-var x269: Boolean = true
-var x270: Int = x23
-val x306 = while ({val x271 = x269
-val x272 = x268
-val x273 = x270
-val x274 = x272 != x273
-val x275 = x271 && x274
-x275}) {
-val x277 = x270
-x268 = x277
-val x279 = x277 >= x6
-val x304 = if (x279) {
-x269 = false
+var x267: Int = x23
+var x269: Int = -1
+var x270: Boolean = true
+var x271: Int = x23
+val x307 = while ({val x272 = x270
+val x273 = x269
+val x274 = x271
+val x275 = x273 != x274
+val x276 = x272 && x275
+x276}) {
+val x278 = x271
+x269 = x278
+val x280 = x278 >= x6
+val x305 = if (x280) {
+x270 = false
 ()
 } else {
-val x283 = x0(x277)
-val x284 = x283 >= '0'
-val x285 = x283 <= '9'
-val x286 = x284 && x285
-val x302 = if (x286) {
-val x289 = x264
+val x284 = x0(x278)
+val x285 = x284 >= '0'
+val x286 = x284 <= '9'
+val x287 = x285 && x286
+val x303 = if (x287) {
 val x290 = x265
 val x291 = x266
-val x293 = x289+x283
-x264 = x293
-x265 = false
-val x287 = x277 + 1
-x266 = x287
-x270 = x287
+val x292 = x267
+val x294 = x290+x284
+x265 = x294
+x266 = false
+val x288 = x278 + 1
+x267 = x288
+x271 = x288
 ()
 } else {
-x269 = false
+x270 = false
 ()
 }
-x302
+x303
 }
-x304
+x305
 }
-val x307 = x264
 val x308 = x265
 val x309 = x266
-val x314 = if (x308) {
+val x310 = x267
+val x315 = if (x309) {
 true
 } else {
 false
 }
-val x323 = if (x314) {
+val x324 = if (x315) {
 true
 } else {
 false
 }
-val x329 = if (x323) {
+val x330 = if (x324) {
 true
 } else {
 false
 }
-val x341 = if (x329) {
+val x342 = if (x330) {
 true
 } else {
 false
 }
-val x472 = if (x341) {
+val x474 = if (x342) {
 x2 = 0.0
 x3 = true
 x4 = 0
 ()
 } else {
-val x330 = if (x323) {
+val x331 = if (x324) {
 0
 } else {
-val x315 = if (x308) {
+val x316 = if (x309) {
 0
 } else {
-x309
+x310
 }
-val x324 = if (x314) {
-x315
+val x325 = if (x315) {
+x316
 } else {
-x315
+x316
 }
-x324
+x325
 }
-val x342 = if (x329) {
-x330
+val x343 = if (x330) {
+x331
 } else {
-x330
+x331
 }
-val x348 = x342 >= x6
-val x470 = if (x348) {
+val x349 = x343 >= x6
+val x472 = if (x349) {
 x2 = 0.0
 x3 = true
 x4 = 0
 ()
 } else {
-val x355 = x0(x342)
-val x356 = x355 == '.'
-val x468 = if (x356) {
-val x357 = x342 + 1
-val x359 = x357 >= x6
-val x462 = if (x359) {
+val x356 = x0(x343)
+val x357 = x356 == '.'
+val x470 = if (x357) {
+val x358 = x343 + 1
+val x360 = x358 >= x6
+val x464 = if (x360) {
 x2 = 0.0
 x3 = true
 x4 = 0
 ()
 } else {
-val x367 = x0(x357)
-val x368 = x367 >= '0'
-val x369 = x367 <= '9'
-val x370 = x368 && x369
-val x460 = if (x370) {
-var x374: java.lang.String = ""
-var x375: Boolean = false
-val x371 = x357 + 1
-var x376: Int = x371
-var x378: Int = -1
-var x379: Boolean = true
-var x380: Int = x371
-val x416 = while ({val x381 = x379
-val x382 = x378
-val x383 = x380
-val x384 = x382 != x383
-val x385 = x381 && x384
-x385}) {
-val x387 = x380
-x378 = x387
-val x389 = x387 >= x6
-val x414 = if (x389) {
-x379 = false
+val x368 = x0(x358)
+val x369 = x368 >= '0'
+val x370 = x368 <= '9'
+val x371 = x369 && x370
+val x462 = if (x371) {
+var x375: java.lang.String = ""
+var x376: Boolean = false
+val x372 = x358 + 1
+var x377: Int = x372
+var x379: Int = -1
+var x380: Boolean = true
+var x381: Int = x372
+val x417 = while ({val x382 = x380
+val x383 = x379
+val x384 = x381
+val x385 = x383 != x384
+val x386 = x382 && x385
+x386}) {
+val x388 = x381
+x379 = x388
+val x390 = x388 >= x6
+val x415 = if (x390) {
+x380 = false
 ()
 } else {
-val x393 = x0(x387)
-val x394 = x393 >= '0'
-val x395 = x393 <= '9'
-val x396 = x394 && x395
-val x412 = if (x396) {
-val x399 = x374
+val x394 = x0(x388)
+val x395 = x394 >= '0'
+val x396 = x394 <= '9'
+val x397 = x395 && x396
+val x413 = if (x397) {
 val x400 = x375
 val x401 = x376
-val x403 = x399+x393
-x374 = x403
-x375 = false
-val x397 = x387 + 1
-x376 = x397
-x380 = x397
+val x402 = x377
+val x404 = x400+x394
+x375 = x404
+x376 = false
+val x398 = x388 + 1
+x377 = x398
+x381 = x398
 ()
 } else {
-x379 = false
+x380 = false
 ()
 }
-x412
+x413
 }
-x414
+x415
 }
-val x417 = x374
 val x418 = x375
 val x419 = x376
-val x424 = if (x418) {
+val x420 = x377
+val x425 = if (x419) {
 true
 } else {
 false
 }
-val x433 = if (x424) {
+val x434 = if (x425) {
 true
 } else {
 false
 }
-val x439 = if (x433) {
+val x440 = if (x434) {
 true
 } else {
 false
 }
-val x448 = if (x439) {
+val x450 = if (x440) {
 0.0
 } else {
-val x438 = if (x433) {
+val x439 = if (x434) {
 null
 } else {
-val x340 = if (x329) {
+val x341 = if (x330) {
 null
 } else {
-val x328 = if (x323) {
+val x329 = if (x324) {
 null
 } else {
 val x9 = null.asInstanceOf[Char]
 val x10 = new OptionChar(x9,false)
-val x322 = if (x314) {
+val x323 = if (x315) {
 null
 } else {
-val x313 = if (x308) {
+val x314 = if (x309) {
 null
 } else {
-val x311 = new Tuple2CharString(x21,x307)
-x311
+val x312 = new Tuple2CharString(x21,x308)
+x312
 }
-val x318 = x313._1
-val x319 = x313._2
-val x320 = x318+x319
-x320
+val x319 = x314._1
+val x320 = x314._2
+val x321 = x319+x320
+x321
 }
-val x326 = new Tuple2OptionCharString(x10,x322)
-x326
+val x327 = new Tuple2OptionCharString(x10,x323)
+x327
 }
-val x333 = x328._1
-val x335 = x333.defined
-val x338 = if (x335) {
-val x334 = x328._2
-val x336 = x333.value
-val x337 = x336+x334
-x337
-} else {
-val x334 = x328._2
-x334
-}
+val x334 = x329._1
+val x336 = x334.defined
+val x339 = if (x336) {
+val x335 = x329._2
+val x337 = x334.value
+val x338 = x337+x335
 x338
+} else {
+val x335 = x329._2
+x335
 }
-val x432 = if (x424) {
+x339
+}
+val x433 = if (x425) {
 null
 } else {
-val x423 = if (x418) {
+val x424 = if (x419) {
 null
 } else {
-val x421 = new Tuple2CharString(x367,x417)
-x421
+val x422 = new Tuple2CharString(x368,x418)
+x422
 }
-val x428 = x423._1
-val x429 = x423._2
-val x430 = x428+x429
-x430
+val x429 = x424._1
+val x430 = x424._2
+val x431 = x429+x430
+x431
 }
-val x436 = new Tuple2StringString(x340,x432)
-x436
+val x437 = new Tuple2StringString(x341,x433)
+x437
 }
-val x443 = x438._1
-val x444 = x438._2
-val x445 = x443+x444
-val x446 = x445.toDouble
-x446
+val x445 = x439._2
+val x444 = x439._1
+val x446 = x444+"."
+val x447 = x446+x445
+val x448 = x447.toDouble
+x448
 }
-x2 = x448
-val x449 = if (x439) {
+x2 = x450
+val x451 = if (x440) {
 true
 } else {
 false
 }
-x3 = x449
-val x440 = if (x433) {
+x3 = x451
+val x441 = if (x434) {
 0
 } else {
-val x425 = if (x418) {
-x357
+val x426 = if (x419) {
+x358
 } else {
-x419
+x420
 }
-val x434 = if (x424) {
-x425
+val x435 = if (x425) {
+x426
 } else {
-x425
+x426
 }
-x434
+x435
 }
-val x450 = if (x439) {
-x440
+val x452 = if (x440) {
+x441
 } else {
-x440
+x441
 }
-x4 = x450
+x4 = x452
 ()
 } else {
 x2 = 0.0
 x3 = true
 x4 = 0
 ()
-}
-x460
 }
 x462
+}
+x464
 } else {
 x2 = 0.0
 x3 = true
 x4 = 0
 ()
-}
-x468
 }
 x470
 }
 x472
+}
+x474
 } else {
 x2 = 0.0
 x3 = true
 x4 = 0
 ()
 }
-x478
-}
 x480
 }
-val x483 = x2
-val x484 = x3
-val x485 = x4
-val x486 = new ParseResultDouble(x483,x484,x485)
-val x487 = println(x486)
-x487
+x482
+}
+val x485 = x2
+val x486 = x3
+val x487 = x4
+val x488 = new ParseResultDouble(x485,x486,x487)
+val x489 = println(x488)
+x489
 }
 }
 /*****************************************
   End of Generated Code                  
 *******************************************/
 compilation: ok
-ParseResultDouble(5.5932084E16,false,18)
-ParseResultDouble(-5.5932084E16,false,19)
+ParseResultDouble(55.932083999999996,false,18)
+ParseResultDouble(-55.932083999999996,false,19)
 /*****************************************
   Emitting Generated Code                  
 *******************************************/

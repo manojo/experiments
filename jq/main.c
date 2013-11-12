@@ -264,8 +264,8 @@ int main(int argc, char* argv[]) {
 // gcc *.c -O3 -o jq && ./jq . tweet1j tweet2j tweet3j tweet4j tweet6j
 // --------------------------------------------------------
 int i,j;
-#define N_LOOPS 1000
-#define N_SAMPLES 2
+#define N_LOOPS 100
+#define N_SAMPLES 5
 
 printf("Time: ");
 long sample[N_SAMPLES];

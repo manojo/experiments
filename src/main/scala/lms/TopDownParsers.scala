@@ -267,7 +267,7 @@ trait TokenParsers extends TopDownParsers with CharParsers with StringStructOps{
   def doubleLit(in:Rep[Input]) : Parser[Double] = (
     ((opt(chr(in,'-'))~numeric(in)) ^^ {x: Rep[(Option[Char], String)] => if(x._1.isDefined) x._1.get + x._2 else x._2})
     ~ (chr(in,'.')~> numeric(in))
-  ) ^^ {x => (x._1 + x._2).toDouble}
+  ) ^^ {x => (x._1+unit(".")+x._2).toDouble}
     // c==unit('e') || c==unit('E')) ^^ { _.toStr.toDouble }
 
 

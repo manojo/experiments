@@ -23,11 +23,29 @@ object TestJsonParse{
       line = file.readLine
     }
     out.toArray :: acc
-  }
+  }.map(_.toArray)
+
+  def time(ns:Long,n:Int=2) = { val ms=ns/1000000; ("%"+(if (n==0)"" else n)+"d.%03d").format(ms/1000,ms%1000) }
+  def ns[T](f:()=>T) = { val t0=System.nanoTime(); var r=f(); val t1=System.nanoTime(); (t1-t0,r) }
 
   def main(args:Array[String]){
-    println("Watchout!!")
-    jsonparser.apply(messages(0).toArray)
+    val N_LOOPS = 100
+    val N_SAMPLES = 5
+
+    (0 until N_SAMPLES).foreach { k =>
+      val n = ns{()=>
+        var i=0;
+        while(i<N_LOOPS) {
+          jsonparser.apply(messages(0))
+          jsonparser.apply(messages(1))
+          jsonparser.apply(messages(2))
+          jsonparser.apply(messages(3))
+          jsonparser.apply(messages(4))
+          i=i+1;
+        }
+      }._1
+      println("Time = "+time(n))
+    }
   }
 }
 
@@ -3653,8 +3671,9 @@ val x3259 = x3
 val x3260 = x4
 val x3261 = new ParseResultAnon6507737(x3258,x3259,x3260)
 if(print){
-val x3262 = println(x3261)
-x3262
+//val x3262 = println(x3261)
+//x3262
+()
 } else {()}
 }
 }
