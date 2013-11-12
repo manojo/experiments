@@ -49,9 +49,9 @@ trait JsonParser extends TokenParsers with RecParsers with StringStructOps with 
     else if (jv.kind==kTrue) unit("true")
     else if (jv.kind==kInt) unit("")+jv.data
     else if (jv.kind==kDouble) unit("")+jv.data
-    else if (jv.kind==kString) unit("\"")+jv.data+unit("\"")
+    else if (jv.kind==kString) unit("\"")+jv.data.AsInstanceOf[StringStruct].toStr+unit("\"")
     else if (jv.kind==kArray) unit("[")+jv.data.AsInstanceOf[List[JV]] /*.map(rec_mks)*/ .mkString(unit(","))+unit("]")
-    else if (jv.kind==kObject) unit("{")+jv.data.AsInstanceOf[List[(String,JV)]].map(x=>unit("\"")+x._1+unit("\":")+x._2).mkString(unit(","))+unit("}")
+    else if (jv.kind==kObject) unit("{")+jv.data.AsInstanceOf[List[(StringStruct,JV)]].map(x=>unit("\"")+x._1.toStr+unit("\":")+x._2).mkString(unit(","))+unit("}")
     else unit("<bad kind: ")+jv.kind+unit(">")
   }
 
@@ -60,10 +60,10 @@ trait JsonParser extends TokenParsers with RecParsers with StringStructOps with 
   def jNull = JV(kNull,unit(ZeroVal[Any]))
   def jInt(n:Rep[Int]) = JV(kInt,n)
   def jDouble(n:Rep[Double]) = JV(kDouble,n)
-  def jString(s:Rep[String]) = JV(kString,s)
+  def jString(s:Rep[StringStruct]) = JV(kString,s)
   def jArray(a:Rep[List[JV]]) = JV(kArray,a)
   //FIXME: creating a struct for this is necessary for good code gen
-  def jMember(a:Rep[(String,JV)]) = JV(kMember, a)
+  def jMember(a:Rep[(StringStruct,JV)]) = JV(kMember, a)
   //FIXME: absolutely not the right way to do this
   def jObject(a:Rep[List[JV]]) = JV(kObject,a)
 
@@ -78,7 +78,7 @@ trait JsonParser extends TokenParsers with RecParsers with StringStructOps with 
     | acceptB(in,"null") ^^^ jNull
     | doubleLit(in) ^^ { s => jDouble(s)}
     | intLit(in) ^^ { s => jInt(s) }
-    | stringLit(in) ^^ { s => jString(s) }
+    | stringStructLit(in) ^^ { s => jString(s) }
   )
 
 
@@ -103,7 +103,7 @@ trait JsonParser extends TokenParsers with RecParsers with StringStructOps with 
     ) ^^ {x =>jArray(x.AsInstanceOf[List[JV]])}
 
     def member: Parser[JV] = (
-      (stringLit(in)
+      (stringStructLit(in)
       <~ (whitespaces(in) <~ accept(in, unit(':')) ~ whitespaces(in)))
       ~ value
     ) ^^ {x => jMember(x)}
@@ -136,8 +136,13 @@ trait JsonParser extends TokenParsers with RecParsers with StringStructOps with 
     )) ~ pos(in)) ^^ { x => String(in,x._1,x._2-x._1).toStr } ) <~ chr(in,'\"')
   */
 
+  def stringStructLit(in:Rep[Input]): Parser[StringStruct] =
+    chr(in,'\"') ~> (((pos(in) <~
+      repFold( (chr(in,'\\')~>acceptIf(in,x=>unit(true))) | acceptIf(in, x => x!=unit('\"'))
+      )(unit(""), (acc: Rep[String], x: Rep[Char]) => acc
+    )) ~ pos(in)) ^^ { x => String(in,x._1,x._2-x._1) } ) <~ chr(in,'\"')
 
-
+  // -------------------
   override def stringLit(in:Rep[Input]): Parser[String] =
     chr(in,'\"') ~>
     repFold( escQuotes(in) ^^ { x=> unit("")+x } | uChars(in) ^^ { x=>unit("")+x } |
@@ -160,6 +165,7 @@ trait JsonParser extends TokenParsers with RecParsers with StringStructOps with 
     chr(in,'\\') ~> chr(in,'u') ~>
     repNFold(hex(in), unit(4))(unit('\0'), (acc: Rep[Char],x:Rep[Char]) => (acc*unit('\u000A') + x).toInt.toChar)
   }
+  // -------------------
 
   def hex(in:Rep[Input]) = acceptIf(in,
     c => isDigit(c) ||  (c >= unit('A') && c <= unit('F'))

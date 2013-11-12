@@ -6,10 +6,14 @@ import scala.collection.mutable.ArrayBuffer
 // To rebuild from sources, use:
 // sbt ';test:run-main lms.parsing.TestJson;run-main lms.parsing.TestJsonParse'
 
+
+// JQ 100 loops: 1.531 sec
+//
 // rep-> list.reverse : 6.5 -> 5.5
 // unicode -> char    : 5.5 -> 5.2
 // no string-dequote  : 3.6
 // no string-content  : 0.9
+// no dequote-StringStruct : 0.95
 
 object TestJsonParse{
   val jsonparser = new JsonParse(
@@ -38,7 +42,7 @@ object TestJsonParse{
 
   def main(args:Array[String]){
     val N_LOOPS = 100 // 100
-    val N_SAMPLES = 5 // 5
+    val N_SAMPLES = 20 // 5
 
     (0 until N_SAMPLES).foreach { k =>
       val n = ns{()=>
