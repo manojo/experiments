@@ -71,7 +71,7 @@ object TestJson {
 
       // Re-hack the generated file
       val txt = scala.io.Source.fromFile(file).mkString
-                 .replaceAll("case class (Tuple2StringString|Tuple2CharString|ParseResultString).*\n","")
+                 .replaceAll("case class (Tuple2StringString|Tuple2CharString|ParseResultString|ParseResultChar).*\n","")
                  .replaceAll("println\\(.*\\)","()")
       val o2 = new FileOutputStream(file);
       o2.write(txt.getBytes)

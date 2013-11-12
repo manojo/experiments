@@ -117,27 +117,48 @@ trait JsonParser extends TokenParsers with RecParsers with StringStructOps with 
     value
   }
 
+
+  /*
+  // Ignore string content (skip)
   override def stringLit(in:Rep[Input]): Parser[String] =
-    accept(in, unit('\"')) ~>
-    repFold( escQuotes(in) ^^ { x=> unit("")+x } | uChars(in) |
+    chr(in,'\"') ~>
+      repFold( (chr(in,'\\')~>acceptIf(in,x=>unit(true))) | acceptIf(in, x => x!=unit('\"'))
+      )(unit(""), (acc: Rep[String], x: Rep[Char]) => acc
+    ) <~ chr(in,'\"')
+  */
+
+  /*
+  // Copy _NON-DEQUOTED_ content
+  override def stringLit(in:Rep[Input]): Parser[String] =
+    chr(in,'\"') ~> (((pos(in) <~
+      repFold( (chr(in,'\\')~>acceptIf(in,x=>unit(true))) | acceptIf(in, x => x!=unit('\"'))
+      )(unit(""), (acc: Rep[String], x: Rep[Char]) => acc
+    )) ~ pos(in)) ^^ { x => String(in,x._1,x._2-x._1).toStr } ) <~ chr(in,'\"')
+  */
+
+
+
+  override def stringLit(in:Rep[Input]): Parser[String] =
+    chr(in,'\"') ~>
+    repFold( escQuotes(in) ^^ { x=> unit("")+x } | uChars(in) ^^ { x=>unit("")+x } |
       acceptIf(in, x => x != unit('\"') && x != unit('\\'))^^{ x=> unit("")+x}
     )(unit(""), (acc: Rep[String], x: Rep[String]) => acc + x
-    ) <~ accept(in, unit('\"'))
+    ) <~ chr(in,'\"')
 
     //  repToS(acceptIf(in, (x:Rep[Char]) => x != unit('\"'))) <~
     //accept(in, unit('\"'))
 
   def escQuotes(in: Rep[Input]): Parser[Char] = {
-    accept(in, unit('\\')) ~> acceptIf(in, c =>
+    chr(in,'\\') ~> acceptIf(in, c =>
       c == '\\' || c == '\'' || c == '\"' || c =='b'
     ||c == 'f' || c == 'n' || c == 'r' || c =='t'
     ||c == '/'
     )
   }
 
-  def uChars(in: Rep[Input]): Parser[String] = {
-    accept(in, unit('\\')) ~> accept(in, unit('u')) ~>
-    repNFold(hex(in), unit(4))(unit(""), (acc: Rep[String],x:Rep[Char]) => acc + x)
+  def uChars(in: Rep[Input]): Parser[Char] = {
+    chr(in,'\\') ~> chr(in,'u') ~>
+    repNFold(hex(in), unit(4))(unit('\0'), (acc: Rep[Char],x:Rep[Char]) => (acc*unit('\u000A') + x).toInt.toChar)
   }
 
   def hex(in:Rep[Input]) = acceptIf(in,

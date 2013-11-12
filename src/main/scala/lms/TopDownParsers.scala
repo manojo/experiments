@@ -172,6 +172,9 @@ trait TopDownParsers extends MyScalaOpsPkg with GeneratorOps with LiftVariables
    * a Success combinator
    */
   def success[T:Manifest](v:Rep[T]) = Parser[T]{i => elGen(Success(v, i))}
+
+  // A terminal that return the current reading position
+  def pos(in: Rep[Input]) = Parser[Int]{i => elGen(Success[Int](i, i)) }
 }
 
 trait CharParsers extends TopDownParsers with CharOps with StringStructOps {
