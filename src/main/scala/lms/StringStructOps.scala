@@ -55,6 +55,7 @@ with LiftVariables{
     l == staticData(r.toArray)
   }
 
+  /*
   def infix_mkString(st: Rep[StringStruct])(implicit pos: SourceContext): Rep[String] = {
     var s = unit(""); var i = unit(0)
     while(i < st.length){
@@ -63,8 +64,9 @@ with LiftVariables{
     }
     s
   }
+  */
 
-  def infix_toStr(st: Rep[StringStruct])(implicit pos: SourceContext) : Rep[String]
+  def infix_mkString(st: Rep[StringStruct])(implicit pos: SourceContext) : Rep[String]
 
 }
 
@@ -72,7 +74,7 @@ trait StringStructOpsExp extends StringStructOps with StructOpsExpOptCommon with
 with BooleanOpsExp with NumericOpsExp with ArrayOpsExp with EqualExpOpt with StringOpsExp with OrderingOpsExp
 with CharOpsExp with PrimitiveOpsExp with MiscOpsExp with VariablesExp with StaticDataExp {
   case class StringStructToString(s:Rep[StringStruct]) extends Def[String]
-  def infix_toStr(s: Rep[StringStruct])(implicit pos: SourceContext) = StringStructToString(s)
+  def infix_mkString(s: Rep[StringStruct])(implicit pos: SourceContext) = StringStructToString(s)
 }
 
 trait ScalaGenStringStructOps extends ScalaGenBase with ScalaGenStructOps with ScalaGenWhile with ScalaGenIfThenElse
@@ -82,7 +84,7 @@ with ScalaGenBooleanOps with ScalaGenCharOps with ScalaGenPrimitiveOps with Scal
   import IR._
 
   override def emitNode(sym: Sym[Any], rhs: Def[Any]) = rhs match {
-    case StringStructToString(s) => emitValDef(sym,src"$s.input.slice($s.start,$s.start+$s.length).mkString")
+    case StringStructToString(s) => emitValDef(sym,src"new String($s.input,$s.start,$s.length)")
     case _ => super.emitNode(sym, rhs)
   }
 }

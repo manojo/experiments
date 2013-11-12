@@ -189,7 +189,7 @@ trait HttpParser extends TokenParsers with HttpComponents with StringStructOps{
   //def body(in:Rep[Input], n:Rep[Int]) =
   //  repNFold(acceptAll(in), n)(unit(""), (res: Rep[String], c: Rep[Char]) => res + c)
   def body(in:Rep[Input], n:Rep[Int]) = Parser[String] { i =>
-    if (i+n<in.length) elGen(Success[String](String(in,i,n).toStr,i+n))
+    if (i+n<in.length) elGen(Success[String](String(in,i,n).mkString,i+n))
     else elGen(Failure[String](i))
   }
 

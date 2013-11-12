@@ -274,7 +274,7 @@ trait TokenParsers extends TopDownParsers with CharParsers with StringStructOps{
     // c==unit('e') || c==unit('E')) ^^ { _.toStr.toDouble }
 
 
-  def stringLit(in:Rep[Input]) : Parser[String] = chr(in,'"') ~> str(in,_ != unit('"') ,true) <~ chr(in,'"') ^^ { _.toStr }
+  def stringLit(in:Rep[Input]) : Parser[String] = chr(in,'"') ~> str(in,_ != unit('"') ,true) <~ chr(in,'"') ^^ { _.mkString }
     /*
     accept(in, unit('\"')) ~> repToS( acceptIf(in, (x:Rep[Char]) => x != unit('\"'))) <~ accept(in, unit('\"')) ^^ {
       xs: Rep[String] => unit("StringLit(") + xs + unit(")")

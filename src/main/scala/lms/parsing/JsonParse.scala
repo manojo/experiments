@@ -42,7 +42,7 @@ object TestJsonParse{
 
   def main(args:Array[String]){
     val N_LOOPS = 100 // 100
-    val N_SAMPLES = 20 // 5
+    val N_SAMPLES = 5 // 5
 
     (0 until N_SAMPLES).foreach { k =>
       val n = ns{()=>
