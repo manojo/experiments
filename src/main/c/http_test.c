@@ -71,6 +71,7 @@ int main(int argc, char **argv){
   http_parser* my_parser = malloc(sizeof (http_parser));
   http_parser_init(my_parser, HTTP_RESPONSE);
   //1,10,100,1000,10000
+for (int k=0;k<25;++k) {
   for(int iter = 1; iter < 100000; iter*=10){
     struct timeval start, stop;
 
@@ -84,9 +85,9 @@ int main(int argc, char **argv){
       }
     }
     gettimeofday(&stop, NULL);
-    printf("Parameters(size -> %d): %u microsec\n", iter, stop.tv_usec - start.tv_usec);
+    printf("Parameters(size -> %d): %u microsec\n", iter, (stop.tv_sec - start.tv_sec)*1000000UL + stop.tv_usec - start.tv_usec);
   }
-
+}
   for(int i = 0; i < 5; i++){
     free(data[i]);
   }

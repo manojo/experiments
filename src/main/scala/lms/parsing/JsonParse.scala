@@ -6,7 +6,6 @@ import scala.collection.mutable.ArrayBuffer
 // To rebuild from sources, use:
 // sbt ';test:run-main lms.parsing.TestJson;run-main lms.parsing.TestJsonParse'
 
-
 // JQ 100 loops: 1.531 sec
 //
 // rep-> list.reverse : 6.5 -> 5.5
@@ -19,8 +18,7 @@ object TestJsonParse{
   val jsonparser = new JsonParse(
     "false".length,"false".toArray,
     "true".length,"true".toArray,
-    "null".toArray //,
-    //print = true
+    "null".toArray
   )
 
   val fileNames = List(1,2,3,4,6).map{x=> "just_tweet"+x}

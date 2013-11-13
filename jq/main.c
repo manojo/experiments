@@ -264,10 +264,10 @@ int main(int argc, char* argv[]) {
 // gcc *.c -O3 -o jq && ./jq . tweet1j tweet2j tweet3j tweet4j tweet6j
 // --------------------------------------------------------
 int i,j;
-#define N_LOOPS 100
-#define N_SAMPLES 5
+#define N_LOOPS 1
+#define N_SAMPLES 25
 
-printf("Time: ");
+printf("Time (%d loops):\n",N_LOOPS);
 long sample[N_SAMPLES];
 for (i=0;i<N_SAMPLES;++i) {
   struct timeval t0,t1;
@@ -297,11 +297,11 @@ for (i=0;i<N_SAMPLES;++i) {
   long us=((t1.tv_sec - t0.tv_sec)*1000000L+t1.tv_usec) - t0.tv_usec;
   long ms=us/1000;
   sample[i]=ms;
-  printf("%ld.%03ld, ",ms/1000,ms%1000);
+  printf("%ld.%03ld\n",us/1000,us%1000);
 }
 if (N_SAMPLES>2) qsort(sample,N_SAMPLES,sizeof(long),cmp);
 long med = N_SAMPLES%2 ? sample[N_SAMPLES/2] : (sample[N_SAMPLES/2]+sample[N_SAMPLES/2-1])/2;
-printf("seconds [%d loops], median = %ld ms\n",N_LOOPS,med);
+//printf("seconds [%d loops], median = %ld ms\n",N_LOOPS,med);
 // --------------------------------------------------------
     jv_parser_free(&parser);
     if (ret != 0) goto out;

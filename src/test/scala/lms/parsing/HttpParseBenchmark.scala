@@ -8,7 +8,7 @@ import done._
 
 //class HttpParseBenchmark extends PerformanceTest.Regression
 class HttpParseBenchmark extends PerformanceTest
-  with HTTP with Serializable{
+  with HTTP with Serializable {
 
   /* configuration */
   def executor = SeparateJvmsExecutor(
@@ -43,11 +43,57 @@ class HttpParseBenchmark extends PerformanceTest
     out.toArray :: acc
   }
 
+  def bench(obj:String,meth:String,f:Array[Char]=>_) {
+    val range = Gen.exponential("size")(1, 1000, 10)
+    val ms = messages.toArray
+    val mn = messages.length
+    performance of obj in {
+      measure method meth config(
+        exec.minWarmupRuns -> 5,
+        exec.maxWarmupRuns -> 10,
+        exec.benchRuns -> 25,
+        exec.independentSamples -> 4
+      ) in {
+        using(range) /*.config(exec.jvmflags -> "-Xmx12G -Xms12G -Xss64m")*/ in { n=>
+          // we use while to remove overhead of for ... yield
+          var i=0; while (i<n) { var m=0; while (m<mn) { f(ms(m)); m+=1 }; i+=1 }
+        }
+      }
+    }
+  }
+
+  // Scala combinators, very slow
+  //bench("HTTPParserCombinator","parse",(m:Array[Char])=>parseAll(response,m))
+
+  // staged parser
+  //val stagedParser = new ResponseParse
+  //bench("RespAndMessageParser","parse",stagedParser.apply _)
+
+  //staged parser static
+  val stagedParserStatic = new ResponseParseStatic(
+    "connection".toArray,
+    "proxy-connection".toArray,
+    "keep-alive".toArray,
+    "close".toArray,
+    "content-length".toArray,
+    "transfer-encoding".toArray,
+    "chunked".toArray,
+    "upgrade".toArray
+  )
+  bench("RespAndMessageParserStatic","parse",stagedParserStatic.apply _)
+
+  // hand written, folding
+  val handWrittenParser = HandWrittenParserWrapper.getParser
+  //bench("HTTPParserLL","parseFoldString",(m:Array[Char])=>HandWrittenParserWrapper.execute(handWrittenParser, new StringFoldingSettings, m, 0, m.length))
+
+  // NGINX Java port
+  bench("HTTPParserLL","parse",(m:Array[Char])=>HandWrittenParserWrapper.execute(handWrittenParser, new DefaultHttpSettings, m, 0, m.length))
+
+/*
   //val range = Gen.enumeration("size")(100)
   val range = Gen.exponential("size")(1, 10000, 10)
   //val messagesAndRanges = messages.cached
   //val messagesAndRanges: Gen[(List[Array[Char]], Int)] = messages.cached.flatMap{m => Gen.enumeration("size")((m,1),(m,10),(m,100),(m,1000), (m,10000))}
-
 
   //performance of "HTTPParserCombinator" in {
   //  measure method "parse" config(
@@ -62,7 +108,6 @@ class HttpParseBenchmark extends PerformanceTest
   //    }
   //  }
   //}
-
 
   val stagedParser = new ResponseParse
 
@@ -99,7 +144,7 @@ class HttpParseBenchmark extends PerformanceTest
       //exec.benchRuns -> 15
       //exec.independentSamples -> 1
     ) in {
-      using(range)/*.config(exec.jvmflags -> "-XX:+PrintCompilation").*/ in {j =>
+      using(range)/ *.config(exec.jvmflags -> "-XX:+PrintCompilation").* / in {j =>
         for(i <- 1 to j; m <- messages)
           stagedParserStatic.apply(m)
       }
@@ -137,4 +182,5 @@ class HttpParseBenchmark extends PerformanceTest
       }
     }
   }
+*/
 }

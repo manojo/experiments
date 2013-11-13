@@ -1,0 +1,65 @@
+Data (total)
+HTTP data    : 694550
+Payload/JSON : 691431
+
+cores: 8
+hostname: tckbook.lan
+jvm-name: Java HotSpot(TM) 64-Bit Server VM
+jvm-vendor: Oracle Corporation
+jvm-version: 24.45-b08
+jvm-options: java -server -verbose:gc -Xmx12G -Xms12G -Xss64m
+os-arch: x86_64
+os-name: Mac OS X
+Target: x86_64-apple-darwin13.0.0
+gcc version 4.8.2 (GCC) 
+
+[Scala combinators]
+Parameters(size -> 1): 209.363
+Parameters(size -> 10): 2096.272
+Parameters(size -> 100): 21003.999
+
+[Staged Scala]
+Parameters(size -> 1): 0.017
+Parameters(size -> 10): 0.169
+Parameters(size -> 100): 1.683
+Parameters(size -> 1000): 16.12
+
+[NGINX Java port]
+Parameters(size -> 1): 0.029
+Parameters(size -> 10): 0.294
+Parameters(size -> 100): 2.926
+Parameters(size -> 1000): 27.813
+
+[NGINX Native C]
+Parameters(size -> 1): 0.013
+Parameters(size -> 10): 0.135
+Parameters(size -> 100): 1.304
+Parameters(size -> 1000): 12.895
+
+[Staged C]
+Parameters(size -> 1): 0.078
+Parameters(size -> 10): 0.732
+Parameters(size -> 100): 6.923
+Parameters(size -> 1000): 69.874
+Parameters(size -> 10000): 689.571
+
+---------------------------------------------
+
+[Scala combinators]
+
+XXX: missing
+
+[Spray/parboiled]
+Parameters(size -> 1): 123.87
+Parameters(size -> 10): 1235.014
+Parameters(size -> 100): 12338.153
+
+[Staged]
+Parameters(size -> 1): 12.059
+Parameters(size -> 10): 121.779
+Parameters(size -> 100): 1223.986
+
+[JQ]
+Time (1 loops): 14.634
+Time (10 loops): 146.165
+Time (100 loops): 1457.606

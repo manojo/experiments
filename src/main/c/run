@@ -3,7 +3,7 @@ cd `dirname $0`
 
 if [ -x /usr/local/gcc/bin/gcc ]; then GCC=/usr/local/gcc/bin/gcc; else GCC=gcc; fi
 
-${GCC} gen.c -o gen && ./gen
+${GCC} -O3 gen.c -o gen && ./gen
 
 # -Wall
 

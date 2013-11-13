@@ -8,10 +8,10 @@ import java.io.PrintWriter
 import java.io.StringWriter
 import java.io.FileOutputStream
 
-
-// Dumped from FunctionsRecursiveExp in lms/src/common/Functions.scala
+// -------- Copied from FunctionsRecursiveExp in lms/src/common/Functions.scala
 import scala.reflect.SourceContext
-trait FunRec2 extends FunctionsExp with scala.virtualization.lms.util.ClosureCompare {
+import scala.virtualization.lms.util.ClosureCompare
+trait FunctionsRecursiveExp2 extends FunctionsExp with ClosureCompare {
   var funTable2: List[(Sym[_], Any)] = List()
   def doLambda2[A:Manifest,B:Manifest](f: Exp[A] => Exp[B])(implicit pos: SourceContext): Exp[A => B] = {
     val can = canonicalize(f)
@@ -26,9 +26,10 @@ trait FunRec2 extends FunctionsExp with scala.virtualization.lms.util.ClosureCom
     }
   }
 }
+// --------
 
 trait JsonParser extends TokenParsers with RecParsers with StringStructOps with CastingOps
- with CharOps/*with FunctionsRecursiveExp*/ with FunRec2 {
+ with CharOps with FunctionsRecursiveExp2 {
   final val kNull = unit(0)
   final val kFalse = unit(1)
   final val kTrue = unit(2)
@@ -45,7 +46,6 @@ trait JsonParser extends TokenParsers with RecParsers with StringStructOps with 
     val data = d // pointer | long | double, maps alternate key/value
   }
 
-  // Desired function
   def infix_mkString(jv: Rep[JV]) = jStr(jv)
   def jStr:Rep[JV=>String] = doLambda2{ (jv: Rep[JV]) =>
     if (jv.kind==kNull) unit("null")
@@ -58,21 +58,6 @@ trait JsonParser extends TokenParsers with RecParsers with StringStructOps with 
     else if (jv.kind==kObject) unit("{")+jv.data.AsInstanceOf[List[JV]].map{y=> val x=y.data.AsInstanceOf[(String,JV)]; unit("\"")+x._1+unit("\":")+jStr(x._2)}.mkString(unit(","))+unit("}")
     else unit("<bad kind: ")+jv.kind+unit(">")
   }
-
- /*
-  //def rec_mks:Rep[JV=>String] = doLambda((jv: Rep[JV]) =>infix_mkString(jv))
-  def infix_mkString(jv: Rep[JV]) : Rep[String] = {
-    if (jv.kind==kNull) unit("null")
-    else if (jv.kind==kFalse) unit("false")
-    else if (jv.kind==kTrue) unit("true")
-    else if (jv.kind==kInt) unit("")+jv.data
-    else if (jv.kind==kDouble) unit("")+jv.data
-    else if (jv.kind==kString) unit("\"")+jv.data+unit("\"")
-    else if (jv.kind==kArray) unit("[")+jv.data.AsInstanceOf[List[JV]] / *.map(rec_mks)* / .mkString(unit(","))+unit("]")
-    else if (jv.kind==kObject) unit("{")+jv.data.AsInstanceOf[List[(String,JV)]].map(x=>unit("\"")+x._1+unit("\":")+x._2).mkString(unit(","))+unit("}")
-    else unit("<bad kind: ")+jv.kind+unit(">")
-  }
-  */
 
   def jFalse = JV(kFalse,unit(ZeroVal[Any]))
   def jTrue = JV(kTrue,unit(ZeroVal[Any]))

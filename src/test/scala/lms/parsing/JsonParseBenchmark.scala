@@ -43,6 +43,40 @@ class JsonParseBenchmark extends PerformanceTest
     out.toArray :: acc
   }
 
+  def bench(obj:String,meth:String,f:Array[Char]=>_) {
+    val range = Gen.exponential("size")(1, 100 /*1000*/, 10)
+    val ms = messages.toArray
+    val mn = messages.length
+    performance of obj in {
+      measure method meth config(
+        exec.minWarmupRuns -> 5,
+        exec.maxWarmupRuns -> 10,
+        exec.benchRuns -> 25,
+        exec.independentSamples -> 4
+      ) in {
+        using(range).config(exec.jvmflags -> "-Xmx12G -Xms12G -Xss64m") in { n=>
+          // we use while to remove overhead of for ... yield
+          var i=0; while (i<n) { var m=0; while (m<mn) { f(ms(m)); m+=1 }; i+=1 }
+        }
+      }
+    }
+  }
+
+  // staged
+  val stagedJsonParser = new JsonParse(
+    "false".length,"false".toArray,
+    "true".length,"true".toArray,
+    "null".toArray
+  )
+  bench("StagedJsonParser","parse",stagedJsonParser.apply _)
+
+  // spray json
+  bench("SprayJsonParser","parse",spray.json.JsonParser.apply _)
+
+  // scala parser combinators
+  // bench("ScalaJsonParser","parse",...)
+
+/*
   //val range = Gen.enumeration("size")(1)
   //val range = Gen.exponential("size")(1, 10000, 10)
   val range = Gen.exponential("size")(1, 100, 10)
@@ -50,8 +84,7 @@ class JsonParseBenchmark extends PerformanceTest
   val stagedJsonParser = new JsonParse(
     "false".length,"false".toArray,
     "true".length,"true".toArray,
-    "null".toArray //,
-    //print = false
+    "null".toArray
   )
 
   performance of "StagedJsonParser" in {
@@ -99,4 +132,5 @@ class JsonParseBenchmark extends PerformanceTest
 //      }
 //    }
 //  }
+*/
 }
