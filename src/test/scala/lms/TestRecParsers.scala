@@ -58,12 +58,14 @@ class TestRecParsers extends FileDiffSuite {
       new RecParsersProg with RecParsersExp with MyScalaOpsPkgExp
       with CharOpsExp with MyIfThenElseExpOpt with StructOpsFatExpOptCommon
       with ParseResultOpsExp with FunctionsExp with OptionOpsExp
-      with StringStructOpsExp with MyScalaCompile{self =>
+      with StringStructOpsExp with BarrierOpsExp
+      with MyScalaCompile { self =>
 
         val codegen = new MyScalaCodeGenPkg with ScalaGenCharOps
         with ScalaGenParseResultOps with ScalaGenFatStructOps
         with ScalaGenFunctions with ScalaGenOptionOps
-        with ScalaGenStringStructOps with ScalaGenIfThenElseFat{
+        with ScalaGenStringStructOps with ScalaGenBarrierOps
+        with ScalaGenIfThenElseFat {
           val IR: self.type = self
         }
 

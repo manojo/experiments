@@ -229,12 +229,13 @@ class TestHttpParser extends FileDiffSuite {
       new HttpParserProg with MyScalaOpsPkgExp with CharOpsExp
       with MyIfThenElseExpOpt with StructOpsFatExpOptCommon
       with ParseResultOpsExp with OptionOpsExp
-      with StringStructOpsExp with MyScalaCompile { self =>
+      with StringStructOpsExp with BarrierOpsExp
+      with MyScalaCompile { self =>
 
         val codegen = new MyScalaCodeGenPkg with ScalaGenCharOps
         with ScalaGenParseResultOps with ScalaGenFatStructOps
         with ScalaGenOptionOps with ScalaGenStringStructOps
-        with ScalaGenIfThenElseFat {
+        with ScalaGenBarrierOps with ScalaGenIfThenElseFat {
           val IR: self.type = self
         }
 
@@ -305,12 +306,13 @@ class TestHttpParser extends FileDiffSuite {
       new HttpParserProg with MyScalaOpsPkgExp with CharOpsExp
       with MyIfThenElseExpOpt with StructOpsFatExpOptCommon
       with ParseResultOpsExp with OptionOpsExp
-      with StringStructOpsExp with MyScalaCompile{self =>
+      with StringStructOpsExp with BarrierOpsExp
+      with MyScalaCompile { self =>
 
         val codegen = new MyScalaCodeGenPkg with ScalaGenCharOps
         with ScalaGenParseResultOps with ScalaGenFatStructOps
         with ScalaGenOptionOps with ScalaGenStringStructOps
-        with ScalaGenIfThenElseFat {
+        with ScalaGenBarrierOps with ScalaGenIfThenElseFat {
           val IR: self.type = self
         }
 

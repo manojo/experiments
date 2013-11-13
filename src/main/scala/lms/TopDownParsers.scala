@@ -10,7 +10,8 @@ import scala.virtualization.lms.internal.Effects
 
 
 trait TopDownParsers extends MyScalaOpsPkg with LiftVariables
-  with StructOps with ParseResultOps with OptionOps with Functions {
+  with StructOps with ParseResultOps with OptionOps with Functions
+  with BarrierOps {
   type Input = Array[Char]
   type Pos = Int
 
@@ -319,7 +320,8 @@ trait TokenParsers extends TopDownParsers with CharParsers with StringStructOps{
    * does not have any notion of the start position
    */
   def stringStruct(in: Rep[Input], p : Parser[Int]) = Parser[StringStruct]{ pos =>
-    println(unit("enter stringStruct {"))
+    //println(unit("enter stringStruct {"))
+    barrierSync("TODO: Hack!")
     var old = unit(-1)
     var continue = unit(true)
     var cur = pos

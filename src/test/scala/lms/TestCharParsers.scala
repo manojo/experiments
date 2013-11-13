@@ -144,15 +144,17 @@ class TestCharParsers extends FileDiffSuite {
 
   def testSimpleParsers = {
     withOutFile(prefix+"char-parser"){
-       new CharParsersProg with MyScalaOpsPkgExp with CharOpsExp
+      new CharParsersProg with MyScalaOpsPkgExp with CharOpsExp
         with MyIfThenElseExpOpt with StructOpsFatExpOptCommon
         with ParseResultOpsExp with FunctionsExp with OptionOpsExp
-        with StringStructOpsExp with MyScalaCompile { self =>
+        with StringStructOpsExp with BarrierOpsExp
+        with MyScalaCompile { self =>
 
         val codegen = new MyScalaCodeGenPkg with ScalaGenCharOps
           with ScalaGenParseResultOps with ScalaGenFatStructOps
           with ScalaGenFunctions with ScalaGenOptionOps
-          with ScalaGenStringStructOps with ScalaGenIfThenElseFat{
+          with ScalaGenStringStructOps with ScalaGenBarrierOps
+          with ScalaGenIfThenElseFat {
             val IR: self.type = self
         }
 
@@ -295,12 +297,14 @@ class TestCharParsers extends FileDiffSuite {
       new CharParsersProg with MyScalaOpsPkgExp with CharOpsExp
       with MyIfThenElseExpOpt with StructOpsFatExpOptCommon
       with ParseResultOpsExp with FunctionsExp with OptionOpsExp
-      with StringStructOpsExp with MyScalaCompile { self =>
+      with StringStructOpsExp with BarrierOpsExp
+      with MyScalaCompile { self =>
 
         val codegen = new MyScalaCodeGenPkg with ScalaGenCharOps
         with ScalaGenParseResultOps with ScalaGenFatStructOps
         with ScalaGenFunctions with ScalaGenStringStructOps
-        with ScalaGenOptionOps with ScalaGenIfThenElseFat{
+        with ScalaGenOptionOps with ScalaGenBarrierOps
+        with ScalaGenIfThenElseFat {
             val IR: self.type = self
         }
 
