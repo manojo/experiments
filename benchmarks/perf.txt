@@ -37,11 +37,12 @@ Parameters(size -> 100): 1.304
 Parameters(size -> 1000): 12.895
 
 [Staged C]
-Parameters(size -> 1): 0.078
-Parameters(size -> 10): 0.732
-Parameters(size -> 100): 6.923
-Parameters(size -> 1000): 69.874
-Parameters(size -> 10000): 689.571
+Parameters(size -> 1): 0.046
+Parameters(size -> 10): 0.397
+Parameters(size -> 100): 3.776
+Parameters(size -> 1000): 38.246
+Parameters(size -> 10000): 380.064
+
 
 ---------------------------------------------
 

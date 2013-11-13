@@ -136,7 +136,7 @@ trait HttpParserProg extends HttpParser{
 
   //response
   def respAndMessageParse(in: Rep[Array[Char]]): Rep[Unit] = {
-    var s = Failure[(Response,String)](unit(-1))
+    var s = Failure[(Response,StringStruct)](unit(-1))
     val parser = respAndMessage(in).apply(unit(0))
     parser{x => s = x}
     println(s)

@@ -19,7 +19,7 @@ TODO:
 - Treat constant strings as strings (and not arrays)
 */
 
-// /usr/local/gcc/bin/gcc -O3 gen.c -o gen && ./gen
+// /usr/local/gcc/bin/gcc -O3 -std=c99 gen.c -o gen && ./gen
 
 #define pHead(H) printf("Status=%d, contentLength=%d, connection=%s, chunked=%d, upgrade=%d\n",(H).status,(H).contentLength,(H).connection,(H).chunked,(H).upgrade)
 #define pRes(RES) printf("Empty=%d, next=%d\n",(RES).empty,(RES).next)
@@ -63,7 +63,7 @@ int main() {
       gettimeofday(&start, NULL);
       for(int i = 0; i<5; i++){
         for(int j = 0; j < iter; j++){
-          ParseResultTuple2Anon1323431030String r = respAndMessageParse(buf[i]);
+          ParseResultTuple2Anon1323431030Anon1680061013 r = respAndMessageParse(buf[i]);
           free2
         }
       }

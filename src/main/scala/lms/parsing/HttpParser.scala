@@ -188,9 +188,9 @@ trait HttpParser extends TokenParsers with HttpComponents with StringStructOps{
   //def body(i:Int) : Parser[String] = ("(?s:.{"+i+"})").r <~ crlf
   //def body(in:Rep[Input], n:Rep[Int]) =
   //  repNFold(acceptAll(in), n)(unit(""), (res: Rep[String], c: Rep[Char]) => res + c)
-  def body(in:Rep[Input], n:Rep[Int]) = Parser[String] { i =>
-    if (i+n<in.length) elGen(Success[String](String(in,i,n).mkString,i+n))
-    else elGen(Failure[String](i))
+  def body(in:Rep[Input], n:Rep[Int]) = Parser[StringStruct] { i =>
+    if (i+n<in.length) elGen(Success[StringStruct](String(in,i,n),i+n))
+    else elGen(Failure[StringStruct](i))
   }
 
   def collect(res: Rep[Response], hName: Rep[StringStruct], prop: Rep[StringStruct]) : Rep[Response] =
@@ -212,8 +212,8 @@ trait HttpParser extends TokenParsers with HttpComponents with StringStructOps{
       res
     }
 
-  def respAndMessage(in: Rep[Input]): Parser[(Response,String)] = response(in) >> { rsp =>
-    body(in, rsp.contentLength) ^^ {txt: Rep[String] => make_tuple2(rsp, txt)}
+  def respAndMessage(in: Rep[Input]): Parser[(Response,StringStruct)] = response(in) >> { rsp =>
+    body(in, rsp.contentLength) ^^ {txt: Rep[StringStruct] => make_tuple2(rsp, txt)}
   }
 
   //TODO: chunked parser

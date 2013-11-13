@@ -4,24 +4,20 @@
 #include <stdbool.h>
 
 
+
 typedef struct{
 int status;
 int contentLength;
-const char* connection;
+char* connection;
 bool chunked;
 bool upgrade;
 } Anon1323431030;
 
 typedef struct{
-const char* input;
+char* input;
 int start;
 int length;
 } Anon1680061013;
-
-typedef struct{
-Anon1323431030 _1;
-const char* _2;
-} Tuple2Anon1323431030String;
 
 typedef struct{
 int res;
@@ -30,1368 +26,1798 @@ int next;
 } ParseResultInt;
 
 typedef struct{
-Tuple2Anon1323431030String res;
+Anon1323431030 _1;
+Anon1680061013 _2;
+} Tuple2Anon1323431030Anon1680061013;
+
+typedef struct{
+Tuple2Anon1323431030Anon1680061013 res;
 bool empty;
 int next;
-} ParseResultTuple2Anon1323431030String;
+} ParseResultTuple2Anon1323431030Anon1680061013;
 
 typedef struct{
 int _1;
 Anon1323431030 _2;
 } Tuple2IntAnon1323431030;
 /*****************************************
-  Emitting C Generated Code
+  Emitting C Generated Code                  
 *******************************************/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-ParseResultTuple2Anon1323431030String respAndMessageParse(char* x0) {
-const Tuple2Anon1323431030String x1 = {};
-Tuple2Anon1323431030String x3 = x1;
-bool x4 = true;
-int x5 = -1;
-const int x8 = strlen(x0);
-const bool x9 = 0 >= x8;
-if (x9) {
-x3 = x1;
-x4 = true;
-x5 = 0;
+ParseResultTuple2Anon1323431030Anon1680061013 respAndMessageParse(char* x0) {
+Tuple2Anon1323431030Anon1680061013 x2 = (Tuple2Anon1323431030Anon1680061013){};
+bool x3 = true;
+int x4 = -1;
+const int x7 = strlen(x0);
+const bool x8 = 0 >= x7;
+if (x8) {
+x2 = (Tuple2Anon1323431030Anon1680061013){};
+x3 = true;
+x4 = 0;
 } else {
-const char x31 = x0[0];
-const bool x32 = x31 == 'H';
-if (x32) {
-const int x33 = 0 + 1;
-const bool x35 = x33 >= x8;
+const char x22 = x0[0];
+const bool x23 = x22 == 'H';
+if (x23) {
+const int x24 = 0 + 1;
+const bool x26 = x24 >= x7;
+if (x26) {
+x2 = (Tuple2Anon1323431030Anon1680061013){};
+x3 = true;
+x4 = 0;
+} else {
+const char x34 = x0[x24];
+const bool x35 = x34 == 'T';
 if (x35) {
-x3 = x1;
-x4 = true;
-x5 = 0;
+const int x36 = x24 + 1;
+const bool x38 = x36 >= x7;
+if (x38) {
+x2 = (Tuple2Anon1323431030Anon1680061013){};
+x3 = true;
+x4 = 0;
 } else {
-const char x43 = x0[x33];
-const bool x44 = x43 == 'T';
-if (x44) {
-const int x45 = x33 + 1;
-const bool x47 = x45 >= x8;
+const char x46 = x0[x36];
+const bool x47 = x46 == 'T';
 if (x47) {
-x3 = x1;
-x4 = true;
-x5 = 0;
+const int x48 = x36 + 1;
+const bool x50 = x48 >= x7;
+if (x50) {
+x2 = (Tuple2Anon1323431030Anon1680061013){};
+x3 = true;
+x4 = 0;
 } else {
-const char x55 = x0[x45];
-const bool x56 = x55 == 'T';
-if (x56) {
-const int x57 = x45 + 1;
-const bool x59 = x57 >= x8;
+const char x58 = x0[x48];
+const bool x59 = x58 == 'P';
 if (x59) {
-x3 = x1;
-x4 = true;
-x5 = 0;
+const int x60 = x48 + 1;
+const bool x62 = x60 >= x7;
+if (x62) {
+x2 = (Tuple2Anon1323431030Anon1680061013){};
+x3 = true;
+x4 = 0;
 } else {
-const char x67 = x0[x57];
-const bool x68 = x67 == 'P';
-if (x68) {
-const int x69 = x57 + 1;
-const bool x71 = x69 >= x8;
+const char x70 = x0[x60];
+const bool x71 = x70 == '/';
 if (x71) {
-x3 = x1;
-x4 = true;
-x5 = 0;
+const int x72 = x60 + 1;
+const bool x95 = x72 >= x7;
+if (x95) {
+x2 = (Tuple2Anon1323431030Anon1680061013){};
+x3 = true;
+x4 = 0;
 } else {
-const char x79 = x0[x69];
-const bool x80 = x79 == '/';
-if (x80) {
-const int x81 = x69 + 1;
-const bool x104 = x81 >= x8;
-if (x104) {
-x3 = x1;
-x4 = true;
-x5 = 0;
-} else {
-const char x113 = x0[x81];
-const bool x114 = x113 >= '0';
-const bool x115 = x113 <= '9';
-const bool x116 = x114 && x115;
-if (x116) {
-const char x119 = x113 - '0';
-const int x120 = (int)x119;
-int x122 = x120;
-bool x123 = false;
-const int x117 = x81 + 1;
-int x124 = x117;
-int x126 = -1;
-bool x127 = true;
-int x128 = x117;
+const char x103 = x0[x72];
+const bool x104 = x103 >= '0';
+const bool x105 = x103 <= '9';
+const bool x106 = x104 && x105;
+if (x106) {
+const char x109 = x103 - '0';
+const int x110 = (int)x109;
+int x112 = x110;
+bool x113 = false;
+const int x107 = x72 + 1;
+int x114 = x107;
+int x116 = -1;
+bool x117 = true;
+int x118 = x107;
 for (;;) {
-const bool x129 = x127;
-const int x130 = x126;
-const int x131 = x128;
-const bool x132 = x130 != x131;
-const bool x133 = x129 && x132;
-if (!x133) break;
-const int x135 = x128;
-x126 = x135;
-const bool x137 = x135 >= x8;
-if (x137) {
-x127 = false;
+const bool x119 = x117;
+const int x120 = x116;
+const int x121 = x118;
+const bool x122 = x120 != x121;
+const bool x123 = x119 && x122;
+if (!x123) break;
+const int x125 = x118;
+x116 = x125;
+const bool x127 = x125 >= x7;
+if (x127) {
+x117 = false;
 } else {
-const char x142 = x0[x135];
-const bool x143 = x142 >= '0';
-const bool x144 = x142 <= '9';
-const bool x145 = x143 && x144;
-if (x145) {
-const int x151 = x122;
-const bool x152 = x123;
-const int x153 = x124;
-const char x148 = x142 - '0';
-const int x149 = (int)x148;
-const int x155 = x151 * 10;
-const int x156 = x155 + x149;
-x122 = x156;
-x123 = false;
-const int x146 = x135 + 1;
-x124 = x146;
-x128 = x146;
+const char x132 = x0[x125];
+const bool x133 = x132 >= '0';
+const bool x134 = x132 <= '9';
+const bool x135 = x133 && x134;
+if (x135) {
+const int x141 = x112;
+const bool x142 = x113;
+const int x143 = x114;
+const char x138 = x132 - '0';
+const int x139 = (int)x138;
+const int x145 = x141 * 10;
+const int x146 = x145 + x139;
+x112 = x146;
+x113 = false;
+const int x136 = x125 + 1;
+x114 = x136;
+x118 = x136;
 } else {
-x127 = false;
+x117 = false;
 }
 }
 }
-const int x170 = x122;
-const bool x171 = x123;
-const int x172 = x124;
-bool x175;
-if (x171) {
-x175 = true;
+const int x160 = x112;
+const bool x161 = x113;
+const int x162 = x114;
+bool x165;
+if (x161) {
+x165 = true;
 } else {
-x175 = x171;
+x165 = x161;
 }
-if (x175) {
-x3 = x1;
-x4 = true;
-x5 = 0;
+if (x165) {
+x2 = (Tuple2Anon1323431030Anon1680061013){};
+x3 = true;
+x4 = 0;
 } else {
-int x176;
-if (x171) {
-x176 = x81;
+int x166;
+if (x161) {
+x166 = x72;
 } else {
-x176 = x172;
+x166 = x162;
 }
-const bool x182 = x176 >= x8;
-if (x182) {
-x3 = x1;
-x4 = true;
-x5 = 0;
+const bool x172 = x166 >= x7;
+if (x172) {
+x2 = (Tuple2Anon1323431030Anon1680061013){};
+x3 = true;
+x4 = 0;
 } else {
-const char x189 = x0[x176];
-const bool x190 = x189 == '.';
-if (x190) {
-const int x191 = x176 + 1;
-const bool x193 = x191 >= x8;
+const char x179 = x0[x166];
+const bool x180 = x179 == '.';
+if (x180) {
+const int x181 = x166 + 1;
+const bool x183 = x181 >= x7;
+if (x183) {
+x2 = (Tuple2Anon1323431030Anon1680061013){};
+x3 = true;
+x4 = 0;
+} else {
+const char x190 = x0[x181];
+const bool x191 = x190 >= '0';
+const bool x192 = x190 <= '9';
+const bool x193 = x191 && x192;
 if (x193) {
-x3 = x1;
-x4 = true;
-x5 = 0;
-} else {
-const char x200 = x0[x191];
-const bool x201 = x200 >= '0';
-const bool x202 = x200 <= '9';
-const bool x203 = x201 && x202;
-if (x203) {
-const char x206 = x200 - '0';
-const int x207 = (int)x206;
-int x209 = x207;
-bool x210 = false;
-const int x204 = x191 + 1;
-int x211 = x204;
-int x213 = -1;
-bool x214 = true;
-int x215 = x204;
+const char x196 = x190 - '0';
+const int x197 = (int)x196;
+int x199 = x197;
+bool x200 = false;
+const int x194 = x181 + 1;
+int x201 = x194;
+int x203 = -1;
+bool x204 = true;
+int x205 = x194;
 for (;;) {
-const bool x216 = x214;
-const int x217 = x213;
-const int x218 = x215;
-const bool x219 = x217 != x218;
-const bool x220 = x216 && x219;
-if (!x220) break;
-const int x222 = x215;
-x213 = x222;
-const bool x224 = x222 >= x8;
-if (x224) {
-x214 = false;
+const bool x206 = x204;
+const int x207 = x203;
+const int x208 = x205;
+const bool x209 = x207 != x208;
+const bool x210 = x206 && x209;
+if (!x210) break;
+const int x212 = x205;
+x203 = x212;
+const bool x214 = x212 >= x7;
+if (x214) {
+x204 = false;
 } else {
-const char x229 = x0[x222];
-const bool x230 = x229 >= '0';
-const bool x231 = x229 <= '9';
-const bool x232 = x230 && x231;
-if (x232) {
-const int x238 = x209;
-const bool x239 = x210;
-const int x240 = x211;
-const char x235 = x229 - '0';
-const int x236 = (int)x235;
-const int x242 = x238 * 10;
-const int x243 = x242 + x236;
-x209 = x243;
-x210 = false;
-const int x233 = x222 + 1;
-x211 = x233;
-x215 = x233;
+const char x219 = x0[x212];
+const bool x220 = x219 >= '0';
+const bool x221 = x219 <= '9';
+const bool x222 = x220 && x221;
+if (x222) {
+const int x228 = x199;
+const bool x229 = x200;
+const int x230 = x201;
+const char x225 = x219 - '0';
+const int x226 = (int)x225;
+const int x232 = x228 * 10;
+const int x233 = x232 + x226;
+x199 = x233;
+x200 = false;
+const int x223 = x212 + 1;
+x201 = x223;
+x205 = x223;
 } else {
-x214 = false;
+x204 = false;
 }
 }
 }
-const int x257 = x209;
-const bool x258 = x210;
-const int x259 = x211;
-bool x262;
+const int x247 = x199;
+const bool x248 = x200;
+const int x249 = x201;
+bool x252;
+if (x248) {
+x252 = true;
+} else {
+x252 = x248;
+}
+bool x258;
+if (x252) {
+x258 = true;
+} else {
+x258 = false;
+}
+bool x264;
 if (x258) {
-x262 = true;
+x264 = true;
 } else {
-x262 = x258;
+x264 = false;
 }
-bool x268;
-if (x262) {
-x268 = true;
+if (x264) {
+x2 = (Tuple2Anon1323431030Anon1680061013){};
+x3 = true;
+x4 = 0;
 } else {
-x268 = false;
-}
-bool x274;
-if (x268) {
-x274 = true;
-} else {
-x274 = false;
-}
-if (x274) {
-x3 = x1;
-x4 = true;
-x5 = 0;
-} else {
-char* x282 = "";
-bool x283 = false;
-int x275;
-if (x268) {
-x275 = 0;
-} else {
-int x269;
-if (x262) {
-x269 = x81;
-} else {
-int x263;
+char* x272 = "";
+bool x273 = false;
+int x265;
 if (x258) {
-x263 = x191;
+x265 = 0;
 } else {
-x263 = x259;
+int x259;
+if (x252) {
+x259 = x72;
+} else {
+int x253;
+if (x248) {
+x253 = x181;
+} else {
+x253 = x249;
 }
-x269 = x263;
+x259 = x253;
 }
-x275 = x269;
+x265 = x259;
 }
-int x284 = x275;
-int x286 = -1;
-bool x287 = true;
-int x288 = x275;
+int x274 = x265;
+int x276 = -1;
+bool x277 = true;
+int x278 = x265;
 for (;;) {
-const bool x289 = x287;
-const int x290 = x286;
-const int x291 = x288;
-const bool x292 = x290 != x291;
-const bool x293 = x289 && x292;
-if (!x293) break;
-const int x295 = x288;
-x286 = x295;
-const bool x297 = x295 >= x8;
-if (x297) {
-x287 = false;
+const bool x279 = x277;
+const int x280 = x276;
+const int x281 = x278;
+const bool x282 = x280 != x281;
+const bool x283 = x279 && x282;
+if (!x283) break;
+const int x285 = x278;
+x276 = x285;
+const bool x287 = x285 >= x7;
+if (x287) {
+x277 = false;
 } else {
-const char x301 = x0[x295];
-const bool x302 = x301 == ' ';
-if (x302) {
-const char* x305 = x282;
-const bool x306 = x283;
-const int x307 = x284;
-x282 = (char*)x305;
-x283 = false;
-const int x303 = x295 + 1;
-x284 = x303;
-x288 = x303;
+const char x291 = x0[x285];
+const bool x292 = x291 == ' ';
+if (x292) {
+const char* x295 = x272;
+const bool x296 = x273;
+const int x297 = x274;
+x272 = (char*)x295;
+x273 = false;
+const int x293 = x285 + 1;
+x274 = x293;
+x278 = x293;
 } else {
-x287 = false;
+x277 = false;
 }
 }
 }
-const char* x322 = x282;
-const bool x323 = x283;
-const int x324 = x284;
-bool x329;
-if (x323) {
-x329 = true;
+const char* x312 = x272;
+const bool x313 = x273;
+const int x314 = x274;
+bool x319;
+if (x313) {
+x319 = true;
 } else {
-x329 = false;
+x319 = false;
 }
-if (x329) {
-x3 = x1;
-x4 = true;
-x5 = 0;
+if (x319) {
+x2 = (Tuple2Anon1323431030Anon1680061013){};
+x3 = true;
+x4 = 0;
 } else {
-int x330;
-if (x323) {
-x330 = 0;
+int x320;
+if (x313) {
+x320 = 0;
 } else {
-x330 = x324;
+x320 = x314;
 }
-const bool x336 = x330 >= x8;
+const bool x326 = x320 >= x7;
+if (x326) {
+x2 = (Tuple2Anon1323431030Anon1680061013){};
+x3 = true;
+x4 = 0;
+} else {
+const char x333 = x0[x320];
+const bool x334 = x333 >= '0';
+const bool x335 = x333 <= '9';
+const bool x336 = x334 && x335;
 if (x336) {
-x3 = x1;
-x4 = true;
-x5 = 0;
-} else {
-const char x343 = x0[x330];
-const bool x344 = x343 >= '0';
-const bool x345 = x343 <= '9';
-const bool x346 = x344 && x345;
-if (x346) {
-const char x349 = x343 - '0';
-const int x350 = (int)x349;
-int x352 = x350;
-bool x353 = false;
-const int x347 = x330 + 1;
-int x354 = x347;
-int x356 = -1;
-bool x357 = true;
-int x358 = x347;
+const char x339 = x333 - '0';
+const int x340 = (int)x339;
+int x342 = x340;
+bool x343 = false;
+const int x337 = x320 + 1;
+int x344 = x337;
+int x346 = -1;
+bool x347 = true;
+int x348 = x337;
 for (;;) {
-const bool x359 = x357;
-const int x360 = x356;
-const int x361 = x358;
-const bool x362 = x360 != x361;
-const bool x363 = x359 && x362;
-if (!x363) break;
-const int x365 = x358;
-x356 = x365;
-const bool x367 = x365 >= x8;
-if (x367) {
-x357 = false;
+const bool x349 = x347;
+const int x350 = x346;
+const int x351 = x348;
+const bool x352 = x350 != x351;
+const bool x353 = x349 && x352;
+if (!x353) break;
+const int x355 = x348;
+x346 = x355;
+const bool x357 = x355 >= x7;
+if (x357) {
+x347 = false;
 } else {
-const char x372 = x0[x365];
-const bool x373 = x372 >= '0';
-const bool x374 = x372 <= '9';
-const bool x375 = x373 && x374;
-if (x375) {
-const int x381 = x352;
-const bool x382 = x353;
-const int x383 = x354;
-const char x378 = x372 - '0';
-const int x379 = (int)x378;
-const int x385 = x381 * 10;
-const int x386 = x385 + x379;
-x352 = x386;
-x353 = false;
-const int x376 = x365 + 1;
-x354 = x376;
-x358 = x376;
+const char x362 = x0[x355];
+const bool x363 = x362 >= '0';
+const bool x364 = x362 <= '9';
+const bool x365 = x363 && x364;
+if (x365) {
+const int x371 = x342;
+const bool x372 = x343;
+const int x373 = x344;
+const char x368 = x362 - '0';
+const int x369 = (int)x368;
+const int x375 = x371 * 10;
+const int x376 = x375 + x369;
+x342 = x376;
+x343 = false;
+const int x366 = x355 + 1;
+x344 = x366;
+x348 = x366;
 } else {
-x357 = false;
+x347 = false;
 }
 }
 }
-const int x400 = x352;
-const bool x401 = x353;
-const int x402 = x354;
-bool x405;
-if (x401) {
-x405 = true;
+const int x390 = x342;
+const bool x391 = x343;
+const int x392 = x344;
+bool x395;
+if (x391) {
+x395 = true;
 } else {
-x405 = x401;
+x395 = x391;
 }
-if (x405) {
-x3 = x1;
-x4 = true;
-x5 = 0;
+if (x395) {
+x2 = (Tuple2Anon1323431030Anon1680061013){};
+x3 = true;
+x4 = 0;
 } else {
-int x413 = 0;
-bool x414 = false;
-int x406;
-if (x401) {
-x406 = x330;
+int x403 = 0;
+bool x404 = false;
+int x396;
+if (x391) {
+x396 = x320;
 } else {
-x406 = x402;
+x396 = x392;
 }
-int x415 = x406;
-int x417 = -1;
-bool x418 = true;
-int x419 = x406;
+int x405 = x396;
+int x407 = -1;
+bool x408 = true;
+int x409 = x396;
 for (;;) {
-const bool x420 = x418;
-const int x421 = x417;
-const int x422 = x419;
-const bool x423 = x421 != x422;
-const bool x424 = x420 && x423;
-if (!x424) break;
-const int x426 = x419;
-x417 = x426;
-const bool x428 = x426 >= x8;
-if (x428) {
-x418 = false;
+const bool x410 = x408;
+const int x411 = x407;
+const int x412 = x409;
+const bool x413 = x411 != x412;
+const bool x414 = x410 && x413;
+if (!x414) break;
+const int x416 = x409;
+x407 = x416;
+const bool x418 = x416 >= x7;
+if (x418) {
+x408 = false;
 } else {
-const char x432 = x0[x426];
-const bool x434 = x432 == '\n';
-if (x434) {
-x418 = false;
+const char x422 = x0[x416];
+const bool x424 = x422 == '\n';
+if (x424) {
+x408 = false;
 } else {
-const int x439 = x413;
-const bool x440 = x414;
-const int x441 = x415;
-const int x443 = x439 + 1;
-x413 = x443;
-x414 = false;
-const int x437 = x426 + 1;
-x415 = x437;
-x419 = x437;
+const int x429 = x403;
+const bool x430 = x404;
+const int x431 = x405;
+const int x433 = x429 + 1;
+x403 = x433;
+x404 = false;
+const int x427 = x416 + 1;
+x405 = x427;
+x409 = x427;
 }
 }
 }
-const int x455 = x413;
-const bool x456 = x414;
-const int x457 = x415;
-const bool x461 = x457 >= x8;
-if (x461) {
-x3 = x1;
-x4 = true;
-x5 = 0;
+const int x445 = x403;
+const bool x446 = x404;
+const int x447 = x405;
+const bool x451 = x447 >= x7;
+if (x451) {
+x2 = (Tuple2Anon1323431030Anon1680061013){};
+x3 = true;
+x4 = 0;
 } else {
-const char x469 = x0[x457];
-const bool x470 = x469 == '\n';
-if (x470) {
-int x477 = 200;
-int x478 = 0;
-char* x479 = "close";
-bool x480 = false;
-bool x481 = false;
-bool x483 = false;
-const int x471 = x457 + 1;
-int x484 = x471;
-int x486 = -1;
-bool x487 = true;
-int x488 = x471;
-const int x20 = (int) 0;
-ParseResultInt x540(int x503) {
-int x505 = x20;
-bool x506 = true;
-int x507 = x503;
-const bool x509 = x503 >= x8;
-if (x509) {
-x505 = x20;
-x506 = true;
-x507 = x503;
+const char x458 = x0[x447];
+const bool x459 = x458 == '\n';
+if (x459) {
+int x466 = 200;
+int x467 = 0;
+char* x468 = "close";
+bool x469 = false;
+bool x470 = false;
+bool x472 = false;
+const int x460 = x447 + 1;
+int x473 = x460;
+int x475 = -1;
+bool x476 = true;
+int x477 = x460;
+ParseResultInt x529(int x492) {
+int x494 = 0;
+bool x495 = true;
+int x496 = x492;
+const bool x498 = x492 >= x7;
+if (x498) {
+x494 = 0;
+x495 = true;
+x496 = x492;
 } else {
-const char x514 = x0[x503];
-const bool x515 = x514 >= 'a';
-const bool x516 = x514 <= 'z';
-const bool x517 = x515 && x516;
-const bool x518 = x514 >= 'A';
-const bool x519 = x514 <= 'Z';
-const bool x520 = x518 && x519;
-const bool x521 = x517 || x520;
-if (x521) {
-x505 = x503;
-x506 = false;
-const int x522 = x503 + 1;
-x507 = x522;
+const char x503 = x0[x492];
+const bool x504 = x503 >= 'a';
+const bool x505 = x503 <= 'z';
+const bool x506 = x504 && x505;
+const bool x507 = x503 >= 'A';
+const bool x508 = x503 <= 'Z';
+const bool x509 = x507 && x508;
+const bool x510 = x506 || x509;
+if (x510) {
+x494 = x492;
+x495 = false;
+const int x511 = x492 + 1;
+x496 = x511;
 } else {
-x505 = x20;
-x506 = true;
-x507 = x503;
+x494 = 0;
+x495 = true;
+x496 = x492;
 }
 }
-const int x535 = x505;
-const bool x536 = x506;
-const int x537 = x507;
-const ParseResultInt x538 = {x535,x536,x537};
-return x538;
+const int x524 = x494;
+const bool x525 = x495;
+const int x526 = x496;
+const ParseResultInt x527 = {x524,x525,x526};
+return x527;
 }
-ParseResultInt x576(int x497) {
-int x499 = x20;
-bool x500 = true;
-int x501 = x497;
-const ParseResultInt x541 = x540(x497);
-const bool x542 = x541.empty;
-if (x542) {
-const bool x543 = x497 >= x8;
-if (x543) {
-x499 = x20;
-x500 = true;
-x501 = x497;
+ParseResultInt x565(int x486) {
+int x488 = 0;
+bool x489 = true;
+int x490 = x486;
+const ParseResultInt x530 = x529(x486);
+const bool x531 = x530.empty;
+if (x531) {
+const bool x532 = x486 >= x7;
+if (x532) {
+x488 = 0;
+x489 = true;
+x490 = x486;
 } else {
-const char x548 = x0[x497];
-const bool x549 = x548 == '-';
-if (x549) {
-x499 = x497;
-x500 = false;
-const int x550 = x497 + 1;
-x501 = x550;
+const char x537 = x0[x486];
+const bool x538 = x537 == '-';
+if (x538) {
+x488 = x486;
+x489 = false;
+const int x539 = x486 + 1;
+x490 = x539;
 } else {
-x499 = x20;
-x500 = true;
-x501 = x497;
+x488 = 0;
+x489 = true;
+x490 = x486;
 }
 }
 } else {
-const int x564 = x541.res;
-x499 = x564;
-x500 = x542;
-const int x567 = x541.next;
-x501 = x567;
+const int x553 = x530.res;
+x488 = x553;
+x489 = x531;
+const int x556 = x530.next;
+x490 = x556;
 }
-const int x571 = x499;
-const bool x572 = x500;
-const int x573 = x501;
-const ParseResultInt x574 = {x571,x572,x573};
-return x574;
+const int x560 = x488;
+const bool x561 = x489;
+const int x562 = x490;
+const ParseResultInt x563 = {x560,x561,x562};
+return x563;
 }
-const char* x824 = "connection";
-const int x825 = strlen(x824);
-const char* x850 = "proxy-connection";
-const int x851 = strlen(x850);
-const char* x877 = "keep-alive";
-const int x878 = strlen(x877);
-const char* x903 = "close";
-const int x904 = strlen(x903);
-const char* x949 = "content-length";
-const int x950 = strlen(x949);
-const char* x994 = "transfer-encoding";
-const int x995 = strlen(x994);
-const char* x1020 = "chunked";
-const int x1021 = strlen(x1020);
-const char* x1048 = "upgrade";
-const int x1049 = strlen(x1048);
+const char* x811 = "connection";
+const int x812 = strlen(x811);
+const char* x840 = "proxy-connection";
+const int x841 = strlen(x840);
+const char* x870 = "keep-alive";
+const int x871 = strlen(x870);
+const char* x899 = "close";
+const int x900 = strlen(x899);
+const char* x932 = "content-length";
+const int x933 = strlen(x932);
+const char* x963 = "transfer-encoding";
+const int x964 = strlen(x963);
+const char* x992 = "chunked";
+const int x993 = strlen(x992);
+const char* x1023 = "upgrade";
+const int x1024 = strlen(x1023);
 for (;;) {
-const bool x489 = x487;
-const int x490 = x486;
-const int x491 = x488;
-const bool x492 = x490 != x491;
-const bool x493 = x489 && x492;
-if (!x493) break;
-const int x495 = x488;
-x486 = x495;
-const bool x577 = x495 >= x8;
-if (x577) {
-x487 = false;
+const bool x478 = x476;
+const int x479 = x475;
+const int x480 = x477;
+const bool x481 = x479 != x480;
+const bool x482 = x478 && x481;
+if (!x482) break;
+const int x484 = x477;
+x475 = x484;
+const bool x566 = x484 >= x7;
+if (x566) {
+x476 = false;
 } else {
-const char x585 = x0[x495];
-const bool x586 = x585 >= 'a';
-const bool x587 = x585 <= 'z';
-const bool x588 = x586 && x587;
-const bool x589 = x585 >= 'A';
-const bool x590 = x585 <= 'Z';
-const bool x591 = x589 && x590;
-const bool x592 = x588 || x591;
-if (x592) {
-int x596 = 0;
-bool x597 = false;
-const int x593 = x495 + 1;
-int x598 = x593;
-int x600 = -1;
-bool x601 = true;
-int x602 = x593;
+const char x573 = x0[x484];
+const bool x574 = x573 >= 'a';
+const bool x575 = x573 <= 'z';
+const bool x576 = x574 && x575;
+const bool x577 = x573 >= 'A';
+const bool x578 = x573 <= 'Z';
+const bool x579 = x577 && x578;
+const bool x580 = x576 || x579;
+if (x580) {
+int x584 = 0;
+bool x585 = false;
+const int x581 = x484 + 1;
+int x586 = x581;
+int x588 = -1;
+bool x589 = true;
+int x590 = x581;
 for (;;) {
-const bool x603 = x601;
-const int x604 = x600;
-const int x605 = x602;
-const bool x606 = x604 != x605;
-const bool x607 = x603 && x606;
-if (!x607) break;
-const int x609 = x602;
-x600 = x609;
-const ParseResultInt x611 = x576(x609);
-const bool x612 = x611.empty;
-if (x612) {
-x601 = false;
+const bool x591 = x589;
+const int x592 = x588;
+const int x593 = x590;
+const bool x594 = x592 != x593;
+const bool x595 = x591 && x594;
+if (!x595) break;
+const int x597 = x590;
+x588 = x597;
+const ParseResultInt x599 = x565(x597);
+const bool x600 = x599.empty;
+if (x600) {
+x589 = false;
 } else {
-const int x615 = x596;
-const bool x616 = x597;
-const int x617 = x598;
-const int x619 = x615 + 1;
-x596 = x619;
-x597 = false;
-const int x620 = x611.next;
-x598 = x620;
-x602 = x620;
+const int x603 = x584;
+const bool x604 = x585;
+const int x605 = x586;
+const int x607 = x603 + 1;
+x584 = x607;
+x585 = false;
+const int x608 = x599.next;
+x586 = x608;
+x590 = x608;
 }
 }
-const int x630 = x596;
-const bool x631 = x597;
-const int x632 = x598;
-char* x642 = "";
-bool x643 = false;
-int x644 = x632;
-int x646 = -1;
-bool x647 = true;
-int x648 = x632;
+const int x618 = x584;
+const bool x619 = x585;
+const int x620 = x586;
+char* x630 = "";
+bool x631 = false;
+int x632 = x620;
+int x634 = -1;
+bool x635 = true;
+int x636 = x620;
 for (;;) {
-const bool x649 = x647;
-const int x650 = x646;
-const int x651 = x648;
-const bool x652 = x650 != x651;
-const bool x653 = x649 && x652;
-if (!x653) break;
-const int x655 = x648;
-x646 = x655;
-const bool x657 = x655 >= x8;
-if (x657) {
-x647 = false;
+const bool x637 = x635;
+const int x638 = x634;
+const int x639 = x636;
+const bool x640 = x638 != x639;
+const bool x641 = x637 && x640;
+if (!x641) break;
+const int x643 = x636;
+x634 = x643;
+const bool x645 = x643 >= x7;
+if (x645) {
+x635 = false;
 } else {
-const char x661 = x0[x655];
-const bool x662 = x661 == ' ';
-if (x662) {
-const char* x665 = x642;
-const bool x666 = x643;
-const int x667 = x644;
-x642 = (char*)x665;
-x643 = false;
-const int x663 = x655 + 1;
-x644 = x663;
-x648 = x663;
+const char x649 = x0[x643];
+const bool x650 = x649 == ' ';
+if (x650) {
+const char* x653 = x630;
+const bool x654 = x631;
+const int x655 = x632;
+x630 = (char*)x653;
+x631 = false;
+const int x651 = x643 + 1;
+x632 = x651;
+x636 = x651;
 } else {
-x647 = false;
+x635 = false;
 }
 }
 }
-const char* x682 = x642;
-const bool x683 = x643;
-const int x684 = x644;
-if (x683) {
-x487 = false;
+const char* x670 = x630;
+const bool x671 = x631;
+const int x672 = x632;
+if (x671) {
+x476 = false;
 } else {
-const bool x690 = x684 >= x8;
-if (x690) {
-x487 = false;
+const bool x677 = x672 >= x7;
+if (x677) {
+x476 = false;
 } else {
-const char x696 = x0[x684];
-const bool x697 = x696 == ':';
-if (x697) {
-char* x708 = "";
-bool x709 = false;
-const int x698 = x684 + 1;
-int x710 = x698;
-int x712 = -1;
-bool x713 = true;
-int x714 = x698;
+const char x683 = x0[x672];
+const bool x684 = x683 == ':';
+if (x684) {
+char* x695 = "";
+bool x696 = false;
+const int x685 = x672 + 1;
+int x697 = x685;
+int x699 = -1;
+bool x700 = true;
+int x701 = x685;
 for (;;) {
-const bool x715 = x713;
-const int x716 = x712;
-const int x717 = x714;
-const bool x718 = x716 != x717;
-const bool x719 = x715 && x718;
-if (!x719) break;
-const int x721 = x714;
-x712 = x721;
-const bool x723 = x721 >= x8;
-if (x723) {
-x713 = false;
+const bool x702 = x700;
+const int x703 = x699;
+const int x704 = x701;
+const bool x705 = x703 != x704;
+const bool x706 = x702 && x705;
+if (!x706) break;
+const int x708 = x701;
+x699 = x708;
+const bool x710 = x708 >= x7;
+if (x710) {
+x700 = false;
 } else {
-const char x727 = x0[x721];
-const bool x728 = x727 == ' ';
-if (x728) {
-const char* x731 = x708;
-const bool x732 = x709;
-const int x733 = x710;
-x708 = (char*)x731;
-x709 = false;
-const int x729 = x721 + 1;
-x710 = x729;
-x714 = x729;
+const char x714 = x0[x708];
+const bool x715 = x714 == ' ';
+if (x715) {
+const char* x718 = x695;
+const bool x719 = x696;
+const int x720 = x697;
+x695 = (char*)x718;
+x696 = false;
+const int x716 = x708 + 1;
+x697 = x716;
+x701 = x716;
 } else {
-x713 = false;
+x700 = false;
 }
 }
 }
-const char* x748 = x708;
-const bool x749 = x709;
-const int x750 = x710;
-if (x749) {
-x487 = false;
+const char* x735 = x695;
+const bool x736 = x696;
+const int x737 = x697;
+if (x736) {
+x476 = false;
 } else {
-int x756 = 0;
-bool x757 = false;
-int x758 = x750;
-int x760 = -1;
-bool x761 = true;
-int x762 = x750;
+int x743 = 0;
+bool x744 = false;
+int x745 = x737;
+int x747 = -1;
+bool x748 = true;
+int x749 = x737;
 for (;;) {
-const bool x763 = x761;
-const int x764 = x760;
-const int x765 = x762;
-const bool x766 = x764 != x765;
-const bool x767 = x763 && x766;
-if (!x767) break;
-const int x769 = x762;
-x760 = x769;
-const bool x771 = x769 >= x8;
-if (x771) {
-x761 = false;
+const bool x750 = x748;
+const int x751 = x747;
+const int x752 = x749;
+const bool x753 = x751 != x752;
+const bool x754 = x750 && x753;
+if (!x754) break;
+const int x756 = x749;
+x747 = x756;
+const bool x758 = x756 >= x7;
+if (x758) {
+x748 = false;
 } else {
-const char x775 = x0[x769];
-const bool x777 = x775 == '\n';
-if (x777) {
-x761 = false;
+const char x762 = x0[x756];
+const bool x764 = x762 == '\n';
+if (x764) {
+x748 = false;
 } else {
-const int x782 = x756;
-const bool x783 = x757;
-const int x784 = x758;
-const int x786 = x782 + 1;
-x756 = x786;
-x757 = false;
-const int x780 = x769 + 1;
-x758 = x780;
-x762 = x780;
+const int x769 = x743;
+const bool x770 = x744;
+const int x771 = x745;
+const int x773 = x769 + 1;
+x743 = x773;
+x744 = false;
+const int x767 = x756 + 1;
+x745 = x767;
+x749 = x767;
 }
 }
 }
-const int x798 = x756;
-const bool x799 = x757;
-const int x800 = x758;
-const bool x804 = x800 >= x8;
-if (x804) {
-x487 = false;
+const int x785 = x743;
+const bool x786 = x744;
+const int x787 = x745;
+const bool x791 = x787 >= x7;
+if (x791) {
+x476 = false;
 } else {
-const char x808 = x0[x800];
-const bool x809 = x808 == '\n';
-if (x809) {
-const int x815 = x477;
-const int x816 = x478;
-const char* x817 = x479;
-const bool x818 = x480;
-const bool x819 = x481;
-const bool x821 = x483;
-const int x822 = x484;
-const int x638 = x630 + 1;
-const bool x826 = x638 == x825;
-bool x849;
-if (x826) {
-int x827 = 0;
-bool x828 = true;
+const char x795 = x0[x787];
+const bool x796 = x795 == '\n';
+if (x796) {
+const int x802 = x466;
+const int x803 = x467;
+const char* x804 = x468;
+const bool x805 = x469;
+const bool x806 = x470;
+const bool x808 = x472;
+const int x809 = x473;
+const int x626 = x618 + 1;
+const bool x813 = x626 == x812;
+bool x839;
+if (x813) {
+int x814 = 0;
+bool x815 = true;
 for (;;) {
-const int x829 = x827;
-const bool x831 = x828;
-const bool x830 = x829 < x638;
-const bool x832 = x830 && x831;
-if (!x832) break;
-const int x834 = x827;
-const int x835 = x834 + x495;
-const char x836 = x0[x835];
-const char x837 = x824[x834];
-const bool x839 = x836 == x837;
-if (x839) {
+const int x816 = x814;
+const bool x818 = x815;
+const bool x817 = x816 < x626;
+const bool x819 = x817 && x818;
+if (!x819) break;
+const int x821 = x814;
+const int x822 = x821 + x484;
+const char x823 = x0[x822];
+const int x824 = (int)x823;
+const int x825 = x824 | 32;
+const char x826 = (char)x825;
+const char x827 = x811[x821];
+const bool x829 = x826 == x827;
+if (x829) {
 } else {
-x828 = false;
+x815 = false;
 }
-const int x843 = x834 + 1;
-x827 = x843;
+const int x833 = x821 + 1;
+x814 = x833;
 }
-const bool x847 = x828;
-x849 = x847;
+const bool x837 = x815;
+x839 = x837;
 } else {
-x849 = false;
+x839 = false;
 }
-const bool x852 = x638 == x851;
-bool x875;
-if (x852) {
-int x853 = 0;
-bool x854 = true;
+const bool x842 = x626 == x841;
+bool x868;
+if (x842) {
+int x843 = 0;
+bool x844 = true;
 for (;;) {
-const int x855 = x853;
-const bool x857 = x854;
-const bool x856 = x855 < x638;
-const bool x858 = x856 && x857;
-if (!x858) break;
-const int x860 = x853;
-const int x861 = x860 + x495;
-const char x862 = x0[x861];
-const char x863 = x850[x860];
-const bool x865 = x862 == x863;
-if (x865) {
+const int x845 = x843;
+const bool x847 = x844;
+const bool x846 = x845 < x626;
+const bool x848 = x846 && x847;
+if (!x848) break;
+const int x850 = x843;
+const int x851 = x850 + x484;
+const char x852 = x0[x851];
+const int x853 = (int)x852;
+const int x854 = x853 | 32;
+const char x855 = (char)x854;
+const char x856 = x840[x850];
+const bool x858 = x855 == x856;
+if (x858) {
 } else {
-x854 = false;
+x844 = false;
 }
-const int x869 = x860 + 1;
-x853 = x869;
+const int x862 = x850 + 1;
+x843 = x862;
 }
-const bool x873 = x854;
-x875 = x873;
+const bool x866 = x844;
+x868 = x866;
 } else {
-x875 = false;
+x868 = false;
 }
-const bool x876 = x849 || x875;
-const bool x879 = x798 == x878;
-bool x902;
-if (x879) {
-int x880 = 0;
-bool x881 = true;
+const bool x869 = x839 || x868;
+const bool x872 = x785 == x871;
+bool x898;
+if (x872) {
+int x873 = 0;
+bool x874 = true;
 for (;;) {
-const int x882 = x880;
-const bool x884 = x881;
-const bool x883 = x882 < x798;
-const bool x885 = x883 && x884;
-if (!x885) break;
-const int x887 = x880;
-const int x888 = x887 + x750;
-const char x889 = x0[x888];
-const char x890 = x877[x887];
-const bool x892 = x889 == x890;
-if (x892) {
+const int x875 = x873;
+const bool x877 = x874;
+const bool x876 = x875 < x785;
+const bool x878 = x876 && x877;
+if (!x878) break;
+const int x880 = x873;
+const int x881 = x880 + x737;
+const char x882 = x0[x881];
+const int x883 = (int)x882;
+const int x884 = x883 | 32;
+const char x885 = (char)x884;
+const char x886 = x870[x880];
+const bool x888 = x885 == x886;
+if (x888) {
 } else {
-x881 = false;
+x874 = false;
 }
-const int x896 = x887 + 1;
-x880 = x896;
+const int x892 = x880 + 1;
+x873 = x892;
 }
-const bool x900 = x881;
-x902 = x900;
+const bool x896 = x874;
+x898 = x896;
 } else {
-x902 = false;
+x898 = false;
 }
-const bool x905 = x798 == x904;
-bool x928;
-if (x905) {
-int x906 = 0;
-bool x907 = true;
+const bool x901 = x785 == x900;
+bool x927;
+if (x901) {
+int x902 = 0;
+bool x903 = true;
 for (;;) {
-const int x908 = x906;
-const bool x910 = x907;
-const bool x909 = x908 < x798;
-const bool x911 = x909 && x910;
-if (!x911) break;
-const int x913 = x906;
-const int x914 = x913 + x750;
-const char x915 = x0[x914];
-const char x916 = x903[x913];
-const bool x918 = x915 == x916;
-if (x918) {
+const int x904 = x902;
+const bool x906 = x903;
+const bool x905 = x904 < x785;
+const bool x907 = x905 && x906;
+if (!x907) break;
+const int x909 = x902;
+const int x910 = x909 + x737;
+const char x911 = x0[x910];
+const int x912 = (int)x911;
+const int x913 = x912 | 32;
+const char x914 = (char)x913;
+const char x915 = x899[x909];
+const bool x917 = x914 == x915;
+if (x917) {
 } else {
-x907 = false;
+x903 = false;
 }
-const int x922 = x913 + 1;
-x906 = x922;
+const int x921 = x909 + 1;
+x902 = x921;
 }
-const bool x926 = x907;
-x928 = x926;
+const bool x925 = x903;
+x927 = x925;
 } else {
-x928 = false;
+x927 = false;
 }
-const bool x929 = x902 || x928;
-const bool x930 = x876 && x929;
-Anon1323431030 x1088;
-if (x930) {
-char* x931 = "";
-int x932 = 0;
+const bool x928 = x898 || x927;
+const bool x929 = x869 && x928;
+int x1071;
+if (x929) {
+x1071 = x802;
+} else {
+const bool x934 = x626 == x933;
+bool x960;
+if (x934) {
+int x935 = 0;
+bool x936 = true;
 for (;;) {
-const int x933 = x932;
-const bool x934 = x933 < x798;
-if (!x934) break;
-const char* x936 = x931;
-const int x937 = x932;
-const int x938 = x750 + x937;
-const char x939 = x0[x938];
-const char* x940 = ({ int l1=strlen(x936); char* r=(char*)malloc2(l1+2); memcpy(r,x936,l1); r[l1]=x939; r[l1+2]=0; r; });
-x931 = (char*)x940;
-const int x942 = x937 + 1;
-x932 = x942;
-}
-const char* x946 = x931;
-const Anon1323431030 x947 = {x815,x816,x946,x818,x819};
-x1088 = x947;
+const int x937 = x935;
+const bool x939 = x936;
+const bool x938 = x937 < x626;
+const bool x940 = x938 && x939;
+if (!x940) break;
+const int x942 = x935;
+const int x943 = x942 + x484;
+const char x944 = x0[x943];
+const int x945 = (int)x944;
+const int x946 = x945 | 32;
+const char x947 = (char)x946;
+const char x948 = x932[x942];
+const bool x950 = x947 == x948;
+if (x950) {
 } else {
-const bool x951 = x638 == x950;
-bool x974;
-if (x951) {
-int x952 = 0;
-bool x953 = true;
+x936 = false;
+}
+const int x954 = x942 + 1;
+x935 = x954;
+}
+const bool x958 = x936;
+x960 = x958;
+} else {
+x960 = false;
+}
+int x1065;
+if (x960) {
+x1065 = x802;
+} else {
+const bool x965 = x626 == x964;
+bool x991;
+if (x965) {
+int x966 = 0;
+bool x967 = true;
 for (;;) {
-const int x954 = x952;
-const bool x956 = x953;
-const bool x955 = x954 < x638;
-const bool x957 = x955 && x956;
-if (!x957) break;
-const int x959 = x952;
-const int x960 = x959 + x495;
-const char x961 = x0[x960];
-const char x962 = x949[x959];
-const bool x964 = x961 == x962;
-if (x964) {
+const int x968 = x966;
+const bool x970 = x967;
+const bool x969 = x968 < x626;
+const bool x971 = x969 && x970;
+if (!x971) break;
+const int x973 = x966;
+const int x974 = x973 + x484;
+const char x975 = x0[x974];
+const int x976 = (int)x975;
+const int x977 = x976 | 32;
+const char x978 = (char)x977;
+const char x979 = x963[x973];
+const bool x981 = x978 == x979;
+if (x981) {
 } else {
-x953 = false;
+x967 = false;
 }
-const int x968 = x959 + 1;
-x952 = x968;
+const int x985 = x973 + 1;
+x966 = x985;
 }
-const bool x972 = x953;
-x974 = x972;
+const bool x989 = x967;
+x991 = x989;
 } else {
-x974 = false;
+x991 = false;
 }
-Anon1323431030 x1087;
-if (x974) {
-char* x975 = "";
-int x976 = 0;
+const bool x994 = x785 == x993;
+bool x1020;
+if (x994) {
+int x995 = 0;
+bool x996 = true;
 for (;;) {
-const int x977 = x976;
-const bool x978 = x977 < x798;
-if (!x978) break;
-const char* x980 = x975;
-const int x981 = x976;
-const int x982 = x750 + x981;
-const char x983 = x0[x982];
-const char* x984 = ({ int l1=strlen(x980); char* r=(char*)malloc2(l1+2); memcpy(r,x980,l1); r[l1]=x983; r[l1+2]=0; r; });
-x975 = (char*)x984;
-const int x986 = x981 + 1;
-x976 = x986;
-}
-const char* x990 = x975;
-const int x991 = atoi(x990);
-const Anon1323431030 x992 = {x815,x991,x817,x818,x819};
-x1087 = x992;
+const int x997 = x995;
+const bool x999 = x996;
+const bool x998 = x997 < x785;
+const bool x1000 = x998 && x999;
+if (!x1000) break;
+const int x1002 = x995;
+const int x1003 = x1002 + x737;
+const char x1004 = x0[x1003];
+const int x1005 = (int)x1004;
+const int x1006 = x1005 | 32;
+const char x1007 = (char)x1006;
+const char x1008 = x992[x1002];
+const bool x1010 = x1007 == x1008;
+if (x1010) {
 } else {
-const bool x996 = x638 == x995;
-bool x1019;
-if (x996) {
-int x997 = 0;
-bool x998 = true;
+x996 = false;
+}
+const int x1014 = x1002 + 1;
+x995 = x1014;
+}
+const bool x1018 = x996;
+x1020 = x1018;
+} else {
+x1020 = false;
+}
+const bool x1021 = x991 && x1020;
+int x1059;
+if (x1021) {
+x1059 = x802;
+} else {
+const bool x1025 = x626 == x1024;
+bool x1051;
+if (x1025) {
+int x1026 = 0;
+bool x1027 = true;
 for (;;) {
-const int x999 = x997;
-const bool x1001 = x998;
-const bool x1000 = x999 < x638;
-const bool x1002 = x1000 && x1001;
-if (!x1002) break;
-const int x1004 = x997;
-const int x1005 = x1004 + x495;
-const char x1006 = x0[x1005];
-const char x1007 = x994[x1004];
-const bool x1009 = x1006 == x1007;
-if (x1009) {
+const int x1028 = x1026;
+const bool x1030 = x1027;
+const bool x1029 = x1028 < x626;
+const bool x1031 = x1029 && x1030;
+if (!x1031) break;
+const int x1033 = x1026;
+const int x1034 = x1033 + x484;
+const char x1035 = x0[x1034];
+const int x1036 = (int)x1035;
+const int x1037 = x1036 | 32;
+const char x1038 = (char)x1037;
+const char x1039 = x1023[x1033];
+const bool x1041 = x1038 == x1039;
+if (x1041) {
 } else {
-x998 = false;
+x1027 = false;
 }
-const int x1013 = x1004 + 1;
-x997 = x1013;
+const int x1045 = x1033 + 1;
+x1026 = x1045;
 }
-const bool x1017 = x998;
-x1019 = x1017;
+const bool x1049 = x1027;
+x1051 = x1049;
 } else {
-x1019 = false;
+x1051 = false;
 }
-const bool x1022 = x798 == x1021;
-bool x1045;
-if (x1022) {
-int x1023 = 0;
-bool x1024 = true;
+int x1053;
+if (x1051) {
+x1053 = x802;
+} else {
+x1053 = x802;
+}
+x1059 = x1053;
+}
+x1065 = x1059;
+}
+x1071 = x1065;
+}
+x466 = x1071;
+int x1072;
+if (x929) {
+x1072 = x803;
+} else {
+const bool x934 = x626 == x933;
+bool x960;
+if (x934) {
+int x935 = 0;
+bool x936 = true;
 for (;;) {
-const int x1025 = x1023;
-const bool x1027 = x1024;
-const bool x1026 = x1025 < x798;
-const bool x1028 = x1026 && x1027;
-if (!x1028) break;
-const int x1030 = x1023;
-const int x1031 = x1030 + x750;
-const char x1032 = x0[x1031];
-const char x1033 = x1020[x1030];
-const bool x1035 = x1032 == x1033;
-if (x1035) {
+const int x937 = x935;
+const bool x939 = x936;
+const bool x938 = x937 < x626;
+const bool x940 = x938 && x939;
+if (!x940) break;
+const int x942 = x935;
+const int x943 = x942 + x484;
+const char x944 = x0[x943];
+const int x945 = (int)x944;
+const int x946 = x945 | 32;
+const char x947 = (char)x946;
+const char x948 = x932[x942];
+const bool x950 = x947 == x948;
+if (x950) {
 } else {
-x1024 = false;
+x936 = false;
 }
-const int x1039 = x1030 + 1;
-x1023 = x1039;
+const int x954 = x942 + 1;
+x935 = x954;
 }
-const bool x1043 = x1024;
-x1045 = x1043;
+const bool x958 = x936;
+x960 = x958;
 } else {
-x1045 = false;
+x960 = false;
 }
-const bool x1046 = x1019 && x1045;
-int x1081;
-if (x1046) {
-x1081 = x815;
+int x1066;
+if (x960) {
+const Anon1680061013 x789 = {x0,x737,x785};
+
+/* BAD FIX:
+const char* x930 = ({ char* r=(char*)malloc(x789.length+1); memcpy(r,x789.input+x789.start,x789.length); r[x789.length]=0; printf("Malloc1 -> %s\n",r); r; });
+const int x961 = atoi(x930);
+*/
+const int x961 = atoi(x789.input+x789.start);
+
+x1066 = x961;
 } else {
-const bool x1050 = x638 == x1049;
-bool x1073;
-if (x1050) {
-int x1051 = 0;
-bool x1052 = true;
+const bool x965 = x626 == x964;
+bool x991;
+if (x965) {
+int x966 = 0;
+bool x967 = true;
 for (;;) {
-const int x1053 = x1051;
-const bool x1055 = x1052;
-const bool x1054 = x1053 < x638;
-const bool x1056 = x1054 && x1055;
-if (!x1056) break;
-const int x1058 = x1051;
-const int x1059 = x1058 + x495;
-const char x1060 = x0[x1059];
-const char x1061 = x1048[x1058];
-const bool x1063 = x1060 == x1061;
-if (x1063) {
+const int x968 = x966;
+const bool x970 = x967;
+const bool x969 = x968 < x626;
+const bool x971 = x969 && x970;
+if (!x971) break;
+const int x973 = x966;
+const int x974 = x973 + x484;
+const char x975 = x0[x974];
+const int x976 = (int)x975;
+const int x977 = x976 | 32;
+const char x978 = (char)x977;
+const char x979 = x963[x973];
+const bool x981 = x978 == x979;
+if (x981) {
 } else {
-x1052 = false;
+x967 = false;
 }
-const int x1067 = x1058 + 1;
-x1051 = x1067;
+const int x985 = x973 + 1;
+x966 = x985;
 }
-const bool x1071 = x1052;
-x1073 = x1071;
+const bool x989 = x967;
+x991 = x989;
 } else {
-x1073 = false;
+x991 = false;
 }
-int x1075;
-if (x1073) {
-x1075 = x815;
-} else {
-x1075 = x815;
-}
-x1081 = x1075;
-}
-int x1082;
-if (x1046) {
-x1082 = x816;
-} else {
-const bool x1050 = x638 == x1049;
-bool x1073;
-if (x1050) {
-int x1051 = 0;
-bool x1052 = true;
+const bool x994 = x785 == x993;
+bool x1020;
+if (x994) {
+int x995 = 0;
+bool x996 = true;
 for (;;) {
-const int x1053 = x1051;
-const bool x1055 = x1052;
-const bool x1054 = x1053 < x638;
-const bool x1056 = x1054 && x1055;
-if (!x1056) break;
-const int x1058 = x1051;
-const int x1059 = x1058 + x495;
-const char x1060 = x0[x1059];
-const char x1061 = x1048[x1058];
-const bool x1063 = x1060 == x1061;
-if (x1063) {
+const int x997 = x995;
+const bool x999 = x996;
+const bool x998 = x997 < x785;
+const bool x1000 = x998 && x999;
+if (!x1000) break;
+const int x1002 = x995;
+const int x1003 = x1002 + x737;
+const char x1004 = x0[x1003];
+const int x1005 = (int)x1004;
+const int x1006 = x1005 | 32;
+const char x1007 = (char)x1006;
+const char x1008 = x992[x1002];
+const bool x1010 = x1007 == x1008;
+if (x1010) {
 } else {
-x1052 = false;
+x996 = false;
 }
-const int x1067 = x1058 + 1;
-x1051 = x1067;
+const int x1014 = x1002 + 1;
+x995 = x1014;
 }
-const bool x1071 = x1052;
-x1073 = x1071;
+const bool x1018 = x996;
+x1020 = x1018;
 } else {
-x1073 = false;
+x1020 = false;
 }
-int x1076;
-if (x1073) {
-x1076 = x816;
+const bool x1021 = x991 && x1020;
+int x1060;
+if (x1021) {
+x1060 = x803;
 } else {
-x1076 = x816;
-}
-x1082 = x1076;
-}
-char* x1083;
-if (x1046) {
-x1083 = (char*)x817;
-} else {
-const bool x1050 = x638 == x1049;
-bool x1073;
-if (x1050) {
-int x1051 = 0;
-bool x1052 = true;
+const bool x1025 = x626 == x1024;
+bool x1051;
+if (x1025) {
+int x1026 = 0;
+bool x1027 = true;
 for (;;) {
-const int x1053 = x1051;
-const bool x1055 = x1052;
-const bool x1054 = x1053 < x638;
-const bool x1056 = x1054 && x1055;
-if (!x1056) break;
-const int x1058 = x1051;
-const int x1059 = x1058 + x495;
-const char x1060 = x0[x1059];
-const char x1061 = x1048[x1058];
-const bool x1063 = x1060 == x1061;
-if (x1063) {
+const int x1028 = x1026;
+const bool x1030 = x1027;
+const bool x1029 = x1028 < x626;
+const bool x1031 = x1029 && x1030;
+if (!x1031) break;
+const int x1033 = x1026;
+const int x1034 = x1033 + x484;
+const char x1035 = x0[x1034];
+const int x1036 = (int)x1035;
+const int x1037 = x1036 | 32;
+const char x1038 = (char)x1037;
+const char x1039 = x1023[x1033];
+const bool x1041 = x1038 == x1039;
+if (x1041) {
 } else {
-x1052 = false;
+x1027 = false;
 }
-const int x1067 = x1058 + 1;
-x1051 = x1067;
+const int x1045 = x1033 + 1;
+x1026 = x1045;
 }
-const bool x1071 = x1052;
-x1073 = x1071;
+const bool x1049 = x1027;
+x1051 = x1049;
 } else {
-x1073 = false;
+x1051 = false;
 }
-char* x1077;
-if (x1073) {
-x1077 = (char*)x817;
+int x1054;
+if (x1051) {
+x1054 = x803;
 } else {
-x1077 = (char*)x817;
+x1054 = x803;
 }
-x1083 = x1077;
+x1060 = x1054;
 }
-bool x1084;
-if (x1046) {
-x1084 = true;
+x1066 = x1060;
+}
+x1072 = x1066;
+}
+x467 = x1072;
+char* x1073;
+if (x929) {
+const Anon1680061013 x789 = {x0,x737,x785};
+const char* x930 = ({ char* r=(char*)malloc(x789.length+1); memcpy(r,x789.input+x789.start,x789.length); r[x789.length]=0; printf("Malloc2 -> %s\n",r); r; });
+x1073 = (char*)x930;
 } else {
-const bool x1050 = x638 == x1049;
-bool x1073;
-if (x1050) {
-int x1051 = 0;
-bool x1052 = true;
+const bool x934 = x626 == x933;
+bool x960;
+if (x934) {
+int x935 = 0;
+bool x936 = true;
 for (;;) {
-const int x1053 = x1051;
-const bool x1055 = x1052;
-const bool x1054 = x1053 < x638;
-const bool x1056 = x1054 && x1055;
-if (!x1056) break;
-const int x1058 = x1051;
-const int x1059 = x1058 + x495;
-const char x1060 = x0[x1059];
-const char x1061 = x1048[x1058];
-const bool x1063 = x1060 == x1061;
-if (x1063) {
+const int x937 = x935;
+const bool x939 = x936;
+const bool x938 = x937 < x626;
+const bool x940 = x938 && x939;
+if (!x940) break;
+const int x942 = x935;
+const int x943 = x942 + x484;
+const char x944 = x0[x943];
+const int x945 = (int)x944;
+const int x946 = x945 | 32;
+const char x947 = (char)x946;
+const char x948 = x932[x942];
+const bool x950 = x947 == x948;
+if (x950) {
 } else {
-x1052 = false;
+x936 = false;
 }
-const int x1067 = x1058 + 1;
-x1051 = x1067;
+const int x954 = x942 + 1;
+x935 = x954;
 }
-const bool x1071 = x1052;
-x1073 = x1071;
+const bool x958 = x936;
+x960 = x958;
 } else {
-x1073 = false;
+x960 = false;
 }
-bool x1078;
-if (x1073) {
-x1078 = x818;
+char* x1067;
+if (x960) {
+x1067 = (char*)x804;
 } else {
-x1078 = x818;
-}
-x1084 = x1078;
-}
-bool x1085;
-if (x1046) {
-x1085 = x819;
-} else {
-const bool x1050 = x638 == x1049;
-bool x1073;
-if (x1050) {
-int x1051 = 0;
-bool x1052 = true;
+const bool x965 = x626 == x964;
+bool x991;
+if (x965) {
+int x966 = 0;
+bool x967 = true;
 for (;;) {
-const int x1053 = x1051;
-const bool x1055 = x1052;
-const bool x1054 = x1053 < x638;
-const bool x1056 = x1054 && x1055;
-if (!x1056) break;
-const int x1058 = x1051;
-const int x1059 = x1058 + x495;
-const char x1060 = x0[x1059];
-const char x1061 = x1048[x1058];
-const bool x1063 = x1060 == x1061;
-if (x1063) {
+const int x968 = x966;
+const bool x970 = x967;
+const bool x969 = x968 < x626;
+const bool x971 = x969 && x970;
+if (!x971) break;
+const int x973 = x966;
+const int x974 = x973 + x484;
+const char x975 = x0[x974];
+const int x976 = (int)x975;
+const int x977 = x976 | 32;
+const char x978 = (char)x977;
+const char x979 = x963[x973];
+const bool x981 = x978 == x979;
+if (x981) {
 } else {
-x1052 = false;
+x967 = false;
 }
-const int x1067 = x1058 + 1;
-x1051 = x1067;
+const int x985 = x973 + 1;
+x966 = x985;
 }
-const bool x1071 = x1052;
-x1073 = x1071;
+const bool x989 = x967;
+x991 = x989;
 } else {
-x1073 = false;
+x991 = false;
 }
-bool x1079;
-if (x1073) {
-x1079 = true;
+const bool x994 = x785 == x993;
+bool x1020;
+if (x994) {
+int x995 = 0;
+bool x996 = true;
+for (;;) {
+const int x997 = x995;
+const bool x999 = x996;
+const bool x998 = x997 < x785;
+const bool x1000 = x998 && x999;
+if (!x1000) break;
+const int x1002 = x995;
+const int x1003 = x1002 + x737;
+const char x1004 = x0[x1003];
+const int x1005 = (int)x1004;
+const int x1006 = x1005 | 32;
+const char x1007 = (char)x1006;
+const char x1008 = x992[x1002];
+const bool x1010 = x1007 == x1008;
+if (x1010) {
 } else {
-x1079 = x819;
+x996 = false;
 }
-x1085 = x1079;
+const int x1014 = x1002 + 1;
+x995 = x1014;
 }
-const Anon1323431030 x1086 = {x1081,x1082,x1083,x1084,x1085};
-x1087 = x1086;
-}
-x1088 = x1087;
-}
-const int x1090 = x1088.status;
-x477 = x1090;
-const int x1092 = x1088.contentLength;
-x478 = x1092;
-const char* x1094 = x1088.connection;
-x479 = (char*)x1094;
-const bool x1096 = x1088.chunked;
-x480 = x1096;
-const bool x1098 = x1088.upgrade;
-x481 = x1098;
-x483 = false;
-const int x810 = x800 + 1;
-x484 = x810;
-x488 = x810;
+const bool x1018 = x996;
+x1020 = x1018;
 } else {
-x487 = false;
+x1020 = false;
+}
+const bool x1021 = x991 && x1020;
+char* x1061;
+if (x1021) {
+x1061 = (char*)x804;
+} else {
+const bool x1025 = x626 == x1024;
+bool x1051;
+if (x1025) {
+int x1026 = 0;
+bool x1027 = true;
+for (;;) {
+const int x1028 = x1026;
+const bool x1030 = x1027;
+const bool x1029 = x1028 < x626;
+const bool x1031 = x1029 && x1030;
+if (!x1031) break;
+const int x1033 = x1026;
+const int x1034 = x1033 + x484;
+const char x1035 = x0[x1034];
+const int x1036 = (int)x1035;
+const int x1037 = x1036 | 32;
+const char x1038 = (char)x1037;
+const char x1039 = x1023[x1033];
+const bool x1041 = x1038 == x1039;
+if (x1041) {
+} else {
+x1027 = false;
+}
+const int x1045 = x1033 + 1;
+x1026 = x1045;
+}
+const bool x1049 = x1027;
+x1051 = x1049;
+} else {
+x1051 = false;
+}
+char* x1055;
+if (x1051) {
+x1055 = (char*)x804;
+} else {
+x1055 = (char*)x804;
+}
+x1061 = x1055;
+}
+x1067 = x1061;
+}
+x1073 = x1067;
+}
+x468 = x1073;
+bool x1074;
+if (x929) {
+x1074 = x805;
+} else {
+const bool x934 = x626 == x933;
+bool x960;
+if (x934) {
+int x935 = 0;
+bool x936 = true;
+for (;;) {
+const int x937 = x935;
+const bool x939 = x936;
+const bool x938 = x937 < x626;
+const bool x940 = x938 && x939;
+if (!x940) break;
+const int x942 = x935;
+const int x943 = x942 + x484;
+const char x944 = x0[x943];
+const int x945 = (int)x944;
+const int x946 = x945 | 32;
+const char x947 = (char)x946;
+const char x948 = x932[x942];
+const bool x950 = x947 == x948;
+if (x950) {
+} else {
+x936 = false;
+}
+const int x954 = x942 + 1;
+x935 = x954;
+}
+const bool x958 = x936;
+x960 = x958;
+} else {
+x960 = false;
+}
+bool x1068;
+if (x960) {
+x1068 = x805;
+} else {
+const bool x965 = x626 == x964;
+bool x991;
+if (x965) {
+int x966 = 0;
+bool x967 = true;
+for (;;) {
+const int x968 = x966;
+const bool x970 = x967;
+const bool x969 = x968 < x626;
+const bool x971 = x969 && x970;
+if (!x971) break;
+const int x973 = x966;
+const int x974 = x973 + x484;
+const char x975 = x0[x974];
+const int x976 = (int)x975;
+const int x977 = x976 | 32;
+const char x978 = (char)x977;
+const char x979 = x963[x973];
+const bool x981 = x978 == x979;
+if (x981) {
+} else {
+x967 = false;
+}
+const int x985 = x973 + 1;
+x966 = x985;
+}
+const bool x989 = x967;
+x991 = x989;
+} else {
+x991 = false;
+}
+const bool x994 = x785 == x993;
+bool x1020;
+if (x994) {
+int x995 = 0;
+bool x996 = true;
+for (;;) {
+const int x997 = x995;
+const bool x999 = x996;
+const bool x998 = x997 < x785;
+const bool x1000 = x998 && x999;
+if (!x1000) break;
+const int x1002 = x995;
+const int x1003 = x1002 + x737;
+const char x1004 = x0[x1003];
+const int x1005 = (int)x1004;
+const int x1006 = x1005 | 32;
+const char x1007 = (char)x1006;
+const char x1008 = x992[x1002];
+const bool x1010 = x1007 == x1008;
+if (x1010) {
+} else {
+x996 = false;
+}
+const int x1014 = x1002 + 1;
+x995 = x1014;
+}
+const bool x1018 = x996;
+x1020 = x1018;
+} else {
+x1020 = false;
+}
+const bool x1021 = x991 && x1020;
+bool x1062;
+if (x1021) {
+x1062 = true;
+} else {
+const bool x1025 = x626 == x1024;
+bool x1051;
+if (x1025) {
+int x1026 = 0;
+bool x1027 = true;
+for (;;) {
+const int x1028 = x1026;
+const bool x1030 = x1027;
+const bool x1029 = x1028 < x626;
+const bool x1031 = x1029 && x1030;
+if (!x1031) break;
+const int x1033 = x1026;
+const int x1034 = x1033 + x484;
+const char x1035 = x0[x1034];
+const int x1036 = (int)x1035;
+const int x1037 = x1036 | 32;
+const char x1038 = (char)x1037;
+const char x1039 = x1023[x1033];
+const bool x1041 = x1038 == x1039;
+if (x1041) {
+} else {
+x1027 = false;
+}
+const int x1045 = x1033 + 1;
+x1026 = x1045;
+}
+const bool x1049 = x1027;
+x1051 = x1049;
+} else {
+x1051 = false;
+}
+bool x1056;
+if (x1051) {
+x1056 = x805;
+} else {
+x1056 = x805;
+}
+x1062 = x1056;
+}
+x1068 = x1062;
+}
+x1074 = x1068;
+}
+x469 = x1074;
+bool x1075;
+if (x929) {
+x1075 = x806;
+} else {
+const bool x934 = x626 == x933;
+bool x960;
+if (x934) {
+int x935 = 0;
+bool x936 = true;
+for (;;) {
+const int x937 = x935;
+const bool x939 = x936;
+const bool x938 = x937 < x626;
+const bool x940 = x938 && x939;
+if (!x940) break;
+const int x942 = x935;
+const int x943 = x942 + x484;
+const char x944 = x0[x943];
+const int x945 = (int)x944;
+const int x946 = x945 | 32;
+const char x947 = (char)x946;
+const char x948 = x932[x942];
+const bool x950 = x947 == x948;
+if (x950) {
+} else {
+x936 = false;
+}
+const int x954 = x942 + 1;
+x935 = x954;
+}
+const bool x958 = x936;
+x960 = x958;
+} else {
+x960 = false;
+}
+bool x1069;
+if (x960) {
+x1069 = x806;
+} else {
+const bool x965 = x626 == x964;
+bool x991;
+if (x965) {
+int x966 = 0;
+bool x967 = true;
+for (;;) {
+const int x968 = x966;
+const bool x970 = x967;
+const bool x969 = x968 < x626;
+const bool x971 = x969 && x970;
+if (!x971) break;
+const int x973 = x966;
+const int x974 = x973 + x484;
+const char x975 = x0[x974];
+const int x976 = (int)x975;
+const int x977 = x976 | 32;
+const char x978 = (char)x977;
+const char x979 = x963[x973];
+const bool x981 = x978 == x979;
+if (x981) {
+} else {
+x967 = false;
+}
+const int x985 = x973 + 1;
+x966 = x985;
+}
+const bool x989 = x967;
+x991 = x989;
+} else {
+x991 = false;
+}
+const bool x994 = x785 == x993;
+bool x1020;
+if (x994) {
+int x995 = 0;
+bool x996 = true;
+for (;;) {
+const int x997 = x995;
+const bool x999 = x996;
+const bool x998 = x997 < x785;
+const bool x1000 = x998 && x999;
+if (!x1000) break;
+const int x1002 = x995;
+const int x1003 = x1002 + x737;
+const char x1004 = x0[x1003];
+const int x1005 = (int)x1004;
+const int x1006 = x1005 | 32;
+const char x1007 = (char)x1006;
+const char x1008 = x992[x1002];
+const bool x1010 = x1007 == x1008;
+if (x1010) {
+} else {
+x996 = false;
+}
+const int x1014 = x1002 + 1;
+x995 = x1014;
+}
+const bool x1018 = x996;
+x1020 = x1018;
+} else {
+x1020 = false;
+}
+const bool x1021 = x991 && x1020;
+bool x1063;
+if (x1021) {
+x1063 = x806;
+} else {
+const bool x1025 = x626 == x1024;
+bool x1051;
+if (x1025) {
+int x1026 = 0;
+bool x1027 = true;
+for (;;) {
+const int x1028 = x1026;
+const bool x1030 = x1027;
+const bool x1029 = x1028 < x626;
+const bool x1031 = x1029 && x1030;
+if (!x1031) break;
+const int x1033 = x1026;
+const int x1034 = x1033 + x484;
+const char x1035 = x0[x1034];
+const int x1036 = (int)x1035;
+const int x1037 = x1036 | 32;
+const char x1038 = (char)x1037;
+const char x1039 = x1023[x1033];
+const bool x1041 = x1038 == x1039;
+if (x1041) {
+} else {
+x1027 = false;
+}
+const int x1045 = x1033 + 1;
+x1026 = x1045;
+}
+const bool x1049 = x1027;
+x1051 = x1049;
+} else {
+x1051 = false;
+}
+bool x1057;
+if (x1051) {
+x1057 = true;
+} else {
+x1057 = x806;
+}
+x1063 = x1057;
+}
+x1069 = x1063;
+}
+x1075 = x1069;
+}
+x470 = x1075;
+x472 = false;
+const int x797 = x787 + 1;
+x473 = x797;
+x477 = x797;
+} else {
+x476 = false;
 }
 }
 }
 } else {
-x487 = false;
+x476 = false;
 }
 }
 }
 } else {
-x487 = false;
+x476 = false;
 }
 }
 }
-const int x1127 = x477;
-const int x1128 = x478;
-const char* x1129 = x479;
-const bool x1130 = x480;
-const bool x1131 = x481;
-const bool x1133 = x483;
-const int x1134 = x484;
-bool x1139;
-if (x1133) {
-x1139 = true;
+const int x1110 = x466;
+const int x1111 = x467;
+const char* x1112 = x468;
+const bool x1113 = x469;
+const bool x1114 = x470;
+const bool x1116 = x472;
+const int x1117 = x473;
+bool x1122;
+if (x1116) {
+x1122 = true;
 } else {
-x1139 = false;
+x1122 = false;
 }
-if (x1139) {
-x3 = x1;
-x4 = true;
-x5 = 0;
+if (x1122) {
+x2 = (Tuple2Anon1323431030Anon1680061013){};
+x3 = true;
+x4 = 0;
 } else {
-int x1140;
-if (x1133) {
-x1140 = 0;
+int x1123;
+if (x1116) {
+x1123 = 0;
 } else {
-x1140 = x1134;
+x1123 = x1117;
 }
-const bool x1147 = x1140 >= x8;
-if (x1147) {
-x3 = x1;
-x4 = true;
-x5 = 0;
+const bool x1130 = x1123 >= x7;
+if (x1130) {
+x2 = (Tuple2Anon1323431030Anon1680061013){};
+x3 = true;
+x4 = 0;
 } else {
-const char x1153 = x0[x1140];
-const bool x1154 = x1153 == '\n';
-if (x1154) {
-const int x1155 = x1140 + 1;
-Tuple2IntAnon1323431030 x1138;
-if (x1133) {
-const Tuple2IntAnon1323431030 x22 = {};
-x1138 = x22;
+const char x1136 = x0[x1123];
+const bool x1137 = x1136 == '\n';
+if (x1137) {
+const int x1138 = x1123 + 1;
+Tuple2IntAnon1323431030 x1121;
+if (x1116) {
+x1121 = (Tuple2IntAnon1323431030){};
 } else {
-int x404;
-if (x401) {
-x404 = x20;
+int x394;
+if (x391) {
+x394 = 0;
 } else {
-x404 = x400;
+x394 = x390;
 }
-const Anon1323431030 x1132 = {x1127,x1128,x1129,x1130,x1131};
-const Tuple2IntAnon1323431030 x1136 = {x404,x1132};
-x1138 = x1136;
+const Anon1323431030 x1115 = {x1110,x1111,x1112,x1113,x1114};
+const Tuple2IntAnon1323431030 x1119 = {x394,x1115};
+x1121 = x1119;
 }
-const Anon1323431030 x1159 = x1138._2;
-const int x1160 = x1159.contentLength;
-const int x1166 = x1155 + x1160;
-const bool x1167 = x1166 < x8;
-if (x1167) {
-const int x1158 = x1138._1;
-const char* x1161 = x1159.connection;
-const bool x1162 = x1159.chunked;
-const bool x1163 = x1159.upgrade;
-const Anon1323431030 x1164 = {x1158,x1160,x1161,x1162,x1163};
-const Anon1680061013 x1168 = {x0,x1155,x1166};
-const char* x1169 = ({ char* r=(char*)malloc2(x1168.length+1); memcpy(r,x1168.input+x1168.start,x1168.length); r[x1168.length]=0; r; });
-const Tuple2Anon1323431030String x1171 = {x1164,x1169};
-x3 = x1171;
-x4 = false;
-x5 = x1160;
+const Anon1323431030 x1142 = x1121._2;
+const int x1143 = x1142.contentLength;
+const int x1149 = x1138 + x1143;
+const bool x1150 = x1149 < x7;
+if (x1150) {
+const int x1141 = x1121._1;
+const char* x1144 = x1142.connection;
+const bool x1145 = x1142.chunked;
+const bool x1146 = x1142.upgrade;
+const Anon1323431030 x1147 = {x1141,x1143,x1144,x1145,x1146};
+const Anon1680061013 x1151 = {x0,x1138,x1143};
+const Tuple2Anon1323431030Anon1680061013 x1153 = {x1147,x1151};
+x2 = x1153;
+x3 = false;
+x4 = x1149;
 } else {
-x3 = x1;
-x4 = true;
-x5 = 0;
+x2 = (Tuple2Anon1323431030Anon1680061013){};
+x3 = true;
+x4 = 0;
 }
 } else {
-x3 = x1;
-x4 = true;
-x5 = 0;
+x2 = (Tuple2Anon1323431030Anon1680061013){};
+x3 = true;
+x4 = 0;
 }
 }
 }
 } else {
-x3 = x1;
-x4 = true;
-x5 = 0;
+x2 = (Tuple2Anon1323431030Anon1680061013){};
+x3 = true;
+x4 = 0;
 }
 }
 }
 } else {
-x3 = x1;
-x4 = true;
-x5 = 0;
+x2 = (Tuple2Anon1323431030Anon1680061013){};
+x3 = true;
+x4 = 0;
 }
 }
 }
 }
 } else {
-x3 = x1;
-x4 = true;
-x5 = 0;
+x2 = (Tuple2Anon1323431030Anon1680061013){};
+x3 = true;
+x4 = 0;
 }
 }
 } else {
-x3 = x1;
-x4 = true;
-x5 = 0;
+x2 = (Tuple2Anon1323431030Anon1680061013){};
+x3 = true;
+x4 = 0;
 }
 }
 }
 } else {
-x3 = x1;
-x4 = true;
-x5 = 0;
+x2 = (Tuple2Anon1323431030Anon1680061013){};
+x3 = true;
+x4 = 0;
 }
 }
 } else {
-x3 = x1;
-x4 = true;
-x5 = 0;
+x2 = (Tuple2Anon1323431030Anon1680061013){};
+x3 = true;
+x4 = 0;
 }
 }
 } else {
-x3 = x1;
-x4 = true;
-x5 = 0;
+x2 = (Tuple2Anon1323431030Anon1680061013){};
+x3 = true;
+x4 = 0;
 }
 }
 } else {
-x3 = x1;
-x4 = true;
-x5 = 0;
+x2 = (Tuple2Anon1323431030Anon1680061013){};
+x3 = true;
+x4 = 0;
 }
 }
 } else {
-x3 = x1;
-x4 = true;
-x5 = 0;
+x2 = (Tuple2Anon1323431030Anon1680061013){};
+x3 = true;
+x4 = 0;
 }
 }
 } else {
-x3 = x1;
-x4 = true;
-x5 = 0;
+x2 = (Tuple2Anon1323431030Anon1680061013){};
+x3 = true;
+x4 = 0;
 }
 }
-const Tuple2Anon1323431030String x1282 = x3;
-const bool x1283 = x4;
-const int x1284 = x5;
-const ParseResultTuple2Anon1323431030String x1285 = {x1282,x1283,x1284};
-//printf("%s\n",x1285);
-return x1285;
+const Tuple2Anon1323431030Anon1680061013 x1264 = x2;
+const bool x1265 = x3;
+const int x1266 = x4;
+const ParseResultTuple2Anon1323431030Anon1680061013 x1267 = {x1264,x1265,x1266};
+//printf("%d\n",x1267.res._1.contentLength);
+return x1267;
 }
 /*****************************************
-  End of C Generated Code
+  End of C Generated Code                  
 *******************************************/
