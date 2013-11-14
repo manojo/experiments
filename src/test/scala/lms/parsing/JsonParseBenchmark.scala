@@ -30,7 +30,7 @@ class JsonParseBenchmark extends PerformanceTest
     //def persistor = new SerializationPersistor
 
   // multiple tests can be specified here
-  val fileNames = List(1,2,3,4,6).map{x=> "just_tweet"+x}
+  val fileNames = /*List(1,2,3,4,6)*/ (1 to 101).map{x=> "just_tweet"+x}
   val messages = fileNames.foldLeft(List[Array[Char]]()){case (acc, fileName) =>
     val file = new BufferedReader(new FileReader("src/test/resources/"+fileName))
     val out = new ArrayBuffer[Char]
@@ -44,7 +44,7 @@ class JsonParseBenchmark extends PerformanceTest
   }
 
   def bench(obj:String,meth:String,f:Array[Char]=>_) {
-    val range = Gen.exponential("size")(1, 100 /*1000*/, 10)
+    val range = Gen.exponential("size")(1, 10 /*1000*/, 10)
     val ms = messages.toArray
     val mn = messages.length
     performance of obj in {

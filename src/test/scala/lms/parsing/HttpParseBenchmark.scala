@@ -30,7 +30,7 @@ class HttpParseBenchmark extends PerformanceTest
     //def persistor = new SerializationPersistor
 
   // multiple tests can be specified here
-  val fileNames = List(1,2,3,4,6).map{x=> "tweet"+x}
+  val fileNames = /*List(1,2,3,4,6)*/(1 to 101).map{x=> "tweet"+x}
   val messages = fileNames.foldLeft(List[Array[Char]]()){case (acc, fileName) =>
     val file = new BufferedReader(new FileReader("src/test/resources/"+fileName))
     val out = new ArrayBuffer[Char]
@@ -44,8 +44,8 @@ class HttpParseBenchmark extends PerformanceTest
   }
 
   def bench(obj:String,meth:String,f:Array[Char]=>_) {
-    val range = Gen.enumeration("size")(100)
-    //val range = Gen.exponential("size")(1, 1000, 10)
+    //val range = Gen.enumeration("size")(1, 10)
+    val range = Gen.exponential("size")(1, 1000, 10)
     val ms = messages.toArray
     val mn = messages.length
     performance of obj in {
@@ -81,7 +81,7 @@ class HttpParseBenchmark extends PerformanceTest
     "chunked".toArray,
     "upgrade".toArray
   )
-  bench("RespAndMessageParserStatic","parse",stagedParserStatic.apply _)
+  //bench("RespAndMessageParserStatic","parse",stagedParserStatic.apply _)
 
   //staged parser static new
   val stagedParserStaticNew = new ResponseParseStatic(
@@ -101,7 +101,7 @@ class HttpParseBenchmark extends PerformanceTest
   //bench("HTTPParserLL","parseFoldString",(m:Array[Char])=>HandWrittenParserWrapper.execute(handWrittenParser, new StringFoldingSettings, m, 0, m.length))
 
   // NGINX Java port
-  //bench("HTTPParserLL","parse",(m:Array[Char])=>HandWrittenParserWrapper.execute(handWrittenParser, new DefaultHttpSettings, m, 0, m.length))
+  bench("HTTPParserLL","parse",(m:Array[Char])=>HandWrittenParserWrapper.execute(handWrittenParser, new DefaultHttpSettings, m, 0, m.length))
 
 /*
   //val range = Gen.enumeration("size")(100)

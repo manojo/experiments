@@ -29,40 +29,39 @@ static http_parser_settings my_settings = {
   .on_message_complete = 0
 };
 
-int main(int argc, char **argv){
-
-  const char* files[5] = {"tweet1","tweet2","tweet3","tweet4","tweet6"};
-  long sizes[5];
-  char * data[5];
-
-  //Reading the file
+char* read_file(const char* path, long* size) {
   FILE *fp;
   long lSize;
+  char *buffer;
+  fp = fopen(path,"rb");
+  if(!fp) perror(path),exit(1);
+  fseek(fp, 0L, SEEK_END);
+  lSize = ftell(fp);
+  rewind(fp);
 
-  for(int i = 0; i < 5; i++){
-    char *buffer;
+  /* allocate memory for entire content */
+  buffer = calloc( 1, lSize+1 );
+  if( !buffer ) fclose(fp),fputs("memory alloc fails",stderr),exit(1);
 
-    fp = fopen ( files[i] , "rb" );
-    if( !fp ) perror(files[i]),exit(1);
+  /* copy the file into the buffer */
+  if( 1!=fread( buffer , lSize, 1 , fp) )
+    fclose(fp),free(buffer),fputs("entire read fails",stderr),exit(1);
 
-    fseek( fp , 0L , SEEK_END);
-    lSize = ftell( fp );
-    rewind( fp );
+  fclose(fp);
 
-    /* allocate memory for entire content */
-    buffer = calloc( 1, lSize+1 );
-    if( !buffer ) fclose(fp),fputs("memory alloc fails",stderr),exit(1);
+  printf("Input size is %lu\n",lSize);
+  if (size!=NULL) *size=lSize;
+  return buffer;
+}
 
-    /* copy the file into the buffer */
-    if( 1!=fread( buffer , lSize, 1 , fp) )
-      fclose(fp),free(buffer),fputs("entire read fails",stderr),exit(1);
-
-    fclose(fp);
-
-    sizes[i] = lSize;
-    data[i] = buffer;
-
-    printf("The length is %lu\n",lSize);
+// icc http_parser.c http_test.c -O3 -std=c99 -o h && ./h
+int main(int argc, char **argv){
+  #define NUM_MSG 100
+  void* data[NUM_MSG];
+  long sizes[NUM_MSG];
+  for (int i=0;i<NUM_MSG;++i) {
+    char path[512]; snprintf(path,512,"../../test/resources/tweet%d",i+1);
+    data[i]=read_file(path,&sizes[i]);
   }
 
   /* do your work here, buffer is a string contains the whole text */
@@ -71,26 +70,24 @@ int main(int argc, char **argv){
   http_parser* my_parser = malloc(sizeof (http_parser));
   http_parser_init(my_parser, HTTP_RESPONSE);
   //1,10,100,1000,10000
-for (int k=0;k<25;++k) {
-  for(int iter = 1; iter < 100000; iter*=10){
-    struct timeval start, stop;
-
-    gettimeofday(&start, NULL);
-
-    for(int i = 0; i < 5; i++){
-      my_parser->data = data[i];
-
-      for(int j = 0; j < iter; j++){
-        http_parser_execute(my_parser, &my_settings, data[i], sizes[i]);
+  for (int k=0;k<25;++k) {
+    for(int iter = 1; iter <= 1000; iter*=10){
+      struct timeval start, stop;
+  
+      gettimeofday(&start, NULL);
+  
+      for(int i = 0; i < NUM_MSG; i++){
+        my_parser->data = data[i];
+  
+        for(int j = 0; j < iter; j++){
+          http_parser_execute(my_parser, &my_settings, (void*)data[i], sizes[i]);
+        }
       }
+      gettimeofday(&stop, NULL);
+      printf("Parameters(size -> %d): %lu microsec\n", iter, (stop.tv_sec - start.tv_sec)*1000000UL + stop.tv_usec - start.tv_usec);
     }
-    gettimeofday(&stop, NULL);
-    printf("Parameters(size -> %d): %u microsec\n", iter, (stop.tv_sec - start.tv_sec)*1000000UL + stop.tv_usec - start.tv_usec);
   }
-}
-  for(int i = 0; i < 5; i++){
-    free(data[i]);
-  }
+  for(int i=0; i < NUM_MSG; i++) free(data[i]);
   free(my_parser);
 
   //  http_parser_settings settings;

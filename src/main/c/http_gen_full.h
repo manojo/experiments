@@ -8,13 +8,13 @@
 typedef struct{
 int status;
 int contentLength;
-char* connection;
+const char* connection;
 bool chunked;
 bool upgrade;
 } Anon1323431030;
 
 typedef struct{
-char* input;
+const char* input;
 int start;
 int length;
 } Anon1680061013;
@@ -47,11 +47,111 @@ Anon1323431030 _2;
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+
+const char* x811 = "connection";
+const int x812 = 10;
+const char* x840 = "proxy-connection";
+const int x841 = 16;
+const char* x870 = "keep-alive";
+const int x871 = 19;
+const char* x899 = "close";
+const int x900 = 5;
+const char* x932 = "content-length";
+const int x933 = 14;
+const char* x963 = "transfer-encoding";
+const int x964 = 17;
+const char* x992 = "chunked";
+const int x993 = 7;
+const char* x1023 = "upgrade";
+const int x1024 = 7;
+
+// context of closures
+int x7;
+char* x00;
+
+// closures
+ParseResultInt x529(int x492) {
+int x494 = 0;
+bool x495 = true;
+int x496 = x492;
+const bool x498 = x492 >= x7;
+if (x498) {
+x494 = 0;
+x495 = true;
+x496 = x492;
+} else {
+const char x503 = x00[x492];
+const bool x504 = x503 >= 'a';
+const bool x505 = x503 <= 'z';
+const bool x506 = x504 && x505;
+const bool x507 = x503 >= 'A';
+const bool x508 = x503 <= 'Z';
+const bool x509 = x507 && x508;
+const bool x510 = x506 || x509;
+if (x510) {
+x494 = x492;
+x495 = false;
+const int x511 = x492 + 1;
+x496 = x511;
+} else {
+x494 = 0;
+x495 = true;
+x496 = x492;
+}
+}
+const int x524 = x494;
+const bool x525 = x495;
+const int x526 = x496;
+const ParseResultInt x527 = {x524,x525,x526};
+return x527;
+}
+
+ParseResultInt x565(int x486) {
+int x488 = 0;
+bool x489 = true;
+int x490 = x486;
+const ParseResultInt x530 = x529(x486);
+const bool x531 = x530.empty;
+if (x531) {
+const bool x532 = x486 >= x7;
+if (x532) {
+x488 = 0;
+x489 = true;
+x490 = x486;
+} else {
+const char x537 = x00[x486];
+const bool x538 = x537 == '-';
+if (x538) {
+x488 = x486;
+x489 = false;
+const int x539 = x486 + 1;
+x490 = x539;
+} else {
+x488 = 0;
+x489 = true;
+x490 = x486;
+}
+}
+} else {
+const int x553 = x530.res;
+x488 = x553;
+x489 = x531;
+const int x556 = x530.next;
+x490 = x556;
+}
+const int x560 = x488;
+const bool x561 = x489;
+const int x562 = x490;
+const ParseResultInt x563 = {x560,x561,x562};
+return x563;
+}
+
 ParseResultTuple2Anon1323431030Anon1680061013 respAndMessageParse(char* x0) {
 Tuple2Anon1323431030Anon1680061013 x2 = (Tuple2Anon1323431030Anon1680061013){};
 bool x3 = true;
 int x4 = -1;
-const int x7 = strlen(x0);
+x00=x0;
+x7 = strlen(x0);
 const bool x8 = 0 >= x7;
 if (x8) {
 x2 = (Tuple2Anon1323431030Anon1680061013){};
@@ -475,96 +575,9 @@ int x473 = x460;
 int x475 = -1;
 bool x476 = true;
 int x477 = x460;
-ParseResultInt x529(int x492) {
-int x494 = 0;
-bool x495 = true;
-int x496 = x492;
-const bool x498 = x492 >= x7;
-if (x498) {
-x494 = 0;
-x495 = true;
-x496 = x492;
-} else {
-const char x503 = x0[x492];
-const bool x504 = x503 >= 'a';
-const bool x505 = x503 <= 'z';
-const bool x506 = x504 && x505;
-const bool x507 = x503 >= 'A';
-const bool x508 = x503 <= 'Z';
-const bool x509 = x507 && x508;
-const bool x510 = x506 || x509;
-if (x510) {
-x494 = x492;
-x495 = false;
-const int x511 = x492 + 1;
-x496 = x511;
-} else {
-x494 = 0;
-x495 = true;
-x496 = x492;
-}
-}
-const int x524 = x494;
-const bool x525 = x495;
-const int x526 = x496;
-const ParseResultInt x527 = {x524,x525,x526};
-return x527;
-}
-ParseResultInt x565(int x486) {
-int x488 = 0;
-bool x489 = true;
-int x490 = x486;
-const ParseResultInt x530 = x529(x486);
-const bool x531 = x530.empty;
-if (x531) {
-const bool x532 = x486 >= x7;
-if (x532) {
-x488 = 0;
-x489 = true;
-x490 = x486;
-} else {
-const char x537 = x0[x486];
-const bool x538 = x537 == '-';
-if (x538) {
-x488 = x486;
-x489 = false;
-const int x539 = x486 + 1;
-x490 = x539;
-} else {
-x488 = 0;
-x489 = true;
-x490 = x486;
-}
-}
-} else {
-const int x553 = x530.res;
-x488 = x553;
-x489 = x531;
-const int x556 = x530.next;
-x490 = x556;
-}
-const int x560 = x488;
-const bool x561 = x489;
-const int x562 = x490;
-const ParseResultInt x563 = {x560,x561,x562};
-return x563;
-}
-const char* x811 = "connection";
-const int x812 = strlen(x811);
-const char* x840 = "proxy-connection";
-const int x841 = strlen(x840);
-const char* x870 = "keep-alive";
-const int x871 = strlen(x870);
-const char* x899 = "close";
-const int x900 = strlen(x899);
-const char* x932 = "content-length";
-const int x933 = strlen(x932);
-const char* x963 = "transfer-encoding";
-const int x964 = strlen(x963);
-const char* x992 = "chunked";
-const int x993 = strlen(x992);
-const char* x1023 = "upgrade";
-const int x1024 = strlen(x1023);
+
+
+
 for (;;) {
 const bool x478 = x476;
 const int x479 = x475;

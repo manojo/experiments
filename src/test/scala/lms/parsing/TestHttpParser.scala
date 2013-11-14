@@ -223,6 +223,7 @@ object TestHttpCParser {
     val s = read("src/main/c/tweet1")
     val g = new Gen()
     val f = g.compile(g.respAndMessageParse)
+    /*
     println(f(s))
     g.codegen.reset
 
@@ -233,7 +234,22 @@ object TestHttpCParser {
         "src/main/scala/lms/parsing/ResponseParseStaticNew.scala"
       ))
     )
+    */
 
+    //println(f(s))
+    def time(ns:Long,n:Int=2) = { val ms=ns/1000000; ("%"+(if (n==0)"" else n)+"d.%03d").format(ms/1000,ms%1000) }
+    def ns[T](f:()=>T) = { val t0=System.nanoTime(); var r=f(); val t1=System.nanoTime(); (t1-t0,r) }
+    var o = scala.Console.out
+    def off =scala.Console.setOut(new PrintStream(new OutputStream() {
+        override def close() {}
+        override def flush() {}
+        override def write(b:Array[Byte]) {}
+        override def write(b:Array[Byte],off:Int,len:Int) {}
+        override def write(b:Int) {}
+    }))
+    def on = scala.Console.setOut(o)
+    var i=0; off; while(i<1000) { f(s); i+=1 }
+    var k=0; while(k<10) { println(time(ns(()=>{ off; i=0; while(i<100) { f(s); i+=1 }; on })._1)); k+=1 }
 
     val w = new Writer("src/main/c/http_gen_full2.h")
     w.codegen.emitSource(w.respAndMessageParse _ , "respAndMessageParse", w.pr)

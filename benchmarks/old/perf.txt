@@ -1,3 +1,31 @@
+
+HTTP / 8.552'278 MB of data (100 messages)
+
+Scala RespAndMessageParserStaticNew.parse
+[info] Parameters(size -> 1): 0.297
+[info] Parameters(size -> 10): 2.799
+[info] Parameters(size -> 100): 27.95
+[info] Parameters(size -> 1000): 281.199
+
+ICC 13.0.0 -O3
+Parameters(size -> 1): 0.257
+Parameters(size -> 10): 2.334
+Parameters(size -> 100): 23.159
+Parameters(size -> 1000): 233.093
+
+GCC 4.8.2 -O2 (best performance)
+Parameters(size -> 1): 0.229
+Parameters(size -> 10): 2.025
+Parameters(size -> 100): 19.966
+Parameters(size -> 1000): 202.612
+
+
+
+----------------------------------------------------
+LEGACY BELOW
+----------------------------------------------------
+
+
 Data (total)
 HTTP data    : 694550
 Payload/JSON : 691431
