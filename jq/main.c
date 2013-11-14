@@ -152,7 +152,7 @@ static int read_more(char* buf, size_t size) {
   return 1;
 }
 
-int main(int argc, char* argv[]) {
+int main2(int argc, char* argv[]) {
   int ret = 0;
   if (argc) progname = argv[0];
 
@@ -318,4 +318,64 @@ out:
   jv_mem_free(input_filenames);
   bytecode_free(bc);
   return ret;
+}
+
+
+
+// -----------------------------------------------------------------------------
+// LOAD IN MEMORY
+
+const char* read_file(const char* path, long* size) {
+  FILE *fp;
+  long lSize;
+  char *buffer;
+  fp = fopen(path,"rb");
+  if(!fp) perror(path),exit(1);
+  fseek(fp, 0L, SEEK_END);
+  lSize = ftell(fp);
+  rewind(fp);
+  buffer = calloc( 1, lSize+1 );
+  if( !buffer ) fclose(fp),fputs("memory alloc fails",stderr),exit(1);
+  if( 1!=fread( buffer , lSize, 1 , fp) )
+    fclose(fp),free(buffer),fputs("entire read fails",stderr),exit(1);
+  fclose(fp);
+  printf("Input size is %lu\n",lSize);
+  if (size!=NULL) *size=lSize;
+  return buffer;
+}
+
+int main(int argc, char* argv[]) {
+  #define NUM_MSG 100
+  const char* buf[NUM_MSG];
+  long size[NUM_MSG];
+  for (int i=0;i<NUM_MSG;++i) {
+    char path[512]; snprintf(path,512,"../src/test/resources/just_tweet%d",i+1);
+    buf[i]=read_file(path,&size[i]);
+  }
+  
+  // In-memory parsing
+  for(int iter = 1; iter <= 1000; iter*=10){
+    for (int k=0;k<25;++k) {
+      struct jv_parser parser;
+      struct timeval start, stop;
+      jv_parser_init(&parser);
+      gettimeofday(&start, NULL);
+      for(int j = 0; j < iter; j++) {
+        for(int i = 0; i < NUM_MSG; i++) {
+          jv_parser_set_buf(&parser, buf[i], size[i], 1);
+          jv value;
+          while (jv_is_valid((value = jv_parser_next(&parser)))) { jv_free(value); }
+          jv_free(value);
+          //assert(parser.curr_buf_pos==size[i]);
+          //printf("%d %d\n",parser.curr_buf_pos,size[i]);
+        }
+      }
+      gettimeofday(&stop, NULL);
+      jv_parser_free(&parser);
+      printf("%d: %lu\n", iter, (stop.tv_sec - start.tv_sec)*1000000UL + stop.tv_usec - start.tv_usec);
+    }
+  }
+
+  for (int i=0;i<NUM_MSG;++i) free((char*)buf[i]);
+
 }
