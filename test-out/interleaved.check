@@ -1,0 +1,221 @@
+/*****************************************
+  Emitting Generated Code                  
+*******************************************/
+class testChunked extends ((Array[Char])=>(Unit)) {
+def apply(x0:Array[Char]): Unit = {
+var x1: Int = 0
+var x3: java.lang.String = null
+var x4: Boolean = true
+var x5: Int = -1
+val x7 = x0.length
+val x8 = 0 >= x7
+val x183 = if (x8) {
+x3 = null
+x4 = true
+x5 = 0
+()
+} else {
+val x16 = x0(0)
+val x17 = x16 >= '0'
+val x18 = x16 <= '9'
+val x19 = x17 && x18
+val x181 = if (x19) {
+val x20 = 0 + 1
+val x25 = x20 >= x7
+val x175 = if (x25) {
+x3 = null
+x4 = true
+x5 = 0
+()
+} else {
+val x31 = x0(x20)
+val x32 = x31 == '-'
+val x173 = if (x32) {
+val x22 = x16 - '0'
+val x23 = x22.toInt
+val x36 = x23 == 0
+val x167 = if (x36) {
+x3 = ""
+x4 = false
+val x33 = x20 + 1
+x5 = x33
+()
+} else {
+val x33 = x20 + 1
+val x42 = x33 + x23
+x1 = x42
+var x44: java.lang.String = ""
+var x45: Boolean = false
+var x46: Int = x33
+var x48: Int = -1
+var x49: Boolean = true
+var x50: Int = x33
+val x154 = while ({val x51 = x49
+val x52 = x48
+val x53 = x50
+val x54 = x52 != x53
+val x55 = x51 && x54
+x55}) {
+val x57 = x50
+x48 = x57
+val x59 = x1
+val x60 = x57 == x59
+val x152 = if (x60) {
+val x61 = x57 >= x7
+val x131 = if (x61) {
+x49 = false
+()
+} else {
+val x67 = x0(x57)
+val x68 = x67 >= '0'
+val x69 = x67 <= '9'
+val x70 = x68 && x69
+val x129 = if (x70) {
+val x71 = x57 + 1
+val x76 = x71 >= x7
+val x125 = if (x76) {
+x49 = false
+()
+} else {
+val x80 = x0(x71)
+val x81 = x80 == '-'
+val x123 = if (x81) {
+val x73 = x67 - '0'
+val x74 = x73.toInt
+val x85 = x74 == 0
+val x119 = if (x85) {
+x49 = false
+()
+} else {
+val x82 = x71 + 1
+val x89 = x82 + x74
+x1 = x89
+val x92 = x82 >= x7
+val x117 = if (x92) {
+x49 = false
+()
+} else {
+val x96 = x0(x82)
+val x97 = x96 >= '0'
+val x98 = x96 <= '9'
+val x99 = x97 && x98
+val x115 = if (x99) {
+val x102 = x44
+val x103 = x45
+val x104 = x46
+val x106 = x102+x96
+x44 = x106
+x45 = false
+val x100 = x82 + 1
+x46 = x100
+x50 = x100
+()
+} else {
+x49 = false
+()
+}
+x115
+}
+x117
+}
+x119
+} else {
+x49 = false
+()
+}
+x123
+}
+x125
+} else {
+x49 = false
+()
+}
+x129
+}
+x131
+} else {
+val x61 = x57 >= x7
+val x150 = if (x61) {
+x49 = false
+()
+} else {
+val x67 = x0(x57)
+val x68 = x67 >= '0'
+val x69 = x67 <= '9'
+val x70 = x68 && x69
+val x148 = if (x70) {
+val x135 = x44
+val x136 = x45
+val x137 = x46
+val x139 = x135+x67
+x44 = x139
+x45 = false
+val x71 = x57 + 1
+x46 = x71
+x50 = x71
+()
+} else {
+x49 = false
+()
+}
+x148
+}
+x150
+}
+x152
+}
+val x155 = x44
+val x156 = x45
+val x157 = x46
+val x159 = if (x156) {
+null
+} else {
+x155
+}
+x3 = x159
+val x160 = if (x156) {
+true
+} else {
+x156
+}
+x4 = x160
+val x161 = if (x156) {
+0
+} else {
+x157
+}
+x5 = x161
+()
+}
+x167
+} else {
+x3 = null
+x4 = true
+x5 = 0
+()
+}
+x173
+}
+x175
+} else {
+x3 = null
+x4 = true
+x5 = 0
+()
+}
+x181
+}
+val x184 = x3
+val x185 = x4
+val x186 = x5
+val x187 = new ParseResultString(x184,x185,x186)
+val x188 = println(x187)
+x188
+}
+}
+/*****************************************
+  End of Generated Code                  
+*******************************************/
+compilation: ok
+ParseResultString(,false,2)
+ParseResultString(12345,false,9)
