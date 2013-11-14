@@ -224,6 +224,17 @@ object TestHttpCParser {
     val g = new Gen()
     val f = g.compile(g.respAndMessageParse)
     println(f(s))
+    g.codegen.reset
+
+    g.codegen.emitSource(
+      g.responseParse _,
+      "ResponseParseStaticNew",
+      new java.io.PrintWriter(new FileOutputStream(
+        "src/main/scala/lms/parsing/ResponseParseStaticNew.scala"
+      ))
+    )
+
+
     val w = new Writer("src/main/c/http_gen_full2.h")
     w.codegen.emitSource(w.respAndMessageParse _ , "respAndMessageParse", w.pr)
     w.close

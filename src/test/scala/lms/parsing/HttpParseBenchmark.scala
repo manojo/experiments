@@ -44,7 +44,8 @@ class HttpParseBenchmark extends PerformanceTest
   }
 
   def bench(obj:String,meth:String,f:Array[Char]=>_) {
-    val range = Gen.exponential("size")(1, 1000, 10)
+    val range = Gen.enumeration("size")(100)
+    //val range = Gen.exponential("size")(1, 1000, 10)
     val ms = messages.toArray
     val mn = messages.length
     performance of obj in {
@@ -82,12 +83,25 @@ class HttpParseBenchmark extends PerformanceTest
   )
   bench("RespAndMessageParserStatic","parse",stagedParserStatic.apply _)
 
+  //staged parser static new
+  val stagedParserStaticNew = new ResponseParseStatic(
+    "connection".toArray,
+    "proxy-connection".toArray,
+    "keep-alive".toArray,
+    "close".toArray,
+    "content-length".toArray,
+    "transfer-encoding".toArray,
+    "chunked".toArray,
+    "upgrade".toArray
+  )
+  bench("RespAndMessageParserStaticNew","parse",stagedParserStaticNew.apply _)
+
   // hand written, folding
   val handWrittenParser = HandWrittenParserWrapper.getParser
   //bench("HTTPParserLL","parseFoldString",(m:Array[Char])=>HandWrittenParserWrapper.execute(handWrittenParser, new StringFoldingSettings, m, 0, m.length))
 
   // NGINX Java port
-  bench("HTTPParserLL","parse",(m:Array[Char])=>HandWrittenParserWrapper.execute(handWrittenParser, new DefaultHttpSettings, m, 0, m.length))
+  //bench("HTTPParserLL","parse",(m:Array[Char])=>HandWrittenParserWrapper.execute(handWrittenParser, new DefaultHttpSettings, m, 0, m.length))
 
 /*
   //val range = Gen.enumeration("size")(100)
