@@ -28,7 +28,7 @@ object ParserWorld extends LMS with LMSExp with MyScalaCompile{ self =>
 trait NewDesignParsers{
   import ParserWorld._
 
-  type Input = Array[Char]
+  type Input = (Array[Char], Boolean)
   type Pos = Int
   type Elem = Char
 
@@ -146,6 +146,11 @@ trait NewDesignParsers{
    */
   def success[T:Manifest](v:Rep[T]) = Parser[T]{i => elGen(Success(v, i))}
 
+  /**
+   * a Failure combinator
+   */
+  def failure[T: Manifest] = Parser[T] { i => elGen(Failure[T](i)) }
+
   // A terminal that return the current reading position
   def pos(in: Rep[Input]) = Parser[Int]{i => elGen(Success[Int](i, i)) }
 
@@ -156,24 +161,34 @@ trait NewDesignParsers{
     ) ^^ { x => x.reverse }
 
   /***CHAR PARSERS ***/
-  def isDigit(c: Rep[Char]) : Rep[Boolean] =
-    c >= publicUnit('0') && c <= publicUnit('9')
+  def isInRange(c: Rep[Char], start: Char, end: Char) : Rep[Boolean] =
+    c >= publicUnit(start) && c <= publicUnit(end)
+
+  def isDigit(c: Rep[Char]) : Rep[Boolean] = isInRange(c, '0', '9')
 
   def isLetter(c: Rep[Char]) : Rep[Boolean] =
-    (c >= publicUnit('a') && c <= publicUnit('z')) ||
-    (c >= publicUnit('A') && c <= publicUnit('Z'))
+    isInRange(c, 'A', 'Z') || isInRange(c, 'a', 'z')
+
+  def isHexDigit(c: Rep[Char]) : Rep[Boolean] =
+    isDigit(c) || isInRange(c, 'A', 'F') || isInRange(c, 'a', 'f')
 
   def accept(in:Rep[Input], e: Rep[Elem]): Parser[Char] = acceptIf(in, (c: Rep[Char]) => c == e)
 
   def acceptIf(in:Rep[Input], p: Rep[Elem] => Rep[Boolean]) = Parser[Char]{ i =>
-    if(i >= in.length) elGen(Failure[Char](i))
-    else if(p(in(i))) elGen(Success(in(i), i+publicUnit(1)))
+    if (i >= in._1.length) elGen(Failure[Char](i))
+    else if (p(in._1(i))) elGen(Success(in._1(i), i + publicUnit(1)))
     else elGen(Failure[Char](i))
   }
 
   def letter(in:Rep[Input]): Parser[Char] = acceptIf(in, (c: Rep[Char]) => isLetter(c))
   def digit(in: Rep[Input]): Parser[Char] = acceptIf(in, (c: Rep[Char]) => isDigit(c))
   def digit2Int(in: Rep[Input]): Parser[Int] = digit(in) ^^ {c: Rep[Char] => (c - publicUnit('0')).toInt}
+  def hexDigit(in: Rep[Input]): Parser[Char] = acceptIf(in, (c: Rep[Char]) => isHexDigit(c))
+  def hexDigit2Int(in: Rep[Input]): Parser[Int] = hexDigit(in) ^^ { c: Rep[Char] =>
+    if (isDigit(c)) (c - publicUnit('0')).toInt
+    else if (isInRange(c, 'A', 'F')) (c - publicUnit('A')).toInt + publicUnit(10)
+    else (c - publicUnit('a')).toInt + publicUnit(10)
+  }
 
   /*** TOKEN PARSERS ***/
   //def keyword(in:Rep[Input]) : Parser[String] = letter(in) ~ repToS( letter(in) /*| digit(in)*/ ) ^^ {
@@ -196,6 +211,13 @@ trait NewDesignParsers{
     digit2Int(in) >> {x =>
       repFold(digit2Int(in))(x, (res:Rep[Int], y: Rep[Int])
         => (res * publicUnit(10) + y)
+      )
+  }
+
+  def hexNumber(in: Rep[Input]): Parser[Int] =
+    hexDigit2Int(in) >> { x =>
+      repFold(hexDigit2Int(in))(x, (res:Rep[Int], y: Rep[Int])
+        => (res * publicUnit(16) + y)
       )
   }
 
