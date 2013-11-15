@@ -162,15 +162,20 @@ object HTTPTestProg extends Chunker {
   def firstChunkLength(in: Rep[Input]): Parser[Int] =
     (hexNumber(in) <~ crlf(in)) >> { octets =>
       println(publicUnit("octets: ") + octets)
-      if (octets == publicUnit(0)) crlf(in) ~> failure
-      else success(octets)
+      //if (octets == publicUnit(0)) crlf(in) ~> failure
+      //else success(octets)
+      if (octets == publicUnit(0)) success(octets) ^^ { x => println(publicUnit("should be 0")); x }
+      else success(octets) ^^ { x => println(publicUnit("shouldn't be 0")); x }
     }
 
   def nextChunkLength(in: Rep[Input]): Parser[Int] =
     (crlf(in) ~> hexNumber(in) <~ crlf(in)) >> { octets =>
       println(publicUnit("octets: ") + octets)
-      if (octets == publicUnit(0)) crlf(in) ~> failure
-      else success(octets)
+      println(publicUnit("octets == 0: ") + (octets == publicUnit(0)))
+      //if (octets == publicUnit(0)) crlf(in) ~> failure
+      //else success(octets)
+      if (octets == publicUnit(0)) success(octets) ^^ { x => println(publicUnit("should be 0")); x }
+      else success(octets) ^^ { x => println(publicUnit("shouldn't be 0")); x }
     }
 
   def copy(in: Rep[Input], out: Rep[Input], pos: Rep[Int],
