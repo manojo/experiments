@@ -136,6 +136,22 @@ class InterleavedWordCounter(val chunker: Chunker)
     initChunkLength(in) ~> wordCount(in, acc)
 }
 
+class ChunkedWordCounter(length: ParserWorld.Rep[Int]) extends WordCounter {
+
+  import ParserWorld._
+
+  // We need a buffer to store chunks in
+  val buf: Rep[Input] = NewArray[Char](length)
+  val end: Var[Int] = var_new(publicUnit(0))
+
+  // Don't parse after the end of the buffer.
+  override def acceptIf(in: Rep[Input], p: Rep[Elem] => Rep[Boolean]) = Parser[Char]{ i =>
+    if (i >= readVar(end)) elGen(Failure[Char](i))
+    else if (p(in(i))) elGen(Success(in(i), i + publicUnit(1)))
+    else elGen(Failure[Char](i))
+  }
+}
+
 object HTTPTestProg extends Chunker {
 
   import ParserWorld._
@@ -166,22 +182,19 @@ object HTTPTestProg extends Chunker {
 
   def testChunked(in: Rep[Input]): Rep[Unit] = {
 
-    // We need a buffer to store chunks in
-    val buf = NewArray[Char](in.length)
-    val end = var_new(publicUnit(0))
+    val wc = new ChunkedWordCounter(in.length)
 
     // Parse chunk lengths and copy chunks into the buffer.
     val p = firstChunkLength(in) >> { len =>
-      copy(in, buf, publicUnit(0), len) } >> { e1 =>
-      end = e1
-      repFold(nextChunkLength(in) >> { len => copy(in, buf, end, len) })(
-        publicUnit(()), { (_: Rep[Unit], e2: Rep[Int]) => end = end + e2; publicUnit(()) })
+      copy(in, wc.buf, publicUnit(0), len) } >> { e1 =>
+      wc.end = e1
+      repFold(nextChunkLength(in) >> { len => copy(in, wc.buf, wc.end, len) })(
+        publicUnit(()), { (_: Rep[Unit], e2: Rep[Int]) => wc.end = e2; publicUnit(()) })
     }
     p(publicUnit(0)){ _ => publicUnit(()) }
 
     var r = Failure[Int](publicUnit(0))
-    val wc = new WordCounter {}
-    wc(buf, publicUnit(0))(publicUnit(0)){ x => r = x }
+    wc(wc.buf, publicUnit(0))(publicUnit(0)){ x => r = x }
     println(r)
   }
 
@@ -222,7 +235,6 @@ class InterleavedTest extends FileDiffSuite {
       testcChunked("2\nhe\n3\nllo\n0\n\n".toArray)
       testcChunked(longText.toArray)
 
-/*
       ParserWorld.codegen.emitSource(
         testInterleaved _,
         "testInterleaved",
@@ -232,7 +244,7 @@ class InterleavedTest extends FileDiffSuite {
       val testcInterleaved = ParserWorld.compile(testInterleaved)
       testcInterleaved("0\n".toArray)
       testcInterleaved("2\nhe\n3\nllo\n0\n\n".toArray)
-      testcInterleaved(longText.toArray)*/
+      testcInterleaved(longText.toArray)
     }
     assertFileEqualsCheck(prefix+"interleaved")
   }
