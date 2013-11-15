@@ -164,8 +164,13 @@ object HTTPTestProg extends Chunker {
       println(publicUnit("octets: ") + octets)
       //if (octets == publicUnit(0)) crlf(in) ~> failure
       //else success(octets)
-      if (octets == publicUnit(0)) success(octets) ^^ { x => println(publicUnit("should be 0")); x }
-      else success(octets) ^^ { x => println(publicUnit("shouldn't be 0")); x }
+      //if (octets == publicUnit(0)) success(octets) ^^ { x => println(publicUnit("should be 0")); x }
+      //else success(octets) ^^ { x => println(publicUnit("shouldn't be 0")); x }
+      Parser{i =>
+        val g =  if (octets == publicUnit(0)) (success(octets) ^^ { x => println(publicUnit("should be 0")); x }).apply(i)
+        else (success(octets) ^^ { x => println(publicUnit("shouldn't be 0")); x }).apply(i)
+        g
+      }
     }
 
   def nextChunkLength(in: Rep[Input]): Parser[Int] =
@@ -174,8 +179,14 @@ object HTTPTestProg extends Chunker {
       println(publicUnit("octets == 0: ") + (octets == publicUnit(0)))
       //if (octets == publicUnit(0)) crlf(in) ~> failure
       //else success(octets)
-      if (octets == publicUnit(0)) success(octets) ^^ { x => println(publicUnit("should be 0")); x }
-      else success(octets) ^^ { x => println(publicUnit("shouldn't be 0")); x }
+      //if (octets == publicUnit(0)) success(octets) ^^ { x => println(publicUnit("should be 0")); x }
+      //else success(octets) ^^ { x => println(publicUnit("shouldn't be 0")); x }
+
+      Parser{i =>
+        val g =  if (octets == publicUnit(0)) (success(octets) ^^ { x => println(publicUnit("should be 0")); x }).apply(i)
+        else (success(octets) ^^ { x => println(publicUnit("shouldn't be 0")); x }).apply(i)
+        g
+      }
     }
 
   def copy(in: Rep[Input], out: Rep[Input], pos: Rep[Int],
