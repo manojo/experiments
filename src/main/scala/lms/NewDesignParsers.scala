@@ -28,7 +28,7 @@ object ParserWorld extends LMS with LMSExp with MyScalaCompile{ self =>
 trait NewDesignParsers{
   import ParserWorld._
 
-  type Input = (Array[Char], Boolean)
+  type Input = Array[Char]
   type Pos = Int
   type Elem = Char
 
@@ -175,8 +175,8 @@ trait NewDesignParsers{
   def accept(in:Rep[Input], e: Rep[Elem]): Parser[Char] = acceptIf(in, (c: Rep[Char]) => c == e)
 
   def acceptIf(in:Rep[Input], p: Rep[Elem] => Rep[Boolean]) = Parser[Char]{ i =>
-    if (i >= in._1.length) elGen(Failure[Char](i))
-    else if (p(in._1(i))) elGen(Success(in._1(i), i + publicUnit(1)))
+    if (i >= in.length) elGen(Failure[Char](i))
+    else if (p(in(i))) elGen(Success(in(i), i + publicUnit(1)))
     else elGen(Failure[Char](i))
   }
 
