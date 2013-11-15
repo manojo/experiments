@@ -47,9 +47,7 @@ trait InterleavedParsers extends NewDesignParsers {
    * process the next chunk in the input.
    */
   override def acceptIf(in: Rep[Input], p: Rep[Elem] => Rep[Boolean]) = Parser[Char] { i =>
-    println(publicUnit("i: ") + i + publicUnit(", chunkEnd: ") + chunkEnd)
     if (i >= chunkEnd) { // reached end of chunk
-
       // Parse the length of the next chunk and continue parsing the
       // next chunk.
       val nextChunk = updateChunkEnd(in) >> { _ =>
@@ -114,15 +112,15 @@ trait WordCounter extends NewDesignParsers {
 
   def skipWhile(in: Rep[Input], p: Rep[Elem] => Rep[Boolean]): Parser[Unit] =
     repFold(acceptIf(in, p))(
-      publicUnit(()), {(_: Rep[Unit], c: Rep[Elem]) => println(publicUnit("c: ") + c); publicUnit(())})
+      publicUnit(()), (_: Rep[Unit], c: Rep[Elem]) => publicUnit(()))
 
-  def skipSpace(in: Rep[Input]): Parser[Unit] = skipWhile(in, isSpace _) ^^ { _: Rep[Unit] => println(publicUnit("end skipSpace")); publicUnit(()) }
+  def skipSpace(in: Rep[Input]): Parser[Unit] = skipWhile(in, isSpace _)
   def skipWord(in: Rep[Input]): Parser[Unit] =
-    (acceptIf(in, isNotSpace _) ^^ { c: Rep[Char] => println(publicUnit("c: ") + c); publicUnit(()) }) ~> skipWhile(in, isNotSpace _) ^^ { _: Rep[Unit] => println(publicUnit("end skipWord")); publicUnit(()) }
+    acceptIf(in, isNotSpace _) ~> skipWhile(in, isNotSpace _)
 
   def wordCount(in: Rep[Input], acc: Rep[Int]): Parser[Int] =
     skipSpace(in) ~> repFold(skipWord(in) <~ skipSpace(in))(
-      acc, {(i: Rep[Int], _) => println(publicUnit("i: ") + (i + 1)); i + 1})
+      acc, (i: Rep[Int], _) => i + 1)
 
   def apply(in: Rep[Input], acc: Rep[Int]) = wordCount(in, acc)
 }
@@ -161,31 +159,17 @@ object HTTPTestProg extends Chunker {
 
   def firstChunkLength(in: Rep[Input]): Parser[Int] =
     (hexNumber(in) <~ crlf(in)) >> { octets =>
-      println(publicUnit("octets: ") + octets)
-      //if (octets == publicUnit(0)) crlf(in) ~> failure
-      //else success(octets)
-      //if (octets == publicUnit(0)) success(octets) ^^ { x => println(publicUnit("should be 0")); x }
-      //else success(octets) ^^ { x => println(publicUnit("shouldn't be 0")); x }
-      Parser{i =>
-        val g =  if (octets == publicUnit(0)) (success(octets) ^^ { x => println(publicUnit("should be 0")); x }).apply(i)
-        else (success(octets) ^^ { x => println(publicUnit("shouldn't be 0")); x }).apply(i)
-        g
+      Parser { i =>
+        if (octets == publicUnit(0)) (crlf(in) ~> failure).apply(i)
+        else success(octets).apply(i)
       }
     }
 
   def nextChunkLength(in: Rep[Input]): Parser[Int] =
     (crlf(in) ~> hexNumber(in) <~ crlf(in)) >> { octets =>
-      println(publicUnit("octets: ") + octets)
-      println(publicUnit("octets == 0: ") + (octets == publicUnit(0)))
-      //if (octets == publicUnit(0)) crlf(in) ~> failure
-      //else success(octets)
-      //if (octets == publicUnit(0)) success(octets) ^^ { x => println(publicUnit("should be 0")); x }
-      //else success(octets) ^^ { x => println(publicUnit("shouldn't be 0")); x }
-
-      Parser{i =>
-        val g =  if (octets == publicUnit(0)) (success(octets) ^^ { x => println(publicUnit("should be 0")); x }).apply(i)
-        else (success(octets) ^^ { x => println(publicUnit("shouldn't be 0")); x }).apply(i)
-        g
+      Parser { i =>
+        if (octets == publicUnit(0)) (crlf(in) ~> failure).apply(i)
+        else success(octets).apply(i)
       }
     }
 
