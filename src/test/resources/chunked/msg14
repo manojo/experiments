@@ -1,0 +1,8 @@
+HTTP/1.1 200 OK
+Date: Fri, 15 Nov 2013 08:42:45 GMT
+Server: Apache/2.2.24 (Unix) DAV/2 mod_ssl/2.2.24 OpenSSL/0.9.8y
+Content-Length: 64
+Connection: close
+Content-Type: text/html; charset=UTF-8
+
+{"errors":[{"message":"Could not authenticate you","code":32}]}
