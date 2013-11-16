@@ -8,6 +8,8 @@ import java.io.PrintWriter
 import java.io.StringWriter
 import java.io.FileOutputStream
 
+import org.scalatest._
+
 trait Chunker extends NewDesignParsers {
 
   import ParserWorld._
@@ -180,7 +182,7 @@ object HTTPTestProg extends Chunker {
     s(i + length)
   }
 
-  def testChunked(in: Rep[Input]): Rep[Unit] = {
+  def testChunked(in: Rep[Input]): Rep[Int] = {
 
     val wc = new ChunkedWordCounter(in.length)
 
@@ -195,18 +197,18 @@ object HTTPTestProg extends Chunker {
 
     var r = Failure[Int](publicUnit(0))
     wc(wc.buf, publicUnit(0))(publicUnit(0)){ x => r = x }
-    println(r)
+    readVar(r).get
   }
 
-  def testInterleaved(in: Rep[Array[Char]]): Rep[Unit] = {
+  def testInterleaved(in: Rep[Array[Char]]): Rep[Int] = {
     var r = Failure[Int](publicUnit(0))
     val wc = new InterleavedWordCounter(this)(in, publicUnit(0))(publicUnit(0))
     wc{ x => r = x }
-    println(r)
+    readVar(r).get
   }
 }
 
-class InterleavedTest extends FileDiffSuite {
+class InterleavedTest extends FileDiffSuite with Matchers {
   import HTTPTestProg._
 
   val prefix = "test-out/"
@@ -231,9 +233,9 @@ class InterleavedTest extends FileDiffSuite {
       )
 
       val testcChunked = ParserWorld.compile(testChunked)
-      testcChunked("0\n".toArray)
-      testcChunked("2\nhe\n3\nllo\n0\n\n".toArray)
-      testcChunked(longText.toArray)
+      testcChunked("0\n".toArray) should equal (0)
+      testcChunked("2\nhe\n3\nllo\n0\n\n".toArray) should equal (1)
+      testcChunked(longText.toArray) should equal (6)
 
       ParserWorld.codegen.emitSource(
         testInterleaved _,
@@ -242,11 +244,11 @@ class InterleavedTest extends FileDiffSuite {
       )
 
       val testcInterleaved = ParserWorld.compile(testInterleaved)
-      testcInterleaved("0\n".toArray)
-      testcInterleaved("2\nhe\n3\nllo\n0\n\n".toArray)
-      testcInterleaved(longText.toArray)
+      testcInterleaved("0\n".toArray) should equal (0)
+      testcInterleaved("2\nhe\n3\nllo\n0\n\n".toArray) should equal (1)
+      testcInterleaved(longText.toArray) should equal (6)
     }
-    assertFileEqualsCheck(prefix+"interleaved")
+    //assertFileEqualsCheck(prefix+"interleaved")
   }
 }
 

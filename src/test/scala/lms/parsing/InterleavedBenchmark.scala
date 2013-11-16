@@ -1,14 +1,13 @@
 package lms.parsing
 
+import lms._
 import org.scalameter.api._
-import java.io.{BufferedReader, FileReader, Serializable}
-import scala.collection.mutable.ArrayBuffer
-import parsing.HTTP
+import org.scalatest._
 import done._
 
 //class HttpParseBenchmark extends PerformanceTest.Regression
 class InterleavedBenchmark extends PerformanceTest
-  with Serializable {
+  with Serializable with Matchers {
 
   /* configuration */
   def executor = SeparateJvmsExecutor(
@@ -145,22 +144,22 @@ class InterleavedBenchmark extends PerformanceTest
   }
 
   // Instantiate the buffered parser
-  val bufferedParser = new TestChunked
+  val bufferedParser = ParserWorld.compile(HTTPTestProg.testChunked)
 
   // Instantiate the interleaved parser
-  val interleavedParser = new TestInterleaved
+  val interleavedParser = ParserWorld.compile(HTTPTestProg.testInterleaved)
 
   // Make some data
   val data = mkTestData(1 << 15)
 
   // == Sanity checks: do the parsers give the right result? ==
   val wc = wordCount(data)
-  bufferedParser(data)
-  println(s"buffered res: ${bufferedParser.res.res}")
-  assert(bufferedParser.res.res == wc, s"${bufferedParser.res.res} != $wc")
-  interleavedParser(data)
-  println(s"interleaved res: ${interleavedParser.res.res}")
-  assert(interleavedParser.res.res == wc, s"${interleavedParser.res.res} != $wc")
+  val bwc = bufferedParser(data)
+  println(s"buffered res: $bwc")
+  bwc should equal (wc)
+  val iwc = interleavedParser(data)
+  println(s"interleaved res: $iwc")
+  iwc should equal (wc)
 
   // Run benchmarks
   bench("bufferedParser", "parse", bufferedParser)
