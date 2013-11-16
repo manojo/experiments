@@ -87,8 +87,9 @@ class InterleavedBenchmark extends PerformanceTest with Serializable {
     data(pos + 0) = '0';
     data(pos + 1) = '\n'
     data(pos + 2) = '\n'
-
-    println("data: " + data.take(60).mkString("").replace("\n", "\\n") + "...")
+    pos += 3
+    println("data: " + pos + "bytes, '" +
+      data.take(60).mkString("").replace("\n", "\\n") + "...'")
     data
   }
 
@@ -131,7 +132,7 @@ class InterleavedBenchmark extends PerformanceTest with Serializable {
 
   def bench(obj: String, meth: String, f: Array[Char] => _) {
     //val range = Gen.enumeration("size")(1, 10)
-    val range = Gen.exponential("size")(1, 1000, 10)
+    val range = Gen.exponential("size")(1, 100, 10)
     performance of obj in {
       measure method meth config(
         exec.minWarmupRuns -> 5,
