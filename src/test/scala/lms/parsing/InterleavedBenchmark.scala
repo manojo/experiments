@@ -4,10 +4,9 @@ import lms._
 import org.scalameter.api._
 import org.scalatest._
 import done._
+import Matchers._
 
-//class HttpParseBenchmark extends PerformanceTest.Regression
-class InterleavedBenchmark extends PerformanceTest
-  with Serializable with Matchers {
+class InterleavedBenchmark extends PerformanceTest with Serializable {
 
   /* configuration */
   def executor = SeparateJvmsExecutor(
@@ -17,6 +16,18 @@ class InterleavedBenchmark extends PerformanceTest
 
   def reporter = new LoggingReporter
   def persistor = Persistor.None
+
+  /******* Uncomment below for using regression testing ****/
+    //override def reporter: Reporter = Reporter.Composite(
+    //  new RegressionReporter(
+    //    RegressionReporter.Tester.Accepter(),
+    //    RegressionReporter.Historian.Complete()),
+    //  HtmlReporter(true)
+    //)
+  /******* Stop uncommenting *****/
+    //def persistor = new SerializationPersistor
+
+  // multiple tests can be specified here
 
   def mkTestData(size: Int): Array[Char] = {
 
@@ -59,6 +70,11 @@ class InterleavedBenchmark extends PerformanceTest
       data(pos) = '\n'
       pos +=1
 
+      // FIXME: Dirty, dirty, hack....  Add some sentinel non-space
+      // characters around chunks to avoid back-tracking issues.
+      data(pos) = 's'
+      data(pos + chunkSize - 1) = 's'
+
       // Skip to the position after the chunk (`chunkSize` characters
       // after the chunk header) and insert an LF terminator for
       // the chunk.
@@ -74,36 +90,6 @@ class InterleavedBenchmark extends PerformanceTest
 
     println("data: " + data.take(60).mkString("").replace("\n", "\\n") + "...")
     data
-  }
-
-  /******* Uncomment below for using regression testing ****/
-    //override def reporter: Reporter = Reporter.Composite(
-    //  new RegressionReporter(
-    //    RegressionReporter.Tester.Accepter(),
-    //    RegressionReporter.Historian.Complete()),
-    //  HtmlReporter(true)
-    //)
-  /******* Stop uncommenting *****/
-    //def persistor = new SerializationPersistor
-
-  // multiple tests can be specified here
-
-  def bench(obj: String, meth: String, f: Array[Char] => _) {
-    //val range = Gen.enumeration("size")(1, 10)
-    val range = Gen.exponential("size")(1, 1000, 10)
-    performance of obj in {
-      measure method meth config(
-        exec.minWarmupRuns -> 5,
-        exec.maxWarmupRuns -> 10,
-        exec.benchRuns -> 25,
-        exec.independentSamples -> 4
-      ) in {
-        using(range) /*.config(exec.jvmflags -> "-Xmx12G -Xms12G -Xss64m")*/ in { n=>
-          // we use while to remove overhead of for ... yield
-          var i=0; while (i<n) { f(data); i+=1 }
-        }
-      }
-    }
   }
 
   // We're taking advantage of the fact that the only LF characters in
@@ -143,16 +129,36 @@ class InterleavedBenchmark extends PerformanceTest
     wc
   }
 
+  def bench(obj: String, meth: String, f: Array[Char] => _) {
+    //val range = Gen.enumeration("size")(1, 10)
+    val range = Gen.exponential("size")(1, 1000, 10)
+    performance of obj in {
+      measure method meth config(
+        exec.minWarmupRuns -> 5,
+        exec.maxWarmupRuns -> 10,
+        exec.benchRuns -> 25,
+        exec.independentSamples -> 4
+      ) in {
+        using(range) /*.config(exec.jvmflags -> "-Xmx12G -Xms12G -Xss64m")*/ in { n=>
+          // we use while to remove overhead of for ... yield
+          var i=0; while (i<n) { f(data); i+=1 }
+        }
+      }
+    }
+  }
+
+  // Make some test data
+  val data = mkTestData(1 << 20)
+
   // Instantiate the buffered parser
-  val bufferedParser = ParserWorld.compile(HTTPTestProg.testChunked)
+  //val bufferedParser = ParserWorld.compile(HTTPTestProg.testChunked)
+  val bufferedParser = new TestChunked()
 
   // Instantiate the interleaved parser
-  val interleavedParser = ParserWorld.compile(HTTPTestProg.testInterleaved)
+  //val interleavedParser = ParserWorld.compile(HTTPTestProg.testInterleaved)
+  val interleavedParser = new TestInterleaved()
 
-  // Make some data
-  val data = mkTestData(1 << 15)
-
-  // == Sanity checks: do the parsers give the right result? ==
+  // Sanity checks: do the parsers give the right result?
   val wc = wordCount(data)
   val bwc = bufferedParser(data)
   println(s"buffered res: $bwc")

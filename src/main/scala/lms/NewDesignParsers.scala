@@ -13,7 +13,7 @@ trait LMS extends MyScalaOpsPkg with GeneratorOps with LiftVariables
   with CharOps with StringStructOps
 
 trait LMSExp extends RecParsersExp with CharOpsExp with StaticDataExp
-with StringStructOpsExp
+  with StringStructOpsExp with MyIfThenElseExpOpt
 
 object ParserWorld extends LMS with LMSExp with MyScalaCompile{ self =>
   def publicUnit[T:Manifest](x: T): Rep[T] = unit(x)

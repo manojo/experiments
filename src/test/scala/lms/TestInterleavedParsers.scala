@@ -115,16 +115,25 @@ trait WordCounter extends NewDesignParsers {
   def skipWhile(in: Rep[Input], p: Rep[Elem] => Rep[Boolean]): Parser[Unit] =
     repFold(acceptIf(in, p))(
       publicUnit(()), (_: Rep[Unit], c: Rep[Elem]) => publicUnit(()))
+  def acceptWhile(in: Rep[Input], p: Rep[Elem] => Rep[Boolean]): Parser[String] =
+    repFold(acceptIf(in, p))(
+      publicUnit(""), (sz: Rep[String], c: Rep[Elem]) => sz + c)
 
   def skipSpace(in: Rep[Input]): Parser[Unit] = skipWhile(in, isSpace _)
   def skipWord(in: Rep[Input]): Parser[Unit] =
     acceptIf(in, isNotSpace _) ~> skipWhile(in, isNotSpace _)
+  def acceptWord(in: Rep[Input]): Parser[String] =
+    (acceptIf(in, isNotSpace _) ~ acceptWhile(in, isNotSpace _)) ^^ { case p => p._1 + p._2 }
 
   def wordCount(in: Rep[Input], acc: Rep[Int]): Parser[Int] =
     skipSpace(in) ~> repFold(skipWord(in) <~ skipSpace(in))(
       acc, (i: Rep[Int], _) => i + 1)
+  def verboseWordCount(in: Rep[Input], acc: Rep[Int]): Parser[Int] =
+    skipSpace(in) ~> repFold(acceptWord(in) <~ skipSpace(in))(
+      acc, { (i: Rep[Int], s: Rep[String]) => println(s); i + 1 })
 
   def apply(in: Rep[Input], acc: Rep[Int]) = wordCount(in, acc)
+  //def apply(in: Rep[Input], acc: Rep[Int]) = verboseWordCount(in, acc)
 }
 
 class InterleavedWordCounter(val chunker: Chunker)
@@ -134,6 +143,7 @@ class InterleavedWordCounter(val chunker: Chunker)
 
   override def apply(in: Rep[Input], acc: Rep[Int]) =
     initChunkLength(in) ~> wordCount(in, acc)
+//    initChunkLength(in) ~> verboseWordCount(in, acc)
 }
 
 class ChunkedWordCounter(length: ParserWorld.Rep[Int]) extends WordCounter {
@@ -226,6 +236,20 @@ class InterleavedTest extends FileDiffSuite with Matchers {
          |
          |""".stripMargin
 
+      val longText2 =
+      """|6
+         |Some l
+         |1f
+         |onger text
+         |also including LFs
+         |
+         |
+         |9
+         |and space
+         |0
+         |
+         |""".stripMargin
+
       ParserWorld.codegen.emitSource(
         testChunked _,
         "testChunked",
@@ -236,6 +260,7 @@ class InterleavedTest extends FileDiffSuite with Matchers {
       testcChunked("0\n".toArray) should equal (0)
       testcChunked("2\nhe\n3\nllo\n0\n\n".toArray) should equal (1)
       testcChunked(longText.toArray) should equal (6)
+      testcChunked(longText2.toArray) should equal (8)
 
       ParserWorld.codegen.emitSource(
         testInterleaved _,
@@ -247,6 +272,7 @@ class InterleavedTest extends FileDiffSuite with Matchers {
       testcInterleaved("0\n".toArray) should equal (0)
       testcInterleaved("2\nhe\n3\nllo\n0\n\n".toArray) should equal (1)
       testcInterleaved(longText.toArray) should equal (6)
+      //testcInterleaved(longText2.toArray) should equal (8)  // FIXME!
     }
     //assertFileEqualsCheck(prefix+"interleaved")
   }
