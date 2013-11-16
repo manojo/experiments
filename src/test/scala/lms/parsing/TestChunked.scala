@@ -1,9 +1,6 @@
 package lms.parsing
 
-/*****************************************
-  Emitting Generated Code
-*******************************************/
-class TestChunked extends ((Array[Char])=>(Unit)) with Serializable{
+class TestChunked extends ((Array[Char])=>(Unit)) with Serializable {
 var res: ParseResultInt = null
 def apply(x0:Array[Char]): Unit = {
 val x1 = x0.length
@@ -858,7 +855,7 @@ val x694 = x692 || x693
 val x695 = x689 == '
 '
 val x696 = x694 || x695
-val x697 = x689 == '  '
+val x697 = x689 == '\t'
 val x698 = x696 || x697
 val x699 = x689 == ''
 val x700 = x698 || x699
@@ -918,7 +915,7 @@ val x755 = x753 || x754
 val x756 = x750 == '
 '
 val x757 = x755 || x756
-val x758 = x750 == '  '
+val x758 = x750 == '\t'
 val x759 = x757 || x758
 val x760 = x750 == ''
 val x761 = x759 || x760
@@ -956,7 +953,7 @@ val x793 = x791 || x792
 val x794 = x788 == '
 '
 val x795 = x793 || x794
-val x796 = x788 == '  '
+val x796 = x788 == '\t'
 val x797 = x795 || x796
 val x798 = x788 == ''
 val x799 = x797 || x798
@@ -1027,7 +1024,7 @@ val x865 = x863 || x864
 val x866 = x860 == '
 '
 val x867 = x865 || x866
-val x868 = x860 == '  '
+val x868 = x860 == '\t'
 val x869 = x867 || x868
 val x870 = x860 == ''
 val x871 = x869 || x870

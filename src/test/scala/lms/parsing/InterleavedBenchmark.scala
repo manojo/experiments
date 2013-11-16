@@ -19,6 +19,64 @@ class InterleavedBenchmark extends PerformanceTest
   def reporter = new LoggingReporter
   def persistor = Persistor.None
 
+  def mkTestData(size: Int): Array[Char] = {
+
+    // Minimal an maximal chunk size
+    val minChunkLength = 4000
+    val maxChunkLength = 5000
+
+    // Tokens used to generate the string
+    val tokens = List("hi", " ", "foo", "bar")
+    val rand = new scala.util.Random(1234)
+
+    // Generate a random string of a few thousand characters from the
+    // tokens.
+    var randString = ""
+    while(randString.length < 12355){
+      val num = rand.nextInt(tokens.length)
+      randString += tokens(num)
+    }
+
+    // Fill an array of the desired size with the random string data.
+    val len = randString.length
+    val data = Array.tabulate[Char](size) { i =>
+      randString(i % len)
+    }
+
+    // Chunk the data
+    var pos = 0
+    while(pos < (size - maxChunkLength)){
+
+      // Pick a chunk size at random between `minChunkLength` and
+      // `maxChunkSize`.
+      val chunkSize = minChunkLength + rand.nextInt(maxChunkLength - minChunkLength)
+
+      // Copy the chunk size into the data array.
+      val s = chunkSize.toHexString
+      s.copyToArray(data, pos)
+      pos += s.length
+
+      // Add an LF terminator after the chunk size.
+      data(pos) = '\n'
+      pos +=1
+
+      // Skip to the position after the chunk (`chunkSize` characters
+      // after the chunk header) and insert an LF terminator for
+      // the chunk.
+      pos += chunkSize
+      data(pos) = '\n'
+      pos += 1
+    }
+
+    // Add the terminator sequence (an empty chunk followed by CRLF).
+    data(pos + 0) = '0';
+    data(pos + 1) = '\n'
+    data(pos + 2) = '\n'
+
+    println("data: " + data.take(60).mkString("").replace("\n", "\\n") + "...")
+    data
+  }
+
   /******* Uncomment below for using regression testing ****/
     //override def reporter: Reporter = Reporter.Composite(
     //  new RegressionReporter(
@@ -30,52 +88,10 @@ class InterleavedBenchmark extends PerformanceTest
     //def persistor = new SerializationPersistor
 
   // multiple tests can be specified here
-  val words = List("hi"," ", "foo", "bar")
-  val rand = new scala.util.Random(1234)
 
-  var randString = ""
-
-  while(randString.length < 12355){
-    val num = rand.nextInt(words.length)
-    randString += words(num)
-  }
-
-  val len = randString.length
-  val data = Array[Char].tabulate(2 << 30){i =>
-    randString(i%len)
-  }
-
-
-  var pos = 0
-
-  while(pos < (2 << 30) - 5000){
-    val chunkSize = 4000 + rand.nextInt(1000)
-    val s = chunkSize.toHexString
-    var k = 0
-
-    //fill the chunk size
-    while(k < s.length){
-      data(pos) = s(k)
-      k +=1
-      pos +=1
-    }
-
-    //crlf
-    data(pos) = '\n'
-    pos +=1
-
-    pos += chunkSize
-    data(pos) = '\n'
-    pos += 1
-  }
-
-  data((2 << 30) - 5000)
-
-  def bench(obj:String,meth:String,f:Array[Char]=>_) {
+  def bench(obj: String, meth: String, f: Array[Char] => _) {
     //val range = Gen.enumeration("size")(1, 10)
     val range = Gen.exponential("size")(1, 1000, 10)
-    val ms = messages.toArray
-    val mn = messages.length
     performance of obj in {
       measure method meth config(
         exec.minWarmupRuns -> 5,
@@ -85,144 +101,68 @@ class InterleavedBenchmark extends PerformanceTest
       ) in {
         using(range) /*.config(exec.jvmflags -> "-Xmx12G -Xms12G -Xss64m")*/ in { n=>
           // we use while to remove overhead of for ... yield
-          var i=0; while (i<n) { var m=0; while (m<mn) { f(ms(m)); m+=1 }; i+=1 }
+          var i=0; while (i<n) { f(data); i+=1 }
         }
       }
     }
   }
 
-  // Scala combinators, very slow
-  //bench("HTTPParserCombinator","parse",(m:Array[Char])=>parseAll(response,m))
+  // We're taking advantage of the fact that the only LF characters in
+  // the data are chunk terminators.
+  def wordCount(in: Array[Char]): Int = {
 
-  // staged parser
-  //val stagedParser = new ResponseParse
-  //bench("RespAndMessageParser","parse",stagedParser.apply _)
+    // skip to the first chunk
+    var pos = in.indexOf('\n') + 1
 
-  //staged parser static
-  val stagedParserStatic = new ResponseParseStatic(
-    "connection".toArray,
-    "proxy-connection".toArray,
-    "keep-alive".toArray,
-    "close".toArray,
-    "content-length".toArray,
-    "transfer-encoding".toArray,
-    "chunked".toArray,
-    "upgrade".toArray
-  )
-  //bench("RespAndMessageParserStatic","parse",stagedParserStatic.apply _)
+    // skip to the first non-space
+    while (in(pos) == ' ') { pos += 1 }
 
-  //staged parser static new
-  val stagedParserStaticNew = new ResponseParseStatic(
-    "connection".toArray,
-    "proxy-connection".toArray,
-    "keep-alive".toArray,
-    "close".toArray,
-    "content-length".toArray,
-    "transfer-encoding".toArray,
-    "chunked".toArray,
-    "upgrade".toArray
-  )
-  bench("RespAndMessageParserStaticNew","parse",stagedParserStaticNew.apply _)
-
-  // hand written, folding
-  val handWrittenParser = HandWrittenParserWrapper.getParser
-  //bench("HTTPParserLL","parseFoldString",(m:Array[Char])=>HandWrittenParserWrapper.execute(handWrittenParser, new StringFoldingSettings, m, 0, m.length))
-
-  // NGINX Java port
-  bench("HTTPParserLL","parse",(m:Array[Char])=>HandWrittenParserWrapper.execute(handWrittenParser, new DefaultHttpSettings, m, 0, m.length))
-
-/*
-  //val range = Gen.enumeration("size")(100)
-  val range = Gen.exponential("size")(1, 10000, 10)
-  //val messagesAndRanges = messages.cached
-  //val messagesAndRanges: Gen[(List[Array[Char]], Int)] = messages.cached.flatMap{m => Gen.enumeration("size")((m,1),(m,10),(m,100),(m,1000), (m,10000))}
-
-  //performance of "HTTPParserCombinator" in {
-  //  measure method "parse" config(
-  //    //exec.minWarmupRuns -> 1,
-  //    //exec.maxWarmupRuns -> 2,
-  //    //exec.benchRuns -> 15
-  //    //exec.independentSamples -> 1
-  //  ) in {
-  //    using(range) in {j =>
-  //      for(i <- 1 to j; m <- messages)
-  //        parseAll(response,m)
-  //    }
-  //  }
-  //}
-
-  val stagedParser = new ResponseParse
-
-  performance of "RespAndMessageParser" in {
-    measure method "parse" config(
-      //exec.minWarmupRuns -> 500,
-      //exec.maxWarmupRuns -> 500
-      //exec.benchRuns -> 15
-      //exec.independentSamples -> 1
-    ) in {
-      using(range) in {j =>
-        for(i <- 1 to j; m <- messages)
-          stagedParser.apply(m)
+    // count!
+    var wc = 0
+    var inWord = false
+    var continue = true
+    while (continue) {
+      //println("'" + (if (in(pos) == '\n') "\\n" else in(pos).toString) + "'")
+      in(pos) match {
+        case ' ' => if (inWord) {
+          //println("inWord => false")
+          inWord = false
+        }
+        case '\n' => {
+          pos = in.indexOf('\n', pos + 1)
+          if (in(pos + 1) == '\n') continue = false
+        }
+        case c => if (!inWord) {
+          //println("inWord => true")
+          inWord = true
+          wc += 1
+        }
       }
+      pos += 1
     }
+    println("word count: " + wc)
+    wc
   }
 
-  //staged parser static
-  val stagedParserStatic = new ResponseParseStatic(
-    "connection".toArray,
-    "proxy-connection".toArray,
-    "keep-alive".toArray,
-    "close".toArray,
-    "content-length".toArray,
-    "transfer-encoding".toArray,
-    "chunked".toArray,
-    "upgrade".toArray
-  )
+  // Instantiate the buffered parser
+  val bufferedParser = new TestChunked
 
-  performance of "RespAndMessageParserStatic" in {
-    measure method "parse" config(
-      //exec.minWarmupRuns -> 500,
-      //exec.maxWarmupRuns -> 500
-      //exec.benchRuns -> 15
-      //exec.independentSamples -> 1
-    ) in {
-      using(range)/ *.config(exec.jvmflags -> "-XX:+PrintCompilation").* / in {j =>
-        for(i <- 1 to j; m <- messages)
-          stagedParserStatic.apply(m)
-      }
-    }
-  }
+  // Instantiate the interleaved parser
+  val interleavedParser = new TestInterleaved
 
-//hand written, folding
+  // Make some data
+  val data = mkTestData(1 << 15)
 
-  val handWrittenParser = HandWrittenParserWrapper.getParser
+  // == Sanity checks: do the parsers give the right result? ==
+  val wc = wordCount(data)
+  bufferedParser(data)
+  println(s"buffered res: ${bufferedParser.res.res}")
+  assert(bufferedParser.res.res == wc, s"${bufferedParser.res.res} != $wc")
+  interleavedParser(data)
+  println(s"interleaved res: ${interleavedParser.res.res}")
+  assert(interleavedParser.res.res == wc, s"${interleavedParser.res.res} != $wc")
 
-  performance of "HTTPParserLL" in {
-    measure method "parseFoldString" config(
-      //exec.minWarmupRuns -> 1,
-      //exec.maxWarmupRuns -> 2,
-      //exec.benchRuns -> 15
-      //exec.independentSamples -> 1
-    ) in {
-      using(range) in {j =>
-        for(i <- 1 to j; m <- messages)
-          HandWrittenParserWrapper.execute(handWrittenParser, new StringFoldingSettings, m, 0, m.length)
-      }
-    }
-  }
-
-  performance of "HTTPParserLL" in {
-    measure method "parse" config(
-      //exec.minWarmupRuns -> 1,
-      //exec.maxWarmupRuns -> 2,
-      //exec.benchRuns -> 15
-      //exec.independentSamples -> 1
-    ) in {
-      using(range) in {j =>
-        for(i <- 1 to j; m <- messages)
-          HandWrittenParserWrapper.execute(handWrittenParser, new DefaultHttpSettings, m, 0, m.length)
-      }
-    }
-  }
-*/
+  // Run benchmarks
+  bench("bufferedParser", "parse", bufferedParser)
+  bench("interleavedParser", "parse", interleavedParser)
 }
