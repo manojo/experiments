@@ -14,8 +14,6 @@ trait BarrierOps extends Base {
   def barrierSync(cmt: String)(implicit pos: SourceContext): Rep[Unit]
 }
 
-
-
 trait BarrierOpsExp extends BarrierOps with EffectExp {
   case class BarrierSync(cmt: String) extends Def[Unit]
 
@@ -42,7 +40,7 @@ trait ScalaGenBarrierOps extends ScalaGenEffect {
 }
 
 
-trait CGenMiscOps extends CGenEffect {
+trait CGenBarrierOps extends CGenEffect {
   val IR: BarrierOpsExp
   import IR._
 

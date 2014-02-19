@@ -43,8 +43,8 @@ class HttpParseBenchmark extends PerformanceTest
     out.toArray :: acc
   }
 
-  //val range = Gen.enumeration("size")(100)
-  val range = Gen.exponential("size")(1, 10000, 10)
+  val range = Gen.enumeration("size")(100)
+  //val range = Gen.exponential("size")(1, 10000, 10)
   //val messagesAndRanges = messages.cached
   //val messagesAndRanges: Gen[(List[Array[Char]], Int)] = messages.cached.flatMap{m => Gen.enumeration("size")((m,1),(m,10),(m,100),(m,1000), (m,10000))}
 
@@ -66,7 +66,7 @@ class HttpParseBenchmark extends PerformanceTest
 
   val stagedParser = new ResponseParse
 
-  performance of "RespAndMessageParser" in {
+  performance of "ResponseParser" in {
     measure method "parse" config(
       //exec.minWarmupRuns -> 500,
       //exec.maxWarmupRuns -> 500
@@ -92,7 +92,7 @@ class HttpParseBenchmark extends PerformanceTest
     "upgrade".toArray
   )
 
-  performance of "RespAndMessageParserStatic" in {
+  performance of "ResponseParserStatic" in {
     measure method "parse" config(
       //exec.minWarmupRuns -> 500,
       //exec.maxWarmupRuns -> 500
@@ -102,6 +102,32 @@ class HttpParseBenchmark extends PerformanceTest
       using(range)/*.config(exec.jvmflags -> "-XX:+PrintCompilation").*/ in {j =>
         for(i <- 1 to j; m <- messages)
           stagedParserStatic.apply(m)
+      }
+    }
+  }
+
+  //simple parser (no generators)
+  val simpleParserStatic = new ResponseParseSimple(
+    "connection".toArray,
+    "proxy-connection".toArray,
+    "keep-alive".toArray,
+    "close".toArray,
+    "content-length".toArray,
+    "transfer-encoding".toArray,
+    "chunked".toArray,
+    "upgrade".toArray
+  )
+
+  performance of "ResponseParserSimple" in {
+    measure method "parse" config(
+      //exec.minWarmupRuns -> 500,
+      //exec.maxWarmupRuns -> 500
+      //exec.benchRuns -> 15
+      //exec.independentSamples -> 1
+    ) in {
+      using(range)/*.config(exec.jvmflags -> "-XX:+PrintCompilation").*/ in {j =>
+        for(i <- 1 to j; m <- messages)
+          simpleParserStatic.apply(m)
       }
     }
   }

@@ -944,7 +944,7 @@ case class Tuple2IntAnon1680061013(_1: Int, _2: Anon1680061013)
 
 case class ParseResultTuple2Tuple2IntIntTuple2IntInt(res: Tuple2Tuple2IntIntTuple2IntInt, empty: Boolean, next: Int)
 
-//case class Anon1680061013(input: Array[Char], start: Int, length: Int)
+case class Anon1680061013(input: Array[Char], start: Int, length: Int)
 
 //case class ParseResultInt(res: Int, empty: Boolean, next: Int)
 

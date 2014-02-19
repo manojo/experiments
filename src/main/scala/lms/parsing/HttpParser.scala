@@ -171,7 +171,7 @@ trait HttpParser extends TokenParsers with HttpComponents with StringStructOps w
   def repToSLower(p: Parser[Char]) : Parser[String] =
     repFold(p)(unit(""), (res: Rep[String], x: Rep[Char]) => res + toLower(x))
 
-  def headerName(in: Rep[Input]): Parser[StringStruct] = { println(unit("headerName:"))
+  def headerName(in: Rep[Input]): Parser[StringStruct] = {
     letterIdx(in)~
     stringStruct(in, acceptIfIdx(in, (x: Rep[Char])=> isLetter(x) || x == unit('-'))) ^^ {
       x: Rep[(Int, StringStruct)] => String(in, st = x._1, len = x._2.length + unit(1))
@@ -180,9 +180,7 @@ trait HttpParser extends TokenParsers with HttpComponents with StringStructOps w
 
   //TODO: do filtering based on input. Option[(String,String)]
   def header(in: Rep[Input]): Parser[(StringStruct, StringStruct)] =
-    (headerName(in)<~(whitespaces(in)~accept(in,":")))~(whitespaces(in)~>wildRegex(in)<~crlf(in)) ^^ { x =>
-      println(unit("parsed a header: '") + x._1.mkString + unit(": ") + x._2.mkString + unit("'")); x
-    }
+    (headerName(in)<~(whitespaces(in)~accept(in,":")))~(whitespaces(in)~>wildRegex(in)<~crlf(in))
 
   def headers(in: Rep[Input]): Parser[Response] = repFold(header(in))(Response(),
     (res: Rep[Response], hds: Rep[(StringStruct,StringStruct)]) => collect(res, hds._1, hds._2)
@@ -208,7 +206,6 @@ trait HttpParser extends TokenParsers with HttpComponents with StringStructOps w
       Response(st = res.status, cL = res.contentLength, conn = prop.mkString,
         ch = res.chunked, up = res.upgrade)
     }else if(hName == "content-length"){
-      println(unit("adfadsfasfds"))
       Response(st = res.status, cL = prop.mkString.toInt, conn = res.connection,
         ch = res.chunked, up = res.upgrade)
     }else if(hName == "transfer-encoding" && prop == "chunked"){
