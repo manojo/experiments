@@ -321,7 +321,7 @@ trait TokenParsers extends TopDownParsers with CharParsers with StringStructOps{
    */
   def stringStruct(in: Rep[Input], p : Parser[Int]) = Parser[StringStruct]{ pos =>
     //println(unit("enter stringStruct {"))
-    barrierSync("TODO: Hack!")
+    //barrierSync("TODO: Hack!")
     var old = unit(-1)
     var continue = unit(true)
     var cur = pos

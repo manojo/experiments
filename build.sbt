@@ -8,7 +8,7 @@ name := "experiments"
 
 scalaOrganization := "org.scala-lang.virtualized"
 
-scalaVersion := "2.10.2-RC1"
+scalaVersion := "2.10.2-RC2"
 
 resolvers ++= Seq(
   ScalaToolsSnapshots, //needed for custom build of scala test
@@ -31,8 +31,8 @@ addCompilerPlugin("org.scala-lang.virtualized.plugins" % "continuations" % "2.10
 
 scalacOptions ++= Seq(
   "-Yvirtualize",
-  "-P:continuations:enable",
-  "-optimize"//,
+  "-P:continuations:enable"//,
+  //"-optimize"//,
   //"-deprecation",
   //"-feature",
   //"-Yinline-warnings"
