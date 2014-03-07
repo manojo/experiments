@@ -75,6 +75,10 @@ trait SimpleParsers{
   }
 
   def accept(e:Elem): Parser[Elem] = accept(x => x == e)
+  def accept(es: List[Elem]): Parser[List[Elem]] = es match {
+    case Nil => success(Nil)
+    case x::xs => accept(x) ~ accept(xs) ^^ { case (y, ys) => y::ys }
+  }
 
   def repFold[T,U](p: => Parser[T])(z:U, f: (U, T) => U): Parser[U] = Parser { in =>
     p(in) match{
@@ -85,6 +89,8 @@ trait SimpleParsers{
 
   def rep[T](p: => Parser[T]): Parser[List[T]]
     = repFold(p)(Nil, (xs: List[T], x:T) => x::xs) ^^ (_.reverse)
+
+  def success[T](t: T) = Parser[T] { in => Success(t, in) }
 
 }
 
@@ -101,6 +107,9 @@ trait CharParsers extends SimpleParsers {
   def number: Parser[Int] = digit >> { x =>
     repFold(digit)(x, (res: Int, y: Int) => res * 10 + y)
   }
+
+  def accept(s: String) : Parser[String] =
+    accept(s.toList) ^^ {xs => xs.mkString}
 }
 
 trait Reader[+T]{
@@ -146,6 +155,8 @@ case class ChunkReader(s: String, chunks: List[(Int,Int)]) extends Reader[Char] 
 
 object Interleaved extends CharParsers {
 
+  def hewords = accept("hello") | accept("helicopter")
+
   def body(x:Int): Parser[ChunkReader] = Parser { in: Reader[Char] =>
     //hack!!
     val s = in.input.asInstanceOf[String]
@@ -161,24 +172,21 @@ object Interleaved extends CharParsers {
   def digitAndBody: Parser[ChunkReader] = digit >> { x => body(x) }
 
   def wikiParseReader: Parser[ChunkReader] = digitAndBody >> { rdr =>
-    println("first reader : " + rdr)
-    repFold(digitAndBody)(rdr, { (acc: ChunkReader, rdr) => println("next readers: " + rdr); acc ++ rdr })
+    repFold(digitAndBody)(rdr, { (acc: ChunkReader, rdr) => acc ++ rdr })
   }
 
   def wikiParser: Parser[String] = wikiParseReader ^^ { rdr: Reader[Char] =>
-    letters(rdr) match {
+    hewords(rdr) match {
       case Success(s, _) => s
       case _ => ""
     }
   }
 
-
   def main(args: Array[String]) = {
     println("Interleaving is the form of the day!")
 
-    val input = new StringReader("2he3llo")
-
-    println(wikiParser(input))
+    println(wikiParser(new StringReader("2he3llo")))
+    println(wikiParser(new StringReader("2he3lic3opt2er")))
 
 
   }
