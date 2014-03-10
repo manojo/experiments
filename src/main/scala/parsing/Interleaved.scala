@@ -2,7 +2,7 @@ package parsing
 
 import scala.util.continuations._
 
-trait SimpleParsers{
+trait SimpleParsers {
   type Elem
   type Input = Reader[Elem]
 
@@ -121,6 +121,18 @@ trait Reader[+T]{
 
   //hack!
   def input: Any
+
+ /**
+  * Returns an abstract reader consisting of all elements except the first `n` elements.
+  */
+  def drop(n: Int): Reader[T] = {
+    var r: Reader[T] = this
+    var cnt = n
+    while (cnt > 0) {
+      r = r.rest; cnt -= 1
+    }
+    r
+  }
 }
 
 class StringReader(s: String, override val offset: Int = 0) extends Reader[Char] {
@@ -136,6 +148,11 @@ case class ChunkReader(s: String, chunks: List[(Int,Int)]) extends Reader[Char] 
   def input = s
   def offset = chunks.head._1
   def atEnd = chunks.isEmpty
+
+  def isCurrentChunkOver = chunks match {
+    case Nil => throw new Exception("no chunks on empty reader")
+    case (chunkStart, chunkEnd) :: _ => chunkStart == chunkEnd - 1
+  }
 
   def first = s.charAt(chunks.head._1)
   def rest = chunks match {
@@ -155,6 +172,45 @@ case class ChunkReader(s: String, chunks: List[(Int,Int)]) extends Reader[Char] 
 
 object Interleaved extends CharParsers {
 
+  class ChunkReader2(rdr: Reader[Char]) extends Reader[Char] {
+
+    def input = rdr.input
+    private val (chunkSize, trueReader) = number(rdr) match {
+      case Success(i, rd) => (i, rd)
+      case _ => (-1, rdr)
+    }
+
+    def first = trueReader.first
+    def offset = trueReader.offset
+
+    def rest = {
+      new CReader(trueReader.rest, offset + chunkSize)
+    }
+
+    def atEnd = chunkSize == -1 || rdr.atEnd
+  }
+
+
+  /*private*/ class CReader(rdr: Reader[Char], chunkEnd: Int) extends Reader[Char] {
+
+    def input = rdr.input
+
+    def first = rdr.first
+    def offset = rdr.offset
+
+    def rest = {
+      if (offset == chunkEnd - 1) {
+        val next = rdr.rest
+        number(next) match {
+          case Success(chunkSize, rest) => new CReader(rest, rest.offset + chunkSize)
+          case Failure(rest) => rest
+        }
+      } else new CReader(rdr.rest, chunkEnd)
+    }
+
+    def atEnd = rdr.atEnd
+  }
+
   def hewords = accept("hello") | accept("helicopter")
 
   def body(x:Int): Parser[ChunkReader] = Parser { in: Reader[Char] =>
@@ -162,10 +218,7 @@ object Interleaved extends CharParsers {
     val s = in.input.asInstanceOf[String]
     Success(
       new ChunkReader(s, (in.offset, in.offset + x) :: Nil),
-
-      //also super hacky: should be a way to jump offset which is "generic"
-      //
-      new StringReader(s, in.offset + x)
+      in.drop(x)
     )
   }
 
@@ -188,6 +241,13 @@ object Interleaved extends CharParsers {
     println(wikiParser(new StringReader("2he3llo")))
     println(wikiParser(new StringReader("2he3lic3opt2er")))
 
+    println("nesting readers")
 
+    println(hewords(new CReader(new StringReader("he3llo"), 2)))
+    println(hewords(new CReader(new StringReader("he3lic3opt2er"), 2)) match {
+      case Success(str, _) => str
+      case Failure(in) => in.offset
+    })
   }
 }
+
