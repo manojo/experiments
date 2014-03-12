@@ -5,19 +5,19 @@ import scala.reflect.SourceContext
 trait StringStructOps extends StructOps with While with IfThenElse
 with NumericOps with ArrayOps with Equal with StringOps with OrderingOps
 with BooleanOps with CharOps with PrimitiveOps with StaticData with MiscOps
-with LiftVariables{
-  type StringStruct = Record{
+with LiftVariables {
+
+  type StringStruct = Record {
     val input: Array[Char]
     val start: Int
     val length: Int
   }
 
-  def String(in : Rep[Array[Char]], st: Rep[Int], len: Rep[Int] = unit(0))
-    = new Record{
-      val input = in
-      val start = st
-      val length = len
-    }
+  def String(in : Rep[Array[Char]], st: Rep[Int], len: Rep[Int] = unit(0)) = new Record {
+    val input = in
+    val start = st
+    val length = len
+  }
 
   def toLower(c: Rep[Char]): Rep[Char] =
     (c.toInt | unit(0x20)).toChar

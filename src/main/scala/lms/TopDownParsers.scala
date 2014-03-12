@@ -126,10 +126,10 @@ trait TopDownParsers extends MyScalaOpsPkg with LiftVariables
     repFold(p)(List[T]().asInstanceOf[Rep[List[T]]],
       {(ls : Rep[List[T]], t: Rep[T]) => ls ++ List(t) }
     )
-/*
+
   def repsep[T:Manifest,U:Manifest](p: => Parser[T], q: =>Parser[U]): Parser[List[T]] =
-    (p ~ rep(q ~>  p)) ^^ {x => x._1 :: x._2 } | success(List[T]())
-*/
+    (p ~ rep(q ~> p)) ^^ {x => x._1 :: x._2 } | success(List[T]())
+
   //a 'conditional' parser
   def __ifThenElse[A: Manifest](cond: Rep[Boolean], thenp: => Parser[A], elsep: => Parser[A]): Parser[A] = Parser[A]{
     i => if(cond) thenp(i) else elsep(i)
@@ -147,7 +147,7 @@ trait TopDownParsers extends MyScalaOpsPkg with LiftVariables
 
   //making a function of a non-recursive parser
   def toplevel[T:Manifest](p: Parser[T]) : Parser[T] = {
-    val f  = doLambda{ (i:Rep[Int]) => p(i)}
+    val f = doLambda{ (i:Rep[Int]) => p(i)}
     val res = Parser[T]{ i => f(i)}
     res
   }
@@ -155,7 +155,11 @@ trait TopDownParsers extends MyScalaOpsPkg with LiftVariables
   /**
    * a Success combinator
    */
-  def success[T:Manifest](v:Rep[T]) = Parser[T]{i => Success(v, i)}
+  def success[T:Manifest](v:Rep[T]) = Parser[T] { i => Success(v, i) }
+
+
+  // A terminal that return the current reading position
+  def pos(in: Rep[Input]) = Parser[Int] { i => Success[Int](i, i) }
 }
 
 trait CharParsers extends TopDownParsers with CharOps with StringStructOps {
@@ -168,8 +172,8 @@ trait CharParsers extends TopDownParsers with CharOps with StringStructOps {
   def isDigit(c: Rep[Char]) : Rep[Boolean] =
     c >= unit('0') && c <= unit('9')
 
-  def letter(in:Rep[Input]): Parser[Char] = acceptIf(in, (c: Rep[Char]) => isLetter(c))
-  def letterIdx(in:Rep[Input]) = acceptIfIdx(in, (c: Rep[Char]) => isLetter(c))
+  def letter(in: Rep[Input]): Parser[Char] = acceptIf(in, (c: Rep[Char]) => isLetter(c))
+  def letterIdx(in: Rep[Input]) = acceptIfIdx(in, (c: Rep[Char]) => isLetter(c))
 
 
   def digit(in: Rep[Input]): Parser[Char] = acceptIf(in, (c: Rep[Char]) => isDigit(c))
@@ -179,8 +183,8 @@ trait CharParsers extends TopDownParsers with CharOps with StringStructOps {
   def accept(in:Rep[Input], e: Rep[Elem]): Parser[Char] = acceptIf(in, (c: Rep[Char]) => c == e)
 
   def acceptIf(in:Rep[Input], p: Rep[Elem] => Rep[Boolean]) = Parser[Char]{ i =>
-    if(i >= in.length) Failure[Char](i)
-    else if(p(in(i))) Success(in(i), i+unit(1))
+    if (i >= in.length) Failure[Char](i)
+    else if (p(in(i))) Success(in(i), i+unit(1))
     else Failure[Char](i)
   }
 
@@ -204,19 +208,20 @@ trait CharParsers extends TopDownParsers with CharOps with StringStructOps {
   }
 
   // Non empty sequence of characters matching predicate 'p'
-/*  def str(in:Rep[Input],p:Rep[Elem]=>Rep[Boolean], empty:Boolean=false) = Parser[StringStruct] { pos:Rep[Int] =>
-    Generator{ g =>
+  def str(in: Rep[Input], p: Rep[Elem]=>Rep[Boolean], empty: Boolean = false)
+    = Parser[StringStruct] { pos:Rep[Int] =>
+
       val l = in.length
       val e = __newVar(pos)
-      while (e<l && p(in(e))) { e += 1 }
-      if (empty) g(Success[StringStruct](String(in,pos,e-pos),e))
+
+      while (e < l && p(in(e))) { e += 1 }
+
+      if (empty) Success[StringStruct](String(in, pos, e - pos),e)
       else {
-        if (pos==e) g(Failure[StringStruct](pos))
-        else g(Success[StringStruct](String(in,pos,e-pos),e))
+        if (pos == e) Failure[StringStruct](pos)
+        else Success[StringStruct](String(in, pos, e - pos), e)
       }
     }
-  }
-  */
 }
 
 
@@ -231,7 +236,7 @@ trait TokenParsers extends TopDownParsers with CharParsers with StringStructOps{
   }
 
   def numeric(in:Rep[Input]) : Parser[String] = digit(in) ~ repToS(digit(in)) ^^ {
-    x : Rep[(Char, String)] => unit("NumericLit(") + (x._1 + x._2) + unit(")")
+    x : Rep[(Char, String)] => (x._1 + x._2)
   }
 
   def wholeNumber(in: Rep[Input]): Parser[Int] =
@@ -239,15 +244,24 @@ trait TokenParsers extends TopDownParsers with CharParsers with StringStructOps{
       repFold(digit2Int(in))(x, (res:Rep[Int], y: Rep[Int]) => (res * unit(10) + y))
   }
 
+  def intLit(in:Rep[Input]): Parser[Int] =
+    opt(chr(in,'-')) ~ wholeNumber(in) ^^ { x =>
+      if(x._1.isDefined) unit(-1) * x._2 else x._2
+    }
+
   // the syntax for parsing double is too lousy, everything becomes double
-  def chr(in:Rep[Input],c:Char) = accept(in, unit(c))
-  //def intLit(in:Rep[Input]) : Parser[Int] = opt(chr(in,'-')) ~ str(in,c=>c>=unit('0')&&c<=unit('9')) ^^ { case x => val v=x._2.toStr.toInt; if (x._1.isDefined) v*unit(-1) else v  }
-  //def doubleLit(in:Rep[Input]) : Parser[Double] = str(in,c=>c>=unit('0')&&c<=unit('9') || c==unit('-') || c==unit('.') || c==unit('e') || c==unit('E')) ^^ { _.toStr.toDouble }
-  def stringLit(in:Rep[Input]) : Parser[String] = (
-    accept(in, unit('\"')) ~>
-    repToS( acceptIf(in, (x:Rep[Char]) => x != unit('\"')))
-    <~ accept(in, unit('\"'))
+  def chr(in: Rep[Input], c: Char) = accept(in, unit(c))
+
+  def stringLit(in: Rep[Input]): Parser[String] = (
+    accept(in, unit('"')) ~>
+    repToS( acceptIf(in, (x:Rep[Char]) => x != unit('"')))
+    <~ accept(in, unit('"'))
   )
+
+  /*
+  def stringLit(in: Rep[Input]): Parser[String] =
+    chr(in, '"') ~> str(in, _ != unit('"') ,true) <~ chr(in,'"') ^^ { _.mkString }
+  */
 
   def whitespaces(in: Rep[Input]) : Parser[String] =
     repToS(acceptIf(in, {x:Rep[Char] => x == unit(' ') || x == unit('\n')})) ^^^ {unit("")}
@@ -314,6 +328,14 @@ trait TokenParsers extends TopDownParsers with CharParsers with StringStructOps{
 
     }
   }
+
+  def doubleLit(in:Rep[Input]) : Parser[Double] = (
+    ((opt(chr(in,'-')) ~ numeric(in)) ^^ {
+      x: Rep[(Option[Char], String)] =>
+        if(x._1.isDefined) x._1.get + x._2 else x._2
+    })
+    ~ (chr(in,'.')~> numeric(in))
+  ) ^^ { x => (x._1 + unit(".") + x._2).toDouble}
 
   /* specialized rep for retrieving a stringstruct
    * cannot be implemented using a rep because the zero element
