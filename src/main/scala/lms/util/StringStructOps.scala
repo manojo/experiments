@@ -1,4 +1,7 @@
-package lms
+package lms.util
+
+import lms._
+
 import scala.virtualization.lms.common._
 import scala.reflect.SourceContext
 

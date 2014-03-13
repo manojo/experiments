@@ -1,9 +1,9 @@
-package lms.parsing
+package lms.parsing.gen
 
 import java.io.{ BufferedReader, FileReader, Serializable }
 import scala.collection.mutable.ArrayBuffer
 
-object TestResponseSimple {
+object ResponseParseSimple {
 
   def main(args: Array[String]) {
 

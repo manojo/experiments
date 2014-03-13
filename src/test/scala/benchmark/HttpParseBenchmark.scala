@@ -1,9 +1,14 @@
-package lms.parsing
+package benchmark
+
+import parsing.HTTP
+import lms._
+import lms.parsing._
+import lms.parsing.examples._
+import lms.parsing.gen._
 
 import org.scalameter.api._
 import java.io.{ BufferedReader, FileReader, Serializable }
 import scala.collection.mutable.ArrayBuffer
-import parsing.HTTP
 import done._
 
 //class HttpParseBenchmark extends PerformanceTest.Regression

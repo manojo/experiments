@@ -1,6 +1,9 @@
-package lms.parsing
+package lms.parsing.examples
 
 import lms._
+import lms.parsing._
+import lms.util._
+
 import scala.virtualization.lms.common._
 import scala.virtualization.lms.internal.Effects
 

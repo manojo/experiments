@@ -2,15 +2,18 @@
  * An implementation of basic parser combinators using simple generators
  *
  */
-package lms
+package lms.parsing
 
 import lms._
+import lms.util._
+
 import scala.virtualization.lms.common._
 import scala.virtualization.lms.internal.Effects
 
 trait TopDownParsers extends MyScalaOpsPkg with LiftVariables
     with StructOps with ParseResultOps with OptionOps with Functions
     with BarrierOps {
+
   type Input = Array[Char]
   type Pos = Int
 

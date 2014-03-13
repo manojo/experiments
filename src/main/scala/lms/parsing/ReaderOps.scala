@@ -1,9 +1,9 @@
-package lms
+package lms.parsing
 
 import scala.virtualization.lms.common._
 import scala.virtualization.lms.internal.GenericCodegen
 import scala.reflect.SourceContext
-
+/*
 import java.io.PrintWriter
 
 /**
@@ -123,3 +123,4 @@ trait ParseResultGenBase extends GenericCodegen with BaseGenStructOps {
 
 trait ScalaGenParseResultOps extends ScalaGenBase with ParseResultGenBase with ScalaGenStructOps { val IR: ParseResultOpsExp }
 trait CGenParseResultOps extends CGenBase with ParseResultGenBase with CGenStructOps { val IR: ParseResultOpsExp }
+*/ 

@@ -1,6 +1,9 @@
-package lms.parsing
+package lms.parsing.examples
 
 import lms._
+import lms.parsing._
+import lms.util._
+
 import scala.virtualization.lms.common._
 import scala.virtualization.lms.internal.Effects
 
@@ -11,6 +14,7 @@ import java.io.FileOutputStream
 // -------- Copied from FunctionsRecursiveExp in lms/src/common/Functions.scala
 import scala.reflect.SourceContext
 import scala.virtualization.lms.util.ClosureCompare
+
 trait FunctionsRecursiveExp2 extends FunctionsExp with ClosureCompare {
   var funTable2: List[(Sym[_], Any)] = List()
   def doLambda2[A: Manifest, B: Manifest](f: Exp[A] => Exp[B])(implicit pos: SourceContext): Exp[A => B] = {

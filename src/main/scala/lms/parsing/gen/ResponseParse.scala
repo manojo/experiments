@@ -1,6 +1,6 @@
-package lms.parsing
+package lms.parsing.gen
 
-object TestResponse {
+object ResponseParse {
   def main(args: Array[String]) {
 
     val resp =

@@ -16,17 +16,17 @@ trait MyScalaOpsPkgExp extends MyScalaOpsPkg
   with SeqOpsExp with DSLOpsExp with MathOpsExp with CastingOpsExp with SetOpsExp with ObjectOpsExp with ArrayBufferOpsExp
 
 trait MyScalaCodeGenPkg extends ScalaGenImplicitOps with ScalaGenNumericOps with ScalaGenFractionalOps with ScalaGenOrderingOps
-    with ScalaGenStringOps with ScalaGenRangeOps with ScalaGenIOOps with ScalaGenArrayOps with ScalaGenBooleanOps
-    with ScalaGenPrimitiveOps with ScalaGenMiscOps with ScalaGenFunctions with ScalaGenEqual with ScalaGenIfThenElse
-    with ScalaGenVariables with ScalaGenWhile with ScalaGenMyTupleOps with ScalaGenListOps
-    with ScalaGenSeqOps with ScalaGenDSLOps with ScalaGenMathOps with ScalaGenCastingOps with ScalaGenSetOps
-    with ScalaGenObjectOps with ScalaGenArrayBufferOps { val IR: MyScalaOpsPkgExp }
+  with ScalaGenStringOps with ScalaGenRangeOps with ScalaGenIOOps with ScalaGenArrayOps with ScalaGenBooleanOps
+  with ScalaGenPrimitiveOps with ScalaGenMiscOps with ScalaGenFunctions with ScalaGenEqual with ScalaGenIfThenElse
+  with ScalaGenVariables with ScalaGenWhile with ScalaGenMyTupleOps with ScalaGenListOps
+  with ScalaGenSeqOps with ScalaGenDSLOps with ScalaGenMathOps with ScalaGenCastingOps with ScalaGenSetOps
+  with ScalaGenObjectOps with ScalaGenArrayBufferOps { val IR: MyScalaOpsPkgExp }
 
 trait MyCCodeGenPkg extends CGenDSLOps with CGenImplicitOps with CGenNumericOps with CGenFractionalOps with CGenOrderingOps
-    with CGenStringOps with CGenRangeOps with CGenIOOps with CGenArrayOps with CGenBooleanOps
-    with CGenPrimitiveOps with CGenMiscOps with CGenFunctions with CGenEqual with CGenIfThenElse
-    with CGenVariables with CGenWhile with CGenMyTupleOps
-    with CGenMathOps with CGenCastingOps with CGenSetOps with CGenArrayBufferOps { val IR: MyScalaOpsPkgExp }
+  with CGenStringOps with CGenRangeOps with CGenIOOps with CGenArrayOps with CGenBooleanOps
+  with CGenPrimitiveOps with CGenMiscOps with CGenFunctions with CGenEqual with CGenIfThenElse
+  with CGenVariables with CGenWhile with CGenMyTupleOps
+  with CGenMathOps with CGenCastingOps with CGenSetOps with CGenArrayBufferOps { val IR: MyScalaOpsPkgExp }
 //No SeqOps and no ListOps
 
 /*
