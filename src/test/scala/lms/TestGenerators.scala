@@ -8,115 +8,115 @@ import java.io.FileOutputStream
 import scala.reflect.SourceContext
 
 trait GeneratorProg extends GeneratorOps with NumericOps
-  with OrderingOps with PrimitiveOps with Equal
-  with Structs with MiscOps with ArrayOps with OverloadHack
-  {
+    with OrderingOps with PrimitiveOps with Equal
+    with Structs with MiscOps with ArrayOps with OverloadHack {
 
   def test1(start: Rep[Int], end: Rep[Int]) = {
-    val g = range(start,end)
+    val g = range(start, end)
 
     var s = 0
-    g{ x:Rep[Int] => s = x}
+    g { x: Rep[Int] => s = x }
     s
   }
 
   def test2(start: Rep[Int], end: Rep[Int]) = {
-    val g = range(start,end).map{x:Rep[Int] => x* unit(2)}
+    val g = range(start, end).map { x: Rep[Int] => x * unit(2) }
 
-    var s  = 0
-    g{ x:Rep[Int] => s = x }
+    var s = 0
+    g { x: Rep[Int] => s = x }
     s
   }
 
   //sum
   def test3(start: Rep[Int], end: Rep[Int]) = {
-    val g = range(start,end)
+    val g = range(start, end)
 
     var s = unit(0)
-    g{ x:Rep[Int] => s = s+x }
+    g { x: Rep[Int] => s = s + x }
     s
   }
 
   //sum of odds
   def test4(start: Rep[Int], end: Rep[Int]) = {
-    val g = range(start,end).filter{x:Rep[Int] =>
-      notequals(x%unit(2), unit(0))
+    val g = range(start, end).filter { x: Rep[Int] =>
+      notequals(x % unit(2), unit(0))
     }
 
     var s = unit(0)
-    g{ x:Rep[Int] => s = s+x }
+    g { x: Rep[Int] => s = s + x }
     s
   }
 
   //concat sum ++ sum of odds
   def test5(start: Rep[Int], end: Rep[Int]) = {
     val f = range(start, end)
-    val g = range(start,end).filter{x:Rep[Int] =>
-      notequals(x%unit(2), unit(0))
+    val g = range(start, end).filter { x: Rep[Int] =>
+      notequals(x % unit(2), unit(0))
     }
 
     var s = unit(0)
-    (f++g).apply{ x:Rep[Int] => s = s+x }
+    (f ++ g).apply { x: Rep[Int] => s = s + x }
     s
   }
 
   //a flatMap!!!
   def test6(start: Rep[Int], end: Rep[Int]) = {
-    val f = range(start, end).flatMap{i:Rep[Int] =>
-      range(start,i)
+    val f = range(start, end).flatMap { i: Rep[Int] =>
+      range(start, i)
     }
 
     var s = unit(0)
-    f{ x:Rep[Int] => s = s+x }
+    f { x: Rep[Int] => s = s + x }
     s
   }
 
   //gen-ing a single elem from a list
   def test7(start: Rep[Int], end: Rep[Int]) = {
-    val a : Rep[Array[Int]] = Array(unit(1),unit(2),unit(3))
-    val g = new Generator[Int]{
+    val a: Rep[Array[Int]] = Array(unit(1), unit(2), unit(3))
+    val g = new Generator[Int] {
       def apply(f: Rep[Int] => Rep[Unit]) = {
-        if(start + unit(1) == end) f(start)
+        if (start + unit(1) == end) f(start)
       }
     }
 
     var s = unit(0)
-    g{ x:Rep[Int] => s = a(x) }
+    g { x: Rep[Int] => s = a(x) }
     s
   }
 
   //fromSeq
-  def test8(start : Rep[Int]) = {
-    val g = Gen.fSeq(unit(1),unit(2),unit(3))
+  def test8(start: Rep[Int]) = {
+    val g = Gen.fSeq(unit(1), unit(2), unit(3))
 
     var s = unit(0)
-    g{ x:Rep[Int] => s = s + x }
+    g { x: Rep[Int] => s = s + x }
     s
   }
 
   //complex example
   def test9(start: Rep[Int], end: Rep[Int]) = {
-   val f = range(start, end).map{i:Rep[Int] =>
-     i * unit(2)
-   }.map{ i : Rep[Int] =>
-     i + unit(1)
-   }.map {i: Rep[Int] =>
-     i * unit(3)
-   }
+    val f = range(start, end).map { i: Rep[Int] =>
+      i * unit(2)
+    }.map { i: Rep[Int] =>
+      i + unit(1)
+    }.map { i: Rep[Int] =>
+      i * unit(3)
+    }
 
-   var s = unit(0)
-   f{ x:Rep[Int] => s = s+x }
-   s
+    var s = unit(0)
+    f { x: Rep[Int] => s = s + x }
+    s
   }
 
   //stream fusion intro example
   def test10(n: Rep[Int]) = {
-    val f = for (k <- range(unit(1), n);
-         m <- range(unit(1), k)
+    val f = for (
+      k <- range(unit(1), n);
+      m <- range(unit(1), k)
     ) yield (k * m)
 
     var s = unit(0)
-    f{ x: Rep[Int] => s = s+x}
+    f { x: Rep[Int] => s = s + x }
     s
   }
 }
@@ -195,79 +195,74 @@ class TestGeneratorOps extends FileDiffSuite {
   val prefix = "test-out/"
 
   def testgenerator1 = {
-    withOutFile(prefix+"generator-simple"){
-       new GeneratorProg with GeneratorOpsExp with NumericOpsExp
-        with OrderingOpsExp with PrimitiveOpsExp with EqualExp
-        with StructExp with StructExpOptCommon with ArrayOpsExp
-        with MiscOpsExp with MyScalaCompile{ self =>
+    withOutFile(prefix + "generator-simple") {
+      new GeneratorProg with GeneratorOpsExp with NumericOpsExp with OrderingOpsExp with PrimitiveOpsExp with EqualExp with StructExp with StructExpOptCommon with ArrayOpsExp with MiscOpsExp with MyScalaCompile { self =>
 
         val printWriter = new java.io.PrintWriter(System.out)
 
         //test1: first "loop"
-        val codegen = new ScalaGenGeneratorOps with ScalaGenNumericOps
-          with ScalaGenOrderingOps with ScalaGenPrimitiveOps with ScalaGenEqual
-          with ScalaGenArrayOps with ScalaGenStruct with ScalaGenMiscOps { val IR: self.type = self }
+        val codegen = new ScalaGenGeneratorOps with ScalaGenNumericOps with ScalaGenOrderingOps with ScalaGenPrimitiveOps with ScalaGenEqual with ScalaGenArrayOps with ScalaGenStruct with ScalaGenMiscOps { val IR: self.type = self }
 
-        codegen.emitSource2(test1 _ , "test1", printWriter)
+        codegen.emitSource2(test1 _, "test1", printWriter)
         codegen.emitDataStructures(printWriter)
         codegen.reset
 
         val source = new StringWriter
         codegen.emitDataStructures(new PrintWriter(source))
         val testc1 = compile2s(test1, source)
-        scala.Console.println(testc1(1,11))
+        scala.Console.println(testc1(1, 11))
         codegen.reset
 
         //test2: a map
-        codegen.emitSource2(test2 _ , "test2", printWriter)
+        codegen.emitSource2(test2 _, "test2", printWriter)
         codegen.reset
 
         val testc2 = compile2(test2)
-        scala.Console.println(testc2(1,11))
+        scala.Console.println(testc2(1, 11))
         codegen.reset
 
         //test3: a sum
-        codegen.emitSource2(test3 _ , "test3", printWriter)
+        codegen.emitSource2(test3 _, "test3", printWriter)
         codegen.reset
 
         val testc3 = compile2(test3)
-        scala.Console.println(testc3(1,11))
+        scala.Console.println(testc3(1, 11))
         codegen.reset
 
         //test4: a filtersum
-        codegen.emitSource2(test4 _ , "test4", printWriter)
+        codegen.emitSource2(test4 _, "test4", printWriter)
         codegen.reset
 
         val testc4 = compile2(test4)
-        scala.Console.println(testc4(1,11))
+        scala.Console.println(testc4(1, 11))
         codegen.reset
 
         //test5: a concat
-        codegen.emitSource2(test5 _ , "test5", printWriter)
+        codegen.emitSource2(test5 _, "test5", printWriter)
         codegen.reset
 
         val testc5 = compile2(test5)
-        scala.Console.println(testc5(1,11))
+        scala.Console.println(testc5(1, 11))
         codegen.reset
 
         //test6: a flatMap
-        codegen.emitSource2(test6 _ , "test6", printWriter)
+        codegen.emitSource2(test6 _, "test6", printWriter)
         codegen.reset
 
         val testc6 = compile2(test6)
-        scala.Console.println(testc6(1,6))
+        scala.Console.println(testc6(1, 6))
         codegen.reset
 
         //test7: single elem from Array
-        codegen.emitSource2(test7 _ , "test7", printWriter)
+        codegen.emitSource2(test7 _, "test7", printWriter)
         codegen.reset
 
         val testc7 = compile2(test7)
-        scala.Console.println(testc7(1,2))
+        scala.Console.println(testc7(1, 2))
         codegen.reset
 
         //test8: fromSeq
-        codegen.emitSource(test8 _ , "test8", printWriter)
+        codegen.emitSource(test8 _, "test8", printWriter)
         codegen.reset
 
         val testc8 = compile(test8)
@@ -275,15 +270,15 @@ class TestGeneratorOps extends FileDiffSuite {
         codegen.reset
 
         //test9
-        codegen.emitSource2(test9 _ , "test9", printWriter)
+        codegen.emitSource2(test9 _, "test9", printWriter)
         codegen.reset
 
         val testc9 = compile2(test9)
-        scala.Console.println(testc9(1,10))
+        scala.Console.println(testc9(1, 10))
         codegen.reset
 
         //test10: stream fusion intro example
-        codegen.emitSource(test10 _ , "test10", printWriter)
+        codegen.emitSource(test10 _, "test10", printWriter)
         codegen.reset
 
         val testc10 = compile(test10)
@@ -292,11 +287,10 @@ class TestGeneratorOps extends FileDiffSuite {
 
       }
     }
-    assertFileEqualsCheck(prefix+"generator-simple")
+    assertFileEqualsCheck(prefix + "generator-simple")
   }
 
-
-/*  def testgenerator2 = {
+  /*  def testgenerator2 = {
     withOutFile(prefix+"generator-array"){
        new ArrayProg with GeneratorOpsExp with NumericOpsExp
         with OrderingOpsExp with PrimitiveOpsExp with EqualExp
@@ -325,7 +319,7 @@ class TestGeneratorOps extends FileDiffSuite {
   }
 */
   //C Code generation!!!
-/*  def testgenerator1c = {
+  /*  def testgenerator1c = {
     withOutFile(prefix+"generator-simple-c"){
        new GeneratorProg with GeneratorOpsExp with NumericOpsExp
         with OrderingOpsExp with PrimitiveOpsExp with EqualExp

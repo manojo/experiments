@@ -20,7 +20,7 @@ object ParsersContinued extends CharParsers {
   /**
    * if the reader is done, return the string
    * if the reader is almost done (aka a chunk exists but is reaching the end),
-     pass control, and continue later
+   * pass control, and continue later
    */
   def letters(rdr: ChunkReader, acc: String): String @cps[LettersResult] = {
     val str = rdr.input.asInstanceOf[String]
@@ -52,17 +52,17 @@ object ParsersContinued extends CharParsers {
 
         case Success(chunkSize, rest) =>
           k.f(ChunkReader(rest.input.asInstanceOf[String], (rest.offset, chunkSize + rest.offset) :: Nil)) match {
-          case c: Cont => makeProgress(c)(rest.drop(chunkSize))
+            case c: Cont => makeProgress(c)(rest.drop(chunkSize))
 
-          //this time, the reader that is returned is more tricky.. what if the underlying
-          //parser has failed?
-          case Done(str) => Success(str, in)
-        }
+            //this time, the reader that is returned is more tricky.. what if the underlying
+            //parser has failed?
+            case Done(str) => Success(str, in)
+          }
       }
     }
 
     digit(in) match {
-      case f@Failure(_) => f
+      case f @ Failure(_) => f
       case Success(chunkSize, rest) =>
         val letterRes = reset {
           val x: String @cps[LettersResult] =

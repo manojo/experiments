@@ -2,24 +2,24 @@ package misc
 
 import scala.util.continuations._
 
-object ContTest{
+object ContTest {
 
   def foo() = {
     println("Once here!")
-    shift{ k: (Int => Int) =>
+    shift { k: (Int => Int) =>
       k(k(k(7)))
     }
   }
 
   def bar() = 1 + foo()
 
-  def baz() = reset{
+  def baz() = reset {
     bar() * 2
   }
 
   //Interesting example
   val interesting = reset {
-    shift { k: (Int=>Int) =>
+    shift { k: (Int => Int) =>
       k(k(k(7))); "done"
     } + 1
   }
@@ -27,16 +27,16 @@ object ContTest{
   //control flow reasoning: prints A, B, D, E, G, F, C
   val controlFlow = reset {
     println("A")
-    shift { k1: (Unit=>Unit) =>
-        println("B")
-        k1()
-        println("C")
+    shift { k1: (Unit => Unit) =>
+      println("B")
+      k1()
+      println("C")
     }
     println("D")
-    shift { k2: (Unit=>Unit) =>
-        println("E")
-        k2()
-        println("F")
+    shift { k2: (Unit => Unit) =>
+      println("E")
+      k2()
+      println("F")
     }
     println("G")
   }
@@ -48,16 +48,16 @@ object ContTest{
     var pongK: Unit => Unit = null
 
     //ping
-    val ping = reset{
-      shift{ k: (Unit => Unit) =>
+    val ping = reset {
+      shift { k: (Unit => Unit) =>
         pingK = k
       }
 
-      if(pingCount < 3){println("ping"); pongK()} else ()
+      if (pingCount < 3) { println("ping"); pongK() } else ()
     }
 
-    val pong = reset{
-      shift{ k: (Unit => Unit) =>
+    val pong = reset {
+      shift { k: (Unit => Unit) =>
         pongK = k
       }
       println("pong")
@@ -71,12 +71,12 @@ object ContTest{
 
   def yieldlike = {
 
-    def bla(i:Int, k: Int => Int): Int = {k(i+1)}
+    def bla(i: Int, k: Int => Int): Int = { k(i + 1) }
 
     var i = 0
-    while(i <= 10){
-      val newI = reset{
-        shift{k: (Int => Int) => bla(i, k)}
+    while (i <= 10) {
+      val newI = reset {
+        shift { k: (Int => Int) => bla(i, k) }
       }
       println(newI)
       i = newI
@@ -84,19 +84,18 @@ object ContTest{
 
   }
 
-  def main(args:Array[String]){
+  def main(args: Array[String]) {
     println("hola!")
 
-    val r1 = reset{
-      10 + shift{k: (Int => Int) =>
+    val r1 = reset {
+      10 + shift { k: (Int => Int) =>
         k(1 + 100)
       }
     }
 
-
     println(r1)
     println(baz())
-    println(reset{1 + 100})
+    println(reset { 1 + 100 })
 
     reset {
       println(1)

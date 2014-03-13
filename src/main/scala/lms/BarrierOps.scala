@@ -23,9 +23,9 @@ trait BarrierOpsExp extends BarrierOps with EffectExp {
     reflectEffect(BarrierSync(cmt)) // Simple effect
   }
 
-  override def mirror[A:Manifest](e: Def[A], f: Transformer)(implicit pos: SourceContext): Exp[A] = (e match {
-    case Reflect(BarrierSync(cmt), u, es) => reflectMirrored(Reflect(BarrierSync(cmt), mapOver(f,u), f(es)))(mtype(manifest[A]))
-    case _ => super.mirror(e,f)
+  override def mirror[A: Manifest](e: Def[A], f: Transformer)(implicit pos: SourceContext): Exp[A] = (e match {
+    case Reflect(BarrierSync(cmt), u, es) => reflectMirrored(Reflect(BarrierSync(cmt), mapOver(f, u), f(es)))(mtype(manifest[A]))
+    case _ => super.mirror(e, f)
   }).asInstanceOf[Exp[A]]
 }
 
@@ -38,7 +38,6 @@ trait ScalaGenBarrierOps extends ScalaGenEffect {
     case _ => super.emitNode(sym, rhs)
   }
 }
-
 
 trait CGenBarrierOps extends CGenEffect {
   val IR: BarrierOpsExp
@@ -59,7 +58,6 @@ trait CudaGenBarrierOps extends CudaGenEffect {
     case _ => super.emitNode(sym, rhs)
   }
 }
-
 
 trait OpenCLGenBarrierOps extends OpenCLGenEffect {
   val IR: BarrierOpsExp

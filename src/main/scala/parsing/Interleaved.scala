@@ -7,58 +7,58 @@ trait SimpleParsers {
   type Input = Reader[Elem]
 
   abstract class ParseResult[+T]
-  case class Success[+T](t:T, rest:Input) extends ParseResult[T]
-  case class Failure(rest:Input) extends ParseResult[Nothing]
+  case class Success[+T](t: T, rest: Input) extends ParseResult[T]
+  case class Failure(rest: Input) extends ParseResult[Nothing]
 
   abstract class Parser[+T] extends (Input => ParseResult[T]) {
-    def ~ [U] (that: Parser[U]) = Parser[(T,U)] { in =>
+    def ~[U](that: Parser[U]) = Parser[(T, U)] { in =>
       this(in) match {
         case Success(t, rest) => that(rest) match {
-          case Success(u, rest2) => Success((t,u), rest2)
-          case f@Failure(_) => f
+          case Success(u, rest2) => Success((t, u), rest2)
+          case f @ Failure(_) => f
         }
-        case f@Failure(_) => f
+        case f @ Failure(_) => f
       }
     }
 
-    def | [U>:T] (that: Parser[U]) = Parser[U] { in =>
+    def |[U >: T](that: Parser[U]) = Parser[U] { in =>
       this(in) match {
-        case s@Success(_,_) => s
-        case f@Failure(_) => that(in)
+        case s @ Success(_, _) => s
+        case f @ Failure(_) => that(in)
       }
     }
 
-    def ~> [U] (that: => Parser[U]) = Parser[U] { in =>
+    def ~>[U](that: => Parser[U]) = Parser[U] { in =>
       this(in) match {
         case Success(t, rest) => that(rest)
-        case f@Failure(_) => f
+        case f @ Failure(_) => f
       }
     }
 
-    def <~ [U] (that: => Parser[U]) = Parser[T] { in =>
+    def <~[U](that: => Parser[U]) = Parser[T] { in =>
       this(in) match {
         case Success(t, rest) => that(rest) match {
           case Success(u, rest2) => Success(t, rest2)
-          case f@Failure(_) => f
+          case f @ Failure(_) => f
         }
 
-        case f@Failure(_) => f
+        case f @ Failure(_) => f
       }
     }
 
     def map[U](f: T => U) = Parser[U] { in =>
       this(in) match {
-        case Success(t,rest) => Success(f(t), rest)
-        case f@Failure(_) => f
+        case Success(t, rest) => Success(f(t), rest)
+        case f @ Failure(_) => f
       }
     }
 
-    def ^^[U] (f: T => U) = map(f)
+    def ^^[U](f: T => U) = map(f)
 
     def flatMap[U](f: T => Parser[U]) = Parser[U] { in =>
       this(in) match {
         case Success(t, rest) => f(t)(rest)
-        case f@Failure(_) => f
+        case f @ Failure(_) => f
       }
     }
 
@@ -74,21 +74,20 @@ trait SimpleParsers {
     else Failure(in)
   }
 
-  def accept(e:Elem): Parser[Elem] = accept(x => x == e)
+  def accept(e: Elem): Parser[Elem] = accept(x => x == e)
   def accept(es: List[Elem]): Parser[List[Elem]] = es match {
     case Nil => success(Nil)
-    case x::xs => accept(x) ~ accept(xs) ^^ { case (y, ys) => y::ys }
+    case x :: xs => accept(x) ~ accept(xs) ^^ { case (y, ys) => y :: ys }
   }
 
-  def repFold[T,U](p: => Parser[T])(z:U, f: (U, T) => U): Parser[U] = Parser { in =>
-    p(in) match{
+  def repFold[T, U](p: => Parser[T])(z: U, f: (U, T) => U): Parser[U] = Parser { in =>
+    p(in) match {
       case Failure(rest) => Success(z, rest)
-      case Success(t, rest) => repFold(p)(f(z,t), f)(rest)
+      case Success(t, rest) => repFold(p)(f(z, t), f)(rest)
     }
   }
 
-  def rep[T](p: => Parser[T]): Parser[List[T]]
-    = repFold(p)(Nil, (xs: List[T], x:T) => x::xs) ^^ (_.reverse)
+  def rep[T](p: => Parser[T]): Parser[List[T]] = repFold(p)(Nil, (xs: List[T], x: T) => x :: xs) ^^ (_.reverse)
 
   def success[T](t: T) = Parser[T] { in => Success(t, in) }
 
@@ -108,11 +107,11 @@ trait CharParsers extends SimpleParsers {
     repFold(digit)(x, (res: Int, y: Int) => res * 10 + y)
   }
 
-  def accept(s: String) : Parser[String] =
-    accept(s.toList) ^^ {xs => xs.mkString}
+  def accept(s: String): Parser[String] =
+    accept(s.toList) ^^ { xs => xs.mkString }
 }
 
-trait Reader[+T]{
+trait Reader[+T] {
   def first: T
   def rest: Reader[T]
   def offset: Int
@@ -122,9 +121,9 @@ trait Reader[+T]{
   //hack!
   def input: Any
 
- /**
-  * Returns an abstract reader consisting of all elements except the first `n` elements.
-  */
+  /**
+   * Returns an abstract reader consisting of all elements except the first `n` elements.
+   */
   def drop(n: Int): Reader[T] = {
     var r: Reader[T] = this
     var cnt = n
@@ -137,13 +136,13 @@ trait Reader[+T]{
 
 class StringReader(s: String, override val offset: Int = 0) extends Reader[Char] {
   def first = s.charAt(offset)
-  def rest = new StringReader(s, offset+1)
+  def rest = new StringReader(s, offset + 1)
   def atEnd = offset >= s.length
 
   def input = s
 }
 
-case class ChunkReader(s: String, chunks: List[(Int,Int)]) extends Reader[Char] {
+case class ChunkReader(s: String, chunks: List[(Int, Int)]) extends Reader[Char] {
 
   def input = s
   def offset = chunks.head._1
@@ -164,7 +163,7 @@ case class ChunkReader(s: String, chunks: List[(Int,Int)]) extends Reader[Char] 
       )
   }
 
-  def ++ (that: ChunkReader): ChunkReader = {
+  def ++(that: ChunkReader): ChunkReader = {
     assert(s == that.s)
     new ChunkReader(s, chunks ++ that.chunks)
   }
@@ -190,7 +189,6 @@ object Interleaved extends CharParsers {
     def atEnd = chunkSize == -1 || rdr.atEnd
   }
 
-
   /*private*/ class CReader(rdr: Reader[Char], chunkEnd: Int) extends Reader[Char] {
 
     def input = rdr.input
@@ -213,7 +211,7 @@ object Interleaved extends CharParsers {
 
   def hewords = accept("hello") | accept("helicopter")
 
-  def body(x:Int): Parser[ChunkReader] = Parser { in: Reader[Char] =>
+  def body(x: Int): Parser[ChunkReader] = Parser { in: Reader[Char] =>
     //hack!!
     val s = in.input.asInstanceOf[String]
     Success(

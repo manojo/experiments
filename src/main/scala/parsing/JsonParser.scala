@@ -4,21 +4,21 @@ import scala.util.parsing.combinator._
 import scala.util.parsing.input._
 
 class JSON extends JavaTokenParsers {
-  def value : Parser[Any] = obj | arr | stringLiteral |
-            floatingPointNumber |
-            "null" | "true" | "false"
-  def obj : Parser[Any] = "{"~repsep(member, ",")~"}"
-  def arr : Parser[Any] = "["~repsep(value, ",")~"]"
-  def member: Parser[Any] = stringLiteral~":"~value
+  def value: Parser[Any] = obj | arr | stringLiteral |
+    floatingPointNumber |
+    "null" | "true" | "false"
+  def obj: Parser[Any] = "{" ~ repsep(member, ",") ~ "}"
+  def arr: Parser[Any] = "[" ~ repsep(value, ",") ~ "]"
+  def member: Parser[Any] = stringLiteral ~ ":" ~ value
 
-  def wNum : Parser[Int] = bla
+  def wNum: Parser[Int] = bla
   def bla: Parser[Int] = (wholeNumber ^^ (_.toInt)) | "[" ~> wNum <~ "]"
 }
 
-object JsonParser extends JSON{
+object JsonParser extends JSON {
 
-  val addressbook=
-"""{
+  val addressbook =
+    """{
 "address book": {
 "name": "John Smith",
 "address": {
@@ -34,7 +34,7 @@ object JsonParser extends JSON{
 }
 """
 
-  def main(args:Array[String]){
+  def main(args: Array[String]) {
     println("Hello world!")
     val reader = new CharSequenceReader(addressbook, 0)
     println(parseAll(value, reader))

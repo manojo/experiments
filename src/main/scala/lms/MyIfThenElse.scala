@@ -3,8 +3,8 @@ package lms
 import scala.virtualization.lms.common._
 
 import scala.virtualization.lms.util.OverloadHack
-import scala.virtualization.lms.internal.{GenericNestedCodegen, GenericFatCodegen}
-import scala.reflect.{SourceContext, RefinedManifest}
+import scala.virtualization.lms.internal.{ GenericNestedCodegen, GenericFatCodegen }
+import scala.reflect.{ SourceContext, RefinedManifest }
 
 import java.io.PrintWriter
 
@@ -18,16 +18,16 @@ trait MyIfThenElseExpOpt extends IfThenElseExpOpt { this: BooleanOpsExp with Equ
   // 'de-reify' blocks in case we rewrite if(true) to thenp.
   // TODO: make reflect(Reify(..)) do the right thing
 
-  override def __ifThenElse[T:Manifest](cond: Rep[Boolean], thenp: => Rep[T], elsep: => Rep[T])(implicit pos: SourceContext) = cond match {
+  override def __ifThenElse[T: Manifest](cond: Rep[Boolean], thenp: => Rep[T], elsep: => Rep[T])(implicit pos: SourceContext) = cond match {
     case Const(true) => thenp
     case Const(false) => elsep
     case Def(BooleanNegate(a)) => __ifThenElse(a, elsep, thenp)
-    case Def(NotEqual(a,b)) => __ifThenElse(equals(a,b), elsep, thenp)
+    case Def(NotEqual(a, b)) => __ifThenElse(equals(a, b), elsep, thenp)
     case _ =>
-      if(map.contains(cond)){
-        if(map(cond)) thenp else elsep
-      }else{
-        val a = reifyEffectsHere{
+      if (map.contains(cond)) {
+        if (map(cond)) thenp else elsep
+      } else {
+        val a = reifyEffectsHere {
           map += (cond) -> true
           //the by name parameter is now evaluated
           //thereby triggering possible nested ifThenElse-s
@@ -36,14 +36,14 @@ trait MyIfThenElseExpOpt extends IfThenElseExpOpt { this: BooleanOpsExp with Equ
           tmp
         }
 
-        val b = reifyEffectsHere{
+        val b = reifyEffectsHere {
           map += (cond) -> false
           val tmp = elsep
           map -= cond
           tmp
         }
 
-        ifThenElse(cond,a,b)
+        ifThenElse(cond, a, b)
       }
   }
 }

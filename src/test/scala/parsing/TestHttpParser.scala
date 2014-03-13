@@ -11,8 +11,8 @@ import org.scalatest.junit.JUnitRunner
 class TestHttpParser extends FunSpec with HTTP {
 
   def isSuccessful(p: Parser[Any], in: java.lang.CharSequence): Boolean =
-    parseAll(p,in) match {
-      case Success(_,_) => true
+    parseAll(p, in) match {
+      case Success(_, _) => true
       case _ => false
     }
 
@@ -25,36 +25,35 @@ class TestHttpParser extends FunSpec with HTTP {
     )
   }
 
-  it("response headers: valid"){
+  it("response headers: valid") {
 
     val headers = List(
-   """|Date: Mon, 23 May 2005 22:38:34 GMT
+      """|Date: Mon, 23 May 2005 22:38:34 GMT
       |""".stripMargin,
 
-   """|Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)
+      """|Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)
       |""".stripMargin,
 
-   """|Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT
+      """|Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT
       |""".stripMargin,
 
-   """|Etag: \"3f80f-1b6-3e1cb03b\"
+      """|Etag: \"3f80f-1b6-3e1cb03b\"
       |""".stripMargin,
 
-   """|Content-Type: text/html; charset=UTF-8
+      """|Content-Type: text/html; charset=UTF-8
       |""".stripMargin,
 
-   """|Content-Length: 131
+      """|Content-Length: 131
       |""".stripMargin
     )
 
-    headers.foreach{h =>
+    headers.foreach { h =>
       assert(isSuccessful(header, h))
     }
 
   }
 
-
-  it("response headers: invalid"){
+  it("response headers: invalid") {
 
     val headers = List(
       """Date: Mon, 23 May 2005 22:38:34 GMT""",
@@ -65,12 +64,12 @@ class TestHttpParser extends FunSpec with HTTP {
       """Content-Length: 131"""
     )
 
-    headers.foreach{h =>
+    headers.foreach { h =>
       assert(!isSuccessful(header, h))
     }
   }
 
-  it("statusMessages: valid"){
+  it("statusMessages: valid") {
     val statusMessages = List(
       """HTTP/1.1 200 OK
       |""".stripMargin,
@@ -79,25 +78,25 @@ class TestHttpParser extends FunSpec with HTTP {
       |""".stripMargin
     )
 
-    statusMessages.foreach{sm =>
+    statusMessages.foreach { sm =>
       assert(isSuccessful(status, sm))
     }
   }
 
-  it("statusMessages: invalid"){
+  it("statusMessages: invalid") {
     val statusMessages = List(
       """HTTP/1.1 200 OK""",
       """HTTP/1.1 418 I'm a teapot"""
     )
 
-    statusMessages.foreach{sm =>
+    statusMessages.foreach { sm =>
       assert(!isSuccessful(status, sm))
     }
   }
 
-  it("A response with headers"){
+  it("A response with headers") {
     val httpMessage =
-   """|HTTP/1.1 200 OK
+      """|HTTP/1.1 200 OK
       |Date: Mon, 23 May 2005 22:38:34 GMT
       |Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)
       |Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT
@@ -120,11 +119,11 @@ class TestHttpParser extends FunSpec with HTTP {
 
   }
 
-  it("chunked data"){
+  it("chunked data") {
     val messages = List(
       ("0\r\n\r\n", ""),
       (
-    """4
+        """4
       |Wiki
       |4
       |pedi
@@ -135,19 +134,20 @@ class TestHttpParser extends FunSpec with HTTP {
       |0
       |
       |""".stripMargin,
-    """Wikipedia in
+        """Wikipedia in
       |
       |chunks.""".stripMargin
       )
     )
 
-    messages foreach { case (message, res) =>
-      testWithResult(chunkedParser, message, res)
+    messages foreach {
+      case (message, res) =>
+        testWithResult(chunkedParser, message, res)
     }
   }
 
-  it("response and messages"){
-     val messages = List(
+  it("response and messages") {
+    val messages = List(
       ("""|HTTP/1.1 200 OK
           |Date: Mon, 23 May 2005 22:38:34 GMT
           |Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)
@@ -161,11 +161,11 @@ class TestHttpParser extends FunSpec with HTTP {
           |""".stripMargin,
         (
           Response(
-              status = 200,
-              connection = "close",
-              contentLength = 2,
-              upgrade = false,
-              chunked = false
+            status = 200,
+            connection = "close",
+            contentLength = 2,
+            upgrade = false,
+            chunked = false
           ), "AA"
         )
       ),
@@ -191,18 +191,18 @@ class TestHttpParser extends FunSpec with HTTP {
           |0
           |
           |""".stripMargin,
-          (
-            Response(
-                status = 200,
-                connection = "close",
-                contentLength = 131,
-                upgrade = false,
-                chunked = true
-            ),
+        (
+          Response(
+            status = 200,
+            connection = "close",
+            contentLength = 131,
+            upgrade = false,
+            chunked = true
+          ),
             """Wikipedia in
               |
               |chunks.""".stripMargin
-          )
+        )
       ),
       ("""HTTP/1.1 200 OK
          |Date: Mon, 23 May 2005 22:38:34 GMT
@@ -222,14 +222,14 @@ class TestHttpParser extends FunSpec with HTTP {
          |</body>
          |</html>
          |""".stripMargin,
-          (
-            Response(
-                status = 200,
-                connection = "close",
-                contentLength = 129,
-                upgrade = false,
-                chunked = false
-            ),
+        (
+          Response(
+            status = 200,
+            connection = "close",
+            contentLength = 129,
+            upgrade = false,
+            chunked = false
+          ),
             """<html>
               |<head>
               |  <title>An Example Page</title>
@@ -238,7 +238,7 @@ class TestHttpParser extends FunSpec with HTTP {
               |  Hello World, this is a very simple HTML document.
               |</body>
               |</html>""".stripMargin
-          )
+        )
       ),
       ("""|HTTP/1.1 200 OK
           |cache-control: no-cache, no-store, must-revalidate, pre-check=0, post-check=0
@@ -262,21 +262,22 @@ class TestHttpParser extends FunSpec with HTTP {
           |AA
           |""".stripMargin,
         (Response(
-            status = 200,
-            connection = "close",
-            contentLength = 0,
-            upgrade = false,
-            chunked = false
-          ), "")
+          status = 200,
+          connection = "close",
+          contentLength = 0,
+          upgrade = false,
+          chunked = false
+        ), "")
       )
     )
 
-    messages foreach { case (message, res) =>
-      testWithResult(respAndMessage, message, res)
+    messages foreach {
+      case (message, res) =>
+        testWithResult(respAndMessage, message, res)
     }
   }
 
-  it("urls"){
+  it("urls") {
     val urls = List(
       ("http://en.wikipedia.org/wiki/URI_scheme",
         Url(
@@ -290,39 +291,40 @@ class TestHttpParser extends FunSpec with HTTP {
       ),
 
       ("https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions?redirectlocale=en-US&redirectslug=JavaScript%2FGuide%2FRegular_Expressions",
-        Url( schema = "https",
-             hostName = "developer.mozilla.org",
-             path = "/en-US/docs/Web/JavaScript/Guide/Regular_Expressions?redirectlocale=en-US&redirectslug=JavaScript%2FGuide%2FRegular_Expressions",
-             queryString = "redirectlocale=en-US&redirectslug=JavaScript%2FGuide%2FRegular_Expressions",
-             fragment = "",
-             port = 80
+        Url(schema = "https",
+          hostName = "developer.mozilla.org",
+          path = "/en-US/docs/Web/JavaScript/Guide/Regular_Expressions?redirectlocale=en-US&redirectslug=JavaScript%2FGuide%2FRegular_Expressions",
+          queryString = "redirectlocale=en-US&redirectslug=JavaScript%2FGuide%2FRegular_Expressions",
+          fragment = "",
+          port = 80
         )
-      ) ,
+      ),
       ("http://en.wikipedia.org/wiki/List_of_HTTP_headers#Responses",
-        Url( schema = "http",
-             hostName = "en.wikipedia.org",
-             path = "/wiki/List_of_HTTP_headers#Responses",
-             queryString = "",
-             fragment = "Responses",
-             port = 80
+        Url(schema = "http",
+          hostName = "en.wikipedia.org",
+          path = "/wiki/List_of_HTTP_headers#Responses",
+          queryString = "",
+          fragment = "Responses",
+          port = 80
         )
       ),
 
       //TODO: some delimiting characters are lost, to be corrected
       ("ldap://ldap1.example.net:6666/o=University%20of%20Michigan, c=US??sub?(cn=Babs%20Jensen)",
-        Url( schema = "ldap",
-             hostName = "ldap1.example.net",
-             path = "/o=University%20of%20Michigan,c=US?sub(cn=Babs%20Jensen)",
-             queryString = "sub(cn=Babs%20Jensen)",
-             fragment = "",
-             port = 6666
+        Url(schema = "ldap",
+          hostName = "ldap1.example.net",
+          path = "/o=University%20of%20Michigan,c=US?sub(cn=Babs%20Jensen)",
+          queryString = "sub(cn=Babs%20Jensen)",
+          fragment = "",
+          port = 6666
         )
       )
 
     )
 
-    urls foreach { case (url1, res) =>
-      testWithResult(url, url1, res)
+    urls foreach {
+      case (url1, res) =>
+        testWithResult(url, url1, res)
     }
 
   }

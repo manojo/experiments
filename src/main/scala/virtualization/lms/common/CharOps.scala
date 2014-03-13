@@ -3,7 +3,7 @@ package common
 
 import java.io.PrintWriter
 import scala.virtualization.lms.util.OverloadHack
-import scala.virtualization.lms.internal.{GenerationFailedException}
+import scala.virtualization.lms.internal.{ GenerationFailedException }
 import scala.reflect.SourceContext
 
 trait CharOps extends Variables with OverloadHack {

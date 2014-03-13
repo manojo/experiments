@@ -4,25 +4,25 @@ import HttpParserLL.http_parser
 import java.io._
 import scala.collection.mutable.ArrayBuffer
 
-object HttpTest{
+object HttpTest {
 
   val file = new BufferedReader(new FileReader("src/test/resources/tweet1"))
   val out = new ArrayBuffer[Char]
 
   var line = file.readLine
-  while(line != null){
+  while (line != null) {
     out ++= line + "\n"
     line = file.readLine
   }
 
   val httpResponse = out.toArray
 
-  def main(args: Array[String]){
+  def main(args: Array[String]) {
     println("Welcome!")
 
     val parser = HttpParserLL.http_parser_init(HttpParserLL.HTTP_RESPONSE)
 
-    for(i <- 1 to 25){
+    for (i <- 1 to 25) {
       val time = System.nanoTime()
       HttpParserLL.http_parser_execute(parser, new MyHttpSettings, httpResponse, 0, httpResponse.length)
       println("time taken: " + (System.nanoTime() - time))
@@ -34,7 +34,7 @@ object HttpTest{
 /**
  * a default event processing
  */
-class MyHttpSettings extends HttpParserLL.http_parser_settings{
+class MyHttpSettings extends HttpParserLL.http_parser_settings {
   def on_message_begin(parser: http_parser) = {
     //println("Just begun parsing!")
     0
@@ -48,7 +48,7 @@ class MyHttpSettings extends HttpParserLL.http_parser_settings{
     0
   }
 
-  def on_url(parser: http_parser, at: Array[Char], p: Int, length: Int) ={
+  def on_url(parser: http_parser, at: Array[Char], p: Int, length: Int) = {
     //println("got the following url")
     //for(i <- p to (p+length)){
     //  print(at(i))

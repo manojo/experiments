@@ -1,13 +1,12 @@
 package done
-import HttpParserLL.{http_parser,http_parser_settings}
+import HttpParserLL.{ http_parser, http_parser_settings }
 
-object HandWrittenParserWrapper{
+object HandWrittenParserWrapper {
   def getParser = HttpParserLL.http_parser_init(HttpParserLL.HTTP_RESPONSE)
-  def execute(p:http_parser, settings: http_parser_settings, data: Array[Char], off: Int, len: Int)
-   = HttpParserLL.http_parser_execute(p, settings, data, off, len)
+  def execute(p: http_parser, settings: http_parser_settings, data: Array[Char], off: Int, len: Int) = HttpParserLL.http_parser_execute(p, settings, data, off, len)
 }
 
-class DefaultHttpSettings extends HttpParserLL.http_parser_settings{
+class DefaultHttpSettings extends HttpParserLL.http_parser_settings {
   def on_message_begin(parser: http_parser) = {
     //println("Just begun parsing!")
     0
@@ -35,22 +34,22 @@ class DefaultHttpSettings extends HttpParserLL.http_parser_settings{
   }
 }
 
-class StringFoldingSettings extends DefaultHttpSettings{
+class StringFoldingSettings extends DefaultHttpSettings {
 
   override def on_header_field(parser: http_parser, at: Array[Char], p: Int, length: Int) = {
     var s = ""; var i = 0
-    while(i < length){
-      s += at(p+i)
-      i+=1
+    while (i < length) {
+      s += at(p + i)
+      i += 1
     }
     0
   }
 
   override def on_header_value(parser: http_parser, at: Array[Char], p: Int, length: Int) = {
     var s = ""; var i = 0
-    while(i < length){
-      s += at(p+i)
-      i+=1
+    while (i < length) {
+      s += at(p + i)
+      i += 1
     }
     0
   }

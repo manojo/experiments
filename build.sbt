@@ -47,5 +47,3 @@ testFrameworks += new TestFramework("org.scalameter.ScalaMeterFramework")
 
 //avoid testing during assembly
 //test in assembly := {}
-
-//scalariformSettings

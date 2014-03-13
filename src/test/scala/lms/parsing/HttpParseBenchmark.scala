@@ -1,14 +1,14 @@
 package lms.parsing
 
 import org.scalameter.api._
-import java.io.{BufferedReader, FileReader, Serializable}
+import java.io.{ BufferedReader, FileReader, Serializable }
 import scala.collection.mutable.ArrayBuffer
 import parsing.HTTP
 import done._
 
 //class HttpParseBenchmark extends PerformanceTest.Regression
 class HttpParseBenchmark extends PerformanceTest
-  with HTTP with Serializable{
+    with HTTP with Serializable {
 
   /* configuration */
   def executor = SeparateJvmsExecutor(
@@ -20,34 +20,34 @@ class HttpParseBenchmark extends PerformanceTest
   def persistor = Persistor.None
 
   /******* Uncomment below for using regression testing ****/
-    //override def reporter: Reporter = Reporter.Composite(
-    //  new RegressionReporter(
-    //    RegressionReporter.Tester.Accepter(),
-    //    RegressionReporter.Historian.Complete()),
-    //  HtmlReporter(true)
-    //)
+  //override def reporter: Reporter = Reporter.Composite(
+  //  new RegressionReporter(
+  //    RegressionReporter.Tester.Accepter(),
+  //    RegressionReporter.Historian.Complete()),
+  //  HtmlReporter(true)
+  //)
   /******* Stop uncommenting *****/
-    //def persistor = new SerializationPersistor
+  //def persistor = new SerializationPersistor
 
   // multiple tests can be specified here
-  val fileNames = List(1,2,3,4,6).map{x=> "tweet"+x}
-  val messages = fileNames.foldLeft(List[Array[Char]]()){case (acc, fileName) =>
-    val file = new BufferedReader(new FileReader("src/test/resources/"+fileName))
-    val out = new ArrayBuffer[Char]
+  val fileNames = List(1, 2, 3, 4, 6).map { x => "tweet" + x }
+  val messages = fileNames.foldLeft(List[Array[Char]]()) {
+    case (acc, fileName) =>
+      val file = new BufferedReader(new FileReader("src/test/resources/" + fileName))
+      val out = new ArrayBuffer[Char]
 
-    var line = file.readLine
-    while(line != null){
-      out ++= line + "\n"
-      line = file.readLine
-    }
-    out.toArray :: acc
+      var line = file.readLine
+      while (line != null) {
+        out ++= line + "\n"
+        line = file.readLine
+      }
+      out.toArray :: acc
   }
 
   val range = Gen.enumeration("size")(100)
   //val range = Gen.exponential("size")(1, 10000, 10)
   //val messagesAndRanges = messages.cached
   //val messagesAndRanges: Gen[(List[Array[Char]], Int)] = messages.cached.flatMap{m => Gen.enumeration("size")((m,1),(m,10),(m,100),(m,1000), (m,10000))}
-
 
   //performance of "HTTPParserCombinator" in {
   //  measure method "parse" config(
@@ -63,18 +63,16 @@ class HttpParseBenchmark extends PerformanceTest
   //  }
   //}
 
-
   val stagedParser = new ResponseParse
 
   performance of "ResponseParser" in {
-    measure method "parse" config(
-      //exec.minWarmupRuns -> 500,
-      //exec.maxWarmupRuns -> 500
-      //exec.benchRuns -> 15
-      //exec.independentSamples -> 1
+    measure method "parse" config ( //exec.minWarmupRuns -> 500,
+    //exec.maxWarmupRuns -> 500
+    //exec.benchRuns -> 15
+    //exec.independentSamples -> 1
     ) in {
-      using(range) in {j =>
-        for(i <- 1 to j; m <- messages)
+      using(range) in { j =>
+        for (i <- 1 to j; m <- messages)
           stagedParser.apply(m)
       }
     }
@@ -93,14 +91,13 @@ class HttpParseBenchmark extends PerformanceTest
   )
 
   performance of "ResponseParserStatic" in {
-    measure method "parse" config(
-      //exec.minWarmupRuns -> 500,
-      //exec.maxWarmupRuns -> 500
-      //exec.benchRuns -> 15
-      //exec.independentSamples -> 1
+    measure method "parse" config ( //exec.minWarmupRuns -> 500,
+    //exec.maxWarmupRuns -> 500
+    //exec.benchRuns -> 15
+    //exec.independentSamples -> 1
     ) in {
-      using(range)/*.config(exec.jvmflags -> "-XX:+PrintCompilation").*/ in {j =>
-        for(i <- 1 to j; m <- messages)
+      using(range) /*.config(exec.jvmflags -> "-XX:+PrintCompilation").*/ in { j =>
+        for (i <- 1 to j; m <- messages)
           stagedParserStatic.apply(m)
       }
     }
@@ -119,46 +116,43 @@ class HttpParseBenchmark extends PerformanceTest
   )
 
   performance of "ResponseParserSimple" in {
-    measure method "parse" config(
-      //exec.minWarmupRuns -> 500,
-      //exec.maxWarmupRuns -> 500
-      //exec.benchRuns -> 15
-      //exec.independentSamples -> 1
+    measure method "parse" config ( //exec.minWarmupRuns -> 500,
+    //exec.maxWarmupRuns -> 500
+    //exec.benchRuns -> 15
+    //exec.independentSamples -> 1
     ) in {
-      using(range)/*.config(exec.jvmflags -> "-XX:+PrintCompilation").*/ in {j =>
-        for(i <- 1 to j; m <- messages)
+      using(range) /*.config(exec.jvmflags -> "-XX:+PrintCompilation").*/ in { j =>
+        for (i <- 1 to j; m <- messages)
           simpleParserStatic.apply(m)
       }
     }
   }
 
-//hand written, folding
+  //hand written, folding
 
   val handWrittenParser = HandWrittenParserWrapper.getParser
 
   performance of "HTTPParserLL" in {
-    measure method "parseFoldString" config(
-      //exec.minWarmupRuns -> 1,
-      //exec.maxWarmupRuns -> 2,
-      //exec.benchRuns -> 15
-      //exec.independentSamples -> 1
+    measure method "parseFoldString" config ( //exec.minWarmupRuns -> 1,
+    //exec.maxWarmupRuns -> 2,
+    //exec.benchRuns -> 15
+    //exec.independentSamples -> 1
     ) in {
-      using(range) in {j =>
-        for(i <- 1 to j; m <- messages)
+      using(range) in { j =>
+        for (i <- 1 to j; m <- messages)
           HandWrittenParserWrapper.execute(handWrittenParser, new StringFoldingSettings, m, 0, m.length)
       }
     }
   }
 
   performance of "HTTPParserLL" in {
-    measure method "parse" config(
-      //exec.minWarmupRuns -> 1,
-      //exec.maxWarmupRuns -> 2,
-      //exec.benchRuns -> 15
-      //exec.independentSamples -> 1
+    measure method "parse" config ( //exec.minWarmupRuns -> 1,
+    //exec.maxWarmupRuns -> 2,
+    //exec.benchRuns -> 15
+    //exec.independentSamples -> 1
     ) in {
-      using(range) in {j =>
-        for(i <- 1 to j; m <- messages)
+      using(range) in { j =>
+        for (i <- 1 to j; m <- messages)
           HandWrittenParserWrapper.execute(handWrittenParser, new DefaultHttpSettings, m, 0, m.length)
       }
     }

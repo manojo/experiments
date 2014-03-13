@@ -8,14 +8,12 @@ import java.io.PrintWriter
 import java.io.StringWriter
 import java.io.FileOutputStream
 
-
 trait JsonParserProg extends JsonParser {
 
   def jsonParse(in: Rep[Array[Char]]): Rep[Unit] = {
     val res = json(in).apply(unit(0))
     println(res)
   }
-
 
   def testJPrimitives(i: Rep[Int]) = {
     val f = jFalse
@@ -37,17 +35,10 @@ class TestJsonParser extends FileDiffSuite {
   val prefix = "test-out/"
 
   def testJsonParser = {
-    withOutFile(prefix+"json-parser"){
-      new JsonParserProg with RecParsersExp with MyScalaOpsPkgExp
-       with CharOpsExp with MyIfThenElseExpOpt with StructOpsFatExpOptCommon
-       with ParseResultOpsExp with OptionOpsExp
-       with StringStructOpsExp with BarrierOpsExp
-       with MyScalaCompile { self =>
+    withOutFile(prefix + "json-parser") {
+      new JsonParserProg with RecParsersExp with MyScalaOpsPkgExp with CharOpsExp with MyIfThenElseExpOpt with StructOpsFatExpOptCommon with ParseResultOpsExp with OptionOpsExp with StringStructOpsExp with BarrierOpsExp with MyScalaCompile { self =>
 
-        val codegen = new MyScalaCodeGenPkg with ScalaGenCharOps
-          with ScalaGenParseResultOps with ScalaGenFatStructOps
-          with ScalaGenOptionOps with ScalaGenStringStructOps
-          with ScalaGenBarrierOps with ScalaGenIfThenElseFat {
+        val codegen = new MyScalaCodeGenPkg with ScalaGenCharOps with ScalaGenParseResultOps with ScalaGenFatStructOps with ScalaGenOptionOps with ScalaGenStringStructOps with ScalaGenBarrierOps with ScalaGenIfThenElseFat {
           val IR: self.type = self
         }
 
@@ -82,11 +73,11 @@ class TestJsonParser extends FileDiffSuite {
 
         val testcJson = compile(jsonParse)
         val jsonMsgs = scala.List(
-          "3","-32",
+          "3", "-32",
           "55.932083999999996", "-55.932083999999996",
-          "true","false","null",
+          "true", "false", "null",
           "\"hi\"", "\"\\\"hello\"", "\"\\/hello\"",
-          "[3]","[3,[2],[[1]]]",
+          "[3]", "[3,[2],[[1]]]",
           "{\"hi\" : 2,\"hey\" : {\"hey\" : 2}}",
           """{
           "address book": {
@@ -105,7 +96,7 @@ class TestJsonParser extends FileDiffSuite {
           """
         )
 
-        jsonMsgs.foreach{msg =>
+        jsonMsgs.foreach { msg =>
           testcJson(msg.toArray)
         }
 
@@ -114,6 +105,6 @@ class TestJsonParser extends FileDiffSuite {
 
     }
 
-    assertFileEqualsCheck(prefix+"json-parser")
+    assertFileEqualsCheck(prefix + "json-parser")
   }
 }

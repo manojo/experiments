@@ -1,8 +1,7 @@
 package lms
 
-import java.io.{PrintStream,File,FileInputStream,FileOutputStream,ByteArrayOutputStream}
+import java.io.{ PrintStream, File, FileInputStream, FileOutputStream, ByteArrayOutputStream }
 import org.scalatest._
-
 
 trait FileDiffSuite extends Suite {
 
@@ -39,7 +38,7 @@ trait FileDiffSuite extends Suite {
     new String(buf)
   }
   def assertFileEqualsCheck(name: String): Unit = {
-    expectResult(readFile(name+".check")){readFile(name)}
+    expectResult(readFile(name + ".check")) { readFile(name) }
     new File(name) delete ()
   }
 }

@@ -8,12 +8,12 @@ import java.io.PrintWriter
 import java.io.StringWriter
 import java.io.FileOutputStream
 
-trait RecParsersProg extends TokenParsers with RecParsers{
+trait RecParsersProg extends TokenParsers with RecParsers {
 
   def recNumber(in: Rep[Array[Char]]): Parser[Int] = {
     def temp: Parser[Int] = rec("hi",
       (digit2Int(in) ~ temp) ^^ {
-        x  => x._1 + x._2
+        x => x._1 + x._2
       } | digit2Int(in))
 
     temp
@@ -25,14 +25,14 @@ trait RecParsersProg extends TokenParsers with RecParsers{
 
   def recExpr(in: Rep[Array[Char]]): Parser[Int] = {
     def expr: Parser[Int] = rec("wow",
-      (term ~ repFold(accept(in, unit('+')) ~> term)(unit(0), (x:Rep[Int],y:Rep[Int]) => x + y))
-      ^^ {x => x._1 + x._2}
+      (term ~ repFold(accept(in, unit('+')) ~> term)(unit(0), (x: Rep[Int], y: Rep[Int]) => x + y))
+        ^^ { x => x._1 + x._2 }
     )
 
     def term: Parser[Int] =
-      (factor ~ repFold(accept(in, unit('*')) ~> factor)(unit(1), (x:Rep[Int],y:Rep[Int]) => x * y)) ^^ {x => x._1 * x._2}
+      (factor ~ repFold(accept(in, unit('*')) ~> factor)(unit(1), (x: Rep[Int], y: Rep[Int]) => x * y)) ^^ { x => x._1 * x._2 }
 
-    def factor = wholeNumber(in) | accept(in,unit('(')) ~> expr <~ accept(in, unit(')'))
+    def factor = wholeNumber(in) | accept(in, unit('(')) ~> expr <~ accept(in, unit(')'))
     expr
   }
 
@@ -54,22 +54,14 @@ class TestRecParsers extends FileDiffSuite {
   val prefix = "test-out/"
 
   def testRec = {
-    withOutFile(prefix+"rec-parser") {
-      new RecParsersProg with RecParsersExp with MyScalaOpsPkgExp
-      with CharOpsExp with MyIfThenElseExpOpt with StructOpsFatExpOptCommon
-      with ParseResultOpsExp with FunctionsExp with OptionOpsExp
-      with StringStructOpsExp with BarrierOpsExp
-      with MyScalaCompile { self =>
+    withOutFile(prefix + "rec-parser") {
+      new RecParsersProg with RecParsersExp with MyScalaOpsPkgExp with CharOpsExp with MyIfThenElseExpOpt with StructOpsFatExpOptCommon with ParseResultOpsExp with FunctionsExp with OptionOpsExp with StringStructOpsExp with BarrierOpsExp with MyScalaCompile { self =>
 
-        val codegen = new MyScalaCodeGenPkg with ScalaGenCharOps
-        with ScalaGenParseResultOps with ScalaGenFatStructOps
-        with ScalaGenFunctions with ScalaGenOptionOps
-        with ScalaGenStringStructOps with ScalaGenBarrierOps
-        with ScalaGenIfThenElseFat {
+        val codegen = new MyScalaCodeGenPkg with ScalaGenCharOps with ScalaGenParseResultOps with ScalaGenFatStructOps with ScalaGenFunctions with ScalaGenOptionOps with ScalaGenStringStructOps with ScalaGenBarrierOps with ScalaGenIfThenElseFat {
           val IR: self.type = self
         }
 
-        codegen.emitSource(testRecNumber _ , "testRecNumber", new java.io.PrintWriter(System.out))
+        codegen.emitSource(testRecNumber _, "testRecNumber", new java.io.PrintWriter(System.out))
         codegen.reset
 
         val testcRecNumber = compile(testRecNumber)
@@ -80,7 +72,7 @@ class TestRecParsers extends FileDiffSuite {
         testcRecNumber("a".toArray)
         codegen.reset
 
-        codegen.emitSource(testRecExpr _ , "testRecExpr", new java.io.PrintWriter(System.out))
+        codegen.emitSource(testRecExpr _, "testRecExpr", new java.io.PrintWriter(System.out))
         codegen.reset
 
         val testcRecExpr = compile(testRecExpr)
@@ -92,6 +84,6 @@ class TestRecParsers extends FileDiffSuite {
         codegen.reset
       }
     }
-    assertFileEqualsCheck(prefix+"rec-parser")
+    assertFileEqualsCheck(prefix + "rec-parser")
   }
 }
