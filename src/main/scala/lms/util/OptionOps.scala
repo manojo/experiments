@@ -27,12 +27,6 @@ trait OptionOps extends Base with IfThenElse with BooleanOps {
     def get: Rep[A] = option_get(o)
     def flatMap[B: Manifest](f: Rep[A] => Rep[Option[B]]) = option_flatMap(o, f)
     def filter(f: Rep[A] => Rep[Boolean]) = option_filter(o, f)
-    //    def sortBy[B:Manifest:Ordering](f: Rep[A] => Rep[B]) = list_sortby(l,f)
-    //    def ::(e: Rep[A]) = list_prepend(l,e)
-    //    def ++ (l2: Rep[List[A]]) = list_concat(l, l2)
-    //    def mkString = list_mkString(l)
-    //    def head = list_head(l)
-    //    def tail = list_tail(l)
   }
 
   def option_isDefined[A: Manifest](o: Rep[Option[A]])(implicit pos: SourceContext): Rep[Boolean]
@@ -51,7 +45,11 @@ trait OptionOps extends Base with IfThenElse with BooleanOps {
 
 trait OptionOpsExp extends OptionOps with IfThenElseExp with BooleanOpsExp with StructOpsExpOpt with CastingOpsExp {
   import scala.language.implicitConversions
-  implicit def make_opt[A: Manifest](o: Option[Rep[A]])(implicit pos: SourceContext): Exp[Option[A]] = struct(classTag[Option[A]], "value" -> o.getOrElse(rep_asinstanceof(unit(null), manifest[Null], manifest[A])), "defined" -> unit(o.isDefined))
+  implicit def make_opt[A: Manifest](o: Option[Rep[A]])(implicit pos: SourceContext): Exp[Option[A]] =
+    struct(classTag[Option[A]],
+      "value" -> o.getOrElse(rep_asinstanceof(unit(null), manifest[Null], manifest[A])),
+      "defined" -> unit(o.isDefined)
+    )
 
   def option_isDefined[A: Manifest](o: Rep[Option[A]])(implicit pos: SourceContext): Rep[Boolean] = field[Boolean](o, "defined")
   def option_get[A: Manifest](o: Rep[Option[A]])(implicit pos: SourceContext): Rep[A] = field[A](o, "value")

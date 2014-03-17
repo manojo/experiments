@@ -57,12 +57,6 @@ trait ParseResultOps extends Base with IfThenElse with BooleanOps {
   def parseresult_map[A: Manifest, B: Manifest](pr: Rep[ParseResult[A]], f: Rep[A] => Rep[B]): Rep[ParseResult[B]] =
     if (pr.isEmpty) Failure[B](pr.next) else Success(f(pr.get), pr.next)
 
-  /*  def option_flatMap[A:Manifest, B:Manifest](o:Rep[Option[A]], f: Rep[A] => Rep[Option[B]]) : Rep[Option[B]] =
-    if(o.isDefined) f(o.get) else None.asInstanceOf[Option[Rep[B]]]
-
-  def option_filter[A:Manifest](o: Rep[Option[A]], p: Rep[A] => Rep[Boolean]) : Rep[Option[A]] =
-    if(o.isDefined && p(o.get)) o else None.asInstanceOf[Option[Rep[A]]]
-*/
 }
 
 trait ParseResultOpsExp extends ParseResultOps with IfThenElseExp with BooleanOpsExp with StructOpsExpOpt {
@@ -70,13 +64,12 @@ trait ParseResultOpsExp extends ParseResultOps with IfThenElseExp with BooleanOp
   //implicit def make_parseResult[A:Manifest](pr: ParseResult[A])(implicit pos: SourceContext): Exp[ParseResult[A]]
   //  = struct(classTag[ParseResult[A]], "res" -> pr.res, "empty" -> pr.isEmpty, "next" -> pr.next)
 
-  //getOrElse(rep_asinstanceof(unit(null), manifest[Null], manifest[A]))
-
   def parseresult_isEmpty[A: Manifest](pr: Rep[ParseResult[A]])(implicit pos: SourceContext): Rep[Boolean] = field[Boolean](pr, "empty")
   def parseresult_get[A: Manifest](pr: Rep[ParseResult[A]])(implicit pos: SourceContext): Rep[A] = field[A](pr, "res")
   def parseresult_next[A: Manifest](pr: Rep[ParseResult[A]])(implicit pos: SourceContext): Rep[Int] = field[Int](pr, "next")
 
-  def Success[T: Manifest](res: Rep[T], next: Rep[Int]): Exp[ParseResult[T]] = struct(classTag[ParseResult[T]], "res" -> res, "empty" -> unit(false), "next" -> next)
+  def Success[T: Manifest](res: Rep[T], next: Rep[Int]): Exp[ParseResult[T]] =
+    struct(classTag[ParseResult[T]], "res" -> res, "empty" -> unit(false), "next" -> next)
 
   // FIXME: Remove this once
   // https://github.com/TiarkRompf/virtualization-lms-core/pull/70 has
