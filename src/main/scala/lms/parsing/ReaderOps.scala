@@ -7,6 +7,11 @@ import scala.reflect.SourceContext
 
 import java.io.PrintWriter
 
+//creating new types so we can Rep them
+abstract class Reader[+T: Manifest]
+abstract class StringReader extends Reader[Char]
+abstract class ChunkReader extends Reader[Char]
+
 /**
  * Inspired from TupleOps on delite-develop branch
  */
@@ -17,54 +22,65 @@ trait ReaderOps extends Base with IfThenElse with BooleanOps with ArrayOps
    * A mini implementation of a Reader
    *
    */
-  abstract class Reader[+T: Manifest] {
+
+  abstract class ReaderCls[+T: Manifest] {
+    def rdr: Rep[Reader[T]]
+
     def atEnd: Rep[Boolean]
-    def rest: Rep[Reader[T]]
     def first: Rep[T]
+    def rest: Rep[Reader[T]]
+
   }
 
-  abstract class StringReader extends Reader[Char] {
-    def input: Rep[Array[Char]]
-    def offset: Rep[Int] = unit(0)
-  }
+  implicit def repToSReaderCls(a: Rep[StringReader]) = new StringReaderCls(a)
 
-  implicit def repToReaderCls(a: Rep[StringReader]) = new StringReaderCls(a)
+  class StringReaderCls(override val rdr: Rep[StringReader]) extends ReaderCls[Char] {
 
-  //just specialize for now, see what happens later
-  class StringReaderCls(rdr: Rep[StringReader]) {
+    def input = sreader_input(rdr)
+    def offset: Rep[Int] = sreader_offset(rdr)
 
-    def atEnd = reader_atEnd(rdr)
-    def first = reader_first(rdr)
-    def rest = reader_rest(rdr)
+    def atEnd = rdr.offset >= rdr.input.length
+    def first = rdr.input(rdr.offset)
+    def rest = StringReader(rdr.input, rdr.offset + unit(1))
 
-    def input = reader_input(rdr)
-    def offset = reader_offset(rdr)
-
-    def foreach(f: Rep[Char] => Rep[Unit]) = reader_foreach(rdr, f)
-
+    def foreach(f: Rep[Char] => Rep[Unit]) = {
+      var tmp = rdr
+      while (!readVar(tmp).atEnd) {
+        f(readVar(tmp).first)
+        tmp = readVar(tmp).rest
+      }
+    }
   }
 
   // the constructor
   def StringReader(input: Rep[Array[Char]], offset: Rep[Int] = unit(0)): Rep[StringReader]
-  def reader_input(rdr: Rep[StringReader]): Rep[Array[Char]]
-  def reader_offset(rdr: Rep[StringReader]): Rep[Int]
+  def sreader_input(rdr: Rep[StringReader]): Rep[Array[Char]]
+  def sreader_offset(rdr: Rep[StringReader]): Rep[Int]
 
-  def reader_atEnd(rdr: Rep[StringReader])(implicit pos: SourceContext): Rep[Boolean] =
-    rdr.offset >= rdr.input.length
+  implicit def repToCReaderCls(a: Rep[ChunkReader]) = new ChunkReaderCls(a)
 
-  def reader_first(rdr: Rep[StringReader])(implicit pos: SourceContext) =
-    rdr.input(rdr.offset)
+  class ChunkReaderCls(override val rdr: Rep[ChunkReader]) extends ReaderCls[Char] {
 
-  def reader_rest(rdr: Rep[StringReader])(implicit pos: SourceContext) =
-    StringReader(rdr.input, rdr.offset + unit(1))
+    def innerReader: Rep[StringReader] = creader_inner(rdr)
+    def chunkEnd: Rep[Int] = creader_chunkEnd(rdr)
 
-  def reader_foreach(rdr: Rep[StringReader], f: Rep[Char] => Rep[Unit])(implicit pos: SourceContext) = {
-    var tmp = rdr
-    while (!readVar(tmp).atEnd) {
-      f(readVar(tmp).first)
-      tmp = readVar(tmp).rest
+    def input = innerReader.input
+    def offset = innerReader.offset
+
+    def atEnd = innerReader.atEnd
+    def first = innerReader.first
+    def rest: Rep[Reader[Char]] = {
+      if (offset == chunkEnd - unit(1)) {
+        val next = innerReader.rest
+        innerReader // number match ...
+      } else ChunkReader(innerReader.rest, chunkEnd)
     }
+
   }
+
+  def ChunkReader(innerRdr: Rep[StringReader], chunkEnd: Rep[Int]): Rep[ChunkReader]
+  def creader_inner(rdr: Rep[ChunkReader]): Rep[StringReader]
+  def creader_chunkEnd(rdr: Rep[ChunkReader]): Rep[Int]
 
 }
 
@@ -76,11 +92,23 @@ trait ReaderOpsExp extends ReaderOps with StructOpsExpOpt {
       "offset" -> offset
     )
 
-  def reader_input(rdr: Rep[StringReader]): Rep[Array[Char]] =
+  def sreader_input(rdr: Rep[StringReader]): Rep[Array[Char]] =
     field[Array[Char]](rdr, "input")
 
-  def reader_offset(rdr: Rep[StringReader]): Rep[Int] =
+  def sreader_offset(rdr: Rep[StringReader]): Rep[Int] =
     field[Int](rdr, "offset")
+
+  def ChunkReader(innerRdr: Rep[StringReader], chunkEnd: Rep[Int]) =
+    struct(classTag[ChunkReader],
+      "innerRdr" -> innerRdr,
+      "chunkEnd" -> chunkEnd
+    )
+
+  def creader_inner(rdr: Rep[ChunkReader]): Rep[StringReader] =
+    field[StringReader](rdr, "innerRdr")
+
+  def creader_chunkEnd(rdr: Rep[ChunkReader]): Rep[Int] =
+    field[Int](rdr, "chunkEnd")
 
 }
 
