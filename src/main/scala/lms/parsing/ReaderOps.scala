@@ -11,7 +11,7 @@ import java.io.PrintWriter
  * Inspired from TupleOps on delite-develop branch
  */
 trait ReaderOps extends Base with IfThenElse with BooleanOps with ArrayOps
-    with OrderingOps with StructOps with NumericOps {
+    with OrderingOps with StructOps with NumericOps with LiftVariables with While {
 
   /**
    * A mini implementation of a Reader
@@ -40,6 +40,8 @@ trait ReaderOps extends Base with IfThenElse with BooleanOps with ArrayOps
     def input = reader_input(rdr)
     def offset = reader_offset(rdr)
 
+    def foreach(f: Rep[Char] => Rep[Unit]) = reader_foreach(rdr, f)
+
   }
 
   // the constructor
@@ -55,6 +57,14 @@ trait ReaderOps extends Base with IfThenElse with BooleanOps with ArrayOps
 
   def reader_rest(rdr: Rep[StringReader])(implicit pos: SourceContext) =
     StringReader(rdr.input, rdr.offset + unit(1))
+
+  def reader_foreach(rdr: Rep[StringReader], f: Rep[Char] => Rep[Unit])(implicit pos: SourceContext) = {
+    var tmp = rdr
+    while (!readVar(tmp).atEnd) {
+      f(readVar(tmp).first)
+      tmp = readVar(tmp).rest
+    }
+  }
 
 }
 

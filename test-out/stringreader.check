@@ -43,3 +43,39 @@ x4
 *******************************************/
 compilation: ok
 e
+/*****************************************
+  Emitting Generated Code                  
+*******************************************/
+class testIteration extends ((Array[Char])=>(Unit)) {
+def apply(x0:Array[Char]): Unit = {
+val x1 = new StringReader(x0,0)
+var x2: StringReader = x1
+val x19 = while ({val x3 = x2
+val x4 = x3.offset
+val x5 = x3.input
+val x6 = x5.length
+val x7 = x4 >= x6
+val x8 = !x7
+x8}) {
+val x10 = x2
+val x11 = x10.input
+val x12 = x10.offset
+val x13 = x11(x12)
+val x14 = println(x13)
+val x15 = x12 + 1
+val x16 = new StringReader(x11,x15)
+x2 = x16
+()
+}
+x19
+}
+}
+/*****************************************
+  End of Generated Code                  
+*******************************************/
+compilation: ok
+h
+e
+l
+l
+o

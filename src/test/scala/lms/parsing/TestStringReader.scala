@@ -28,6 +28,11 @@ trait StringReaderProg extends ReaderOps with MyScalaOpsPkg {
 
     rst.first
   }
+
+  def testIteration(in: Rep[Array[Char]]): Rep[Unit] = {
+    val rdr = StringReader(in)
+    rdr.foreach { c => println(c) }
+  }
 }
 
 class TestStringReader extends FileDiffSuite {
@@ -60,6 +65,13 @@ class TestStringReader extends FileDiffSuite {
 
         val testcRest = compile(testRest)
         scala.Console.println(testcRest("hello".toArray))
+        codegen.reset
+
+        codegen.emitSource(testIteration _, "testIteration", new java.io.PrintWriter(System.out))
+        codegen.reset
+
+        val testcIteration = compile(testIteration)
+        testcIteration("hello".toArray)
         codegen.reset
 
       }
