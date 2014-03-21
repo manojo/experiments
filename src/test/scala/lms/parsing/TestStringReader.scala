@@ -8,7 +8,7 @@ import java.io.PrintWriter
 import java.io.StringWriter
 import java.io.FileOutputStream
 
-trait StringReaderProg extends ReaderOps with MyScalaOpsPkg {
+trait StringReaderProg extends StringReaderOps with MyScalaOpsPkg {
 
   //print reader.first
   def testFirst(in: Rep[Array[Char]]): Rep[Char] = {
@@ -41,7 +41,7 @@ class TestStringReader extends FileDiffSuite {
 
   def testStringReader = {
     withOutFile(prefix + "stringreader") {
-      new StringReaderProg with ReaderOpsExp with MyScalaOpsPkgExp with MyScalaCompile { self =>
+      new StringReaderProg with StringReaderOpsExp with MyScalaOpsPkgExp with MyScalaCompile { self =>
 
         val codegen = new MyScalaCodeGenPkg with ScalaGenReaderOps { val IR: self.type = self }
 

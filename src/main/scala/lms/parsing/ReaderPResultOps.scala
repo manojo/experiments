@@ -11,7 +11,7 @@ import java.io.PrintWriter
 /**
  * Inspired from TupleOps on delite-develop branch
  */
-trait ReaderParseResultOps extends Base with IfThenElse with BooleanOps with ReaderOps {
+trait ReaderParseResultOps extends Base with IfThenElse with BooleanOps { self: ReaderOps =>
 
   /**
    * A mini implementation of a parseresult
@@ -19,12 +19,12 @@ trait ReaderParseResultOps extends Base with IfThenElse with BooleanOps with Rea
    */
   abstract class ParseResult[+T: Manifest] {
     def isEmpty: Rep[Boolean]
-    def next: Rep[StringReader]
+    def next: Rep[Input]
     def res: Rep[T]
   }
 
-  def Success[T: Manifest](res: Rep[T], next: Rep[StringReader]): Rep[ParseResult[T]]
-  def Failure[T: Manifest](next: Rep[StringReader]): Rep[ParseResult[T]]
+  def Success[T: Manifest](res: Rep[T], next: Rep[Input]): Rep[ParseResult[T]]
+  def Failure[T: Manifest](next: Rep[Input]): Rep[ParseResult[T]]
 
   implicit def repToParseResultCls[T: Manifest](a: Rep[ParseResult[T]]) = new ParseResultCls(a)
   //implicit def make_parseResult[A:Manifest](o: ParseResult[Rep[A]])(implicit pos: SourceContext): Rep[ParseResult[A]]
@@ -33,7 +33,7 @@ trait ReaderParseResultOps extends Base with IfThenElse with BooleanOps with Rea
     def isEmpty: Rep[Boolean] = parseresult_isEmpty(pr)
     def get: Rep[A] = parseresult_get(pr)
     def orElse(that: Rep[ParseResult[A]]) = parseresult_orElse(pr, that)
-    def next: Rep[StringReader] = parseresult_next(pr)
+    def next: Rep[Input] = parseresult_next(pr)
 
     def map[B: Manifest](f: Rep[A] => Rep[B]) = parseresult_map(pr, f)
     //    def flatMapWithNext[B:Manifest](f: Rep[A] => Rep[Int] => Generator[ParseResult[B]]) = parseresult_flatMapWithNext(pr, f)
@@ -49,7 +49,7 @@ trait ReaderParseResultOps extends Base with IfThenElse with BooleanOps with Rea
 
   def parseresult_isEmpty[A: Manifest](pr: Rep[ParseResult[A]])(implicit pos: SourceContext): Rep[Boolean]
   def parseresult_get[A: Manifest](pr: Rep[ParseResult[A]])(implicit pos: SourceContext): Rep[A]
-  def parseresult_next[A: Manifest](pr: Rep[ParseResult[A]])(implicit pos: SourceContext): Rep[StringReader]
+  def parseresult_next[A: Manifest](pr: Rep[ParseResult[A]])(implicit pos: SourceContext): Rep[Input]
 
   def parseresult_orElse[A: Manifest](pr: Rep[ParseResult[A]], that: Rep[ParseResult[A]])(implicit pos: SourceContext): Rep[ParseResult[A]] =
     if (pr.isEmpty) that else pr
@@ -59,16 +59,21 @@ trait ReaderParseResultOps extends Base with IfThenElse with BooleanOps with Rea
 
 }
 
-trait ReaderParseResultOpsExp extends ReaderParseResultOps with IfThenElseExp with BooleanOpsExp with StructOpsExpOpt {
+trait ReaderParseResultOpsExp extends ReaderParseResultOps with IfThenElseExp
+    with BooleanOpsExp with StructOpsExpOpt {  self: ReaderOps =>
 
   //implicit def make_parseResult[A:Manifest](pr: ParseResult[A])(implicit pos: SourceContext): Exp[ParseResult[A]]
   //  = struct(classTag[ParseResult[A]], "res" -> pr.res, "empty" -> pr.isEmpty, "next" -> pr.next)
 
-  def parseresult_isEmpty[A: Manifest](pr: Rep[ParseResult[A]])(implicit pos: SourceContext): Rep[Boolean] = field[Boolean](pr, "empty")
-  def parseresult_get[A: Manifest](pr: Rep[ParseResult[A]])(implicit pos: SourceContext): Rep[A] = field[A](pr, "res")
-  def parseresult_next[A: Manifest](pr: Rep[ParseResult[A]])(implicit pos: SourceContext): Rep[StringReader] = field[StringReader](pr, "next")
+  def parseresult_isEmpty[A: Manifest](pr: Rep[ParseResult[A]])(implicit pos: SourceContext): Rep[Boolean]
+    = field[Boolean](pr, "empty")
 
-  def Success[T: Manifest](res: Rep[T], next: Rep[StringReader]): Exp[ParseResult[T]] =
+  def parseresult_get[A: Manifest](pr: Rep[ParseResult[A]])(implicit pos: SourceContext): Rep[A]
+    = field[A](pr, "res")
+
+  def parseresult_next[A: Manifest](pr: Rep[ParseResult[A]])(implicit pos: SourceContext): Rep[Input] = field[Input](pr, "next")
+
+  def Success[T: Manifest](res: Rep[T], next: Rep[Input]): Exp[ParseResult[T]] =
     struct(classTag[ParseResult[T]], "res" -> res, "empty" -> unit(false), "next" -> next)
 
   // FIXME: Remove this once
@@ -104,7 +109,8 @@ trait ReaderParseResultOpsExp extends ReaderParseResultOps with IfThenElseExp wi
 
   }
 
-  def Failure[T: Manifest](next: Rep[StringReader]): Exp[ParseResult[T]] = struct(classTag[ParseResult[T]], "res" -> unit(ZeroVal[T]), "empty" -> unit(true), "next" -> next)
+  def Failure[T: Manifest](next: Rep[Input]): Exp[ParseResult[T]]
+    = struct(classTag[ParseResult[T]], "res" -> unit(ZeroVal[T]), "empty" -> unit(true), "next" -> next)
 }
 
 trait ReaderParseResultGenBase extends GenericCodegen with BaseGenStructOps {

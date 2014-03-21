@@ -33,7 +33,7 @@ addCompilerPlugin("org.scala-lang.virtualized.plugins" % "continuations" % "2.10
 
 scalacOptions ++= Seq(
   "-Yvirtualize",
-  "-P:continuations:enable"//,
+  "-P:continuations:enable"
   //"-optimize"//,
   //"-deprecation",
   //"-feature",

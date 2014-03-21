@@ -2,6 +2,7 @@
  * An implementation of basic parser combinators using simple generators
  *
  */
+
 package lms.parsing
 
 import lms._
@@ -10,15 +11,13 @@ import lms.util._
 import scala.virtualization.lms.common._
 import scala.virtualization.lms.internal.Effects
 
-trait ReaderParsers extends MyScalaOpsPkg with LiftVariables
-    with StructOps with ReaderParseResultOps with OptionOps with Functions
-    with ReaderOps with BarrierOps {
-
-  type Input = StringReader
+trait ReaderParsers extends MyScalaOpsPkg with LiftVariables with StructOps
+  with OptionOps with Functions with ReaderParseResultOps
+  with BarrierOps with ReaderOps {
 
   abstract class Parser[+T: Manifest] extends (Rep[Input] => Rep[ParseResult[T]]) { self =>
 
-    private def flatMap[U: Manifest](f: Rep[T] => Parser[U]) = Parser[U] { input =>
+    private def flatMap[U: Manifest](f: Rep[T] => Parser[U]) = Parser[U] { input: Rep[Input] =>
       val tmp = self(input)
       if (tmp.isEmpty) Failure[U](input)
       else {
@@ -88,22 +87,34 @@ trait ReaderParsers extends MyScalaOpsPkg with LiftVariables
     res
   }
 
-  /*
-  def repFold[T: Manifest, U: Manifest](p: => Parser[T])(z: Rep[U], f: (Rep[U], Rep[T]) => Rep[U]) = Parser[U] { pos =>
-    var old = unit(-1)
-    var continue = unit(true)
-    var cur = pos
+  def rep1Fold[T: Manifest, U: Manifest](p: => Parser[U], q: => Parser[T])(f: (Rep[U], Rep[T]) => Rep[U]) = p >> {
+    pres =>
 
-    var s = Success[U](z, pos)
+    Parser[U] { in =>
+      var current = pres
+      var continue = unit(true)
+      var curInput = in
 
-    while (continue && old != cur) {
-      old = cur
-      val x = p(cur)
-      if (x.isEmpty) continue = unit(false)
-      else { s = Success(f(readVar(s).get, x.get), x.next); cur = x.next }
+      while(continue) {
+        val progress = q(curInput)
+        if(!progress.isEmpty){
+          current = f(current, progress.get)
+          curInput = progress.next
+        } else {
+          continue = unit(false)
+        }
+      }
+
+      Success(current, curInput)
+
     }
+  }
 
-    s
+  def repFold[T: Manifest, U: Manifest](p: => Parser[T])(z: Rep[U], f: (Rep[U], Rep[T]) => Rep[U]) = Parser[U] { in =>
+    val prep = rep1Fold(p ^^ {x => f(z, x)}, p)(f)
+    val atLeastOne = prep(in)
+
+    atLeastOne orElse Success(z, in)
   }
 
 
@@ -112,7 +123,7 @@ trait ReaderParsers extends MyScalaOpsPkg with LiftVariables
     repFold(p)(List[T]().asInstanceOf[Rep[List[T]]],
       { (ls: Rep[List[T]], t: Rep[T]) => ls ++ List(t) }
     )
-
+  /*
   def repsep[T: Manifest, U: Manifest](p: => Parser[T], q: => Parser[U]): Parser[List[T]] =
     (p ~ rep(q ~> p)) ^^ { x => x._1 :: x._2 } | success(List[T]())
 
@@ -138,9 +149,9 @@ trait ReaderParsers extends MyScalaOpsPkg with LiftVariables
  */
 }
 
-trait CharReaderParsers extends ReaderParsers with CharOps with StringStructOps {
 
-  type Elem = Char
+trait CharReaderParsers extends ReaderParsers with CharOps with StringStructOps
+  with StringReaderOps {
 
   def isLetter(c: Rep[Char]): Rep[Boolean] =
     (c >= unit('a') && c <= unit('z')) ||
@@ -368,4 +379,4 @@ trait RecParsersExp extends RecParsers with MyScalaOpsPkgExp with StructOpsExp
     }
   }
 }
-*/ 
+*/

@@ -354,6 +354,7 @@ trait BaseGenFatStructOps extends GenericFatCodegen {
       val c = phis collect { case TP(_, Phi(c, a, u, b, v)) => c } reduceLeft { (c1, c2) => assert(c1 == c2); c1 }
       TTP(ss, phis map (_.rhs), SimpleFatIfThenElse(c, us, vs))
     }
+
     def fatif(s: Sym[Unit], o: Def[Unit], c: Exp[Boolean], a: Block[Unit], b: Block[Unit]) = fatphi(s) match {
       case Some(TTP(ss, oo, SimpleFatIfThenElse(c2, us, vs))) =>
         assert(c == c2)

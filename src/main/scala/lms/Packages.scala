@@ -1,4 +1,5 @@
 package lms
+
 import scala.virtualization.lms.common._
 
 //replacing traits with my own
@@ -45,4 +46,4 @@ trait ScalaGenPackage extends ScalaCodeGenPkg with ScalaGenMyRangeOps with Scala
 trait CGenPackage extends CCodeGenPkg {
   val IR: ScalaOpsPkgExp
 }
-*/ 
+*/

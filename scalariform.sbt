@@ -1,5 +1,5 @@
 
-scalariformSettings
+defaultScalariformSettings
 
 //ScalariformKeys.preferences := ScalariformKeys.preferences.value
 //  .setPreference(AlignSingleLineCaseStatements, true)
