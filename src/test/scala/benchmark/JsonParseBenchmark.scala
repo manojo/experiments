@@ -2,7 +2,6 @@ package benchmark
 
 import lms._
 import lms.parsing._
-import lms.parsing.examples._
 import lms.parsing.gen._
 
 import org.scalameter.api._

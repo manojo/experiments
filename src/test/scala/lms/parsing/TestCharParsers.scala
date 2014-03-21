@@ -2,7 +2,6 @@ package lms.parsing
 
 import lms._
 import lms.util._
-import examples._
 
 import scala.virtualization.lms.common._
 import scala.virtualization.lms.internal.Effects
@@ -11,131 +10,121 @@ import java.io.PrintWriter
 import java.io.StringWriter
 import java.io.FileOutputStream
 
-trait CharParsersProg extends CharParsers {
+trait CharParsersProg extends CharParsers with OptionOps {
 
   //simple acceptIf filter
-  def test1(in: Rep[Array[Char]]): Rep[Unit] = {
-    val parser = acceptIf(in, x => x == unit('h'))
-    val res = parser(unit(0))
-    println(res)
+  def test1(in: Rep[Array[Char]]): Rep[Option[Char]] = {
+    val parser = acceptIf(x => x == unit('h'))
+    phrase(parser, StringReader(in))
   }
 
   //accept function: generates the exact same code as test1
-  def test2(in: Rep[Array[Char]]): Rep[Unit] = {
-    val parser = accept(in, unit('h'))
-    val res = parser(unit(0))
-    println(res)
+  def test2(in: Rep[Array[Char]]): Rep[Option[Char]] = {
+    val parser = accept(unit('h'))
+    phrase(parser, StringReader(in))
   }
 
   //parsing a single letter
-  def test3(in: Rep[Array[Char]]): Rep[Unit] = {
-    val parser = letter(in)
-    val res = parser(unit(0))
-    println(res)
+  def test3(in: Rep[Array[Char]]): Rep[Option[Char]] = {
+    val parser = letter
+    phrase(parser, StringReader(in))
   }
 
   //parsing a single digit
-  def test4(in: Rep[Array[Char]]): Rep[Unit] = {
-    val parser = digit(in)
-    val res = parser(unit(0))
-    println(res)
+  def test4(in: Rep[Array[Char]]): Rep[Option[Char]] = {
+    val parser = digit
+    phrase(parser, StringReader(in))
   }
 
   //two letters
-  def test5(in: Rep[Array[Char]]): Rep[Unit] = {
-    val parser = (letter(in) ~ letter(in))
-    val res = parser(unit(0))
-    println(res)
+  def test5(in: Rep[Array[Char]]): Rep[Option[(Char, Char)]] = {
+    val parser = letter ~ letter
+    phrase(parser, StringReader(in))
   }
 
   //ignoring left result
-  def test6(in: Rep[Array[Char]]): Rep[Unit] = {
-    val parser = (letter(in) ~> letter(in))
-    val res = parser(unit(0))
-    println(res)
+  def test6(in: Rep[Array[Char]]): Rep[Option[Char]] = {
+    val parser = letter ~> letter
+    phrase(parser, StringReader(in))
   }
 
   //ignoring right result
-  def test7(in: Rep[Array[Char]]): Rep[Unit] = {
-    val parser = (letter(in) <~ letter(in))
-    val res = parser(unit(0))
-    println(res)
+  def test7(in: Rep[Array[Char]]): Rep[Option[Char]] = {
+    val parser = letter <~ letter
+    phrase(parser, StringReader(in))
   }
 
   //digit to int
-  def test8(in: Rep[Array[Char]]): Rep[Unit] = {
-    val parser = digit2Int(in)
-    val res = parser(unit(0))
-    println(res)
+  def test8(in: Rep[Array[Char]]): Rep[Option[Int]] = {
+    val parser = digit2Int
+    phrase(parser, StringReader(in))
   }
 
   //or
-  def test9(in: Rep[Array[Char]]): Rep[Unit] = {
-    val parser = (letter(in) | digit(in))
-    val res = parser(unit(0))
-    println(res)
+  def test9(in: Rep[Array[Char]]): Rep[Option[Char]] = {
+    val parser = letter | digit
+    phrase(parser, StringReader(in))
   }
 
   //or2: testing that or creates functions
-  def testOr2(in: Rep[Array[Char]]): Rep[Unit] = {
+  def testOr2(in: Rep[Array[Char]]): Rep[Option[(Char, Char)]] = {
     val parser =
-      ((accept(in, unit('h')) ~ accept(in, unit('e'))) |
-        (accept(in, unit('1')) ~ accept(in, unit('2'))))
-    val res = parser(unit(0))
-    println(res)
+      (accept(unit('h')) ~ accept(unit('e'))) |
+        (accept(unit('1')) ~ accept(unit('2')))
+
+    phrase(parser, StringReader(in))
   }
 
   //or3: (a | b) ~ c
-  def testOr3(in: Rep[Array[Char]]): Rep[Unit] = {
+  def testOr3(in: Rep[Array[Char]]): Rep[Option[((Char, Char), Char)]] = {
     val parser =
-      (((accept(in, unit('h')) ~ accept(in, unit('e'))) |
-        (accept(in, unit('1')) ~ accept(in, unit('2')))
-      ) ~ accept(in, unit('3'))
-      )
-    val res = parser(unit(0))
-    println(res)
+      ((accept(unit('h')) ~ accept(unit('e'))) |
+        (accept(unit('1')) ~ accept(unit('2')))
+      ) ~ accept(unit('3'))
+
+    phrase(parser, StringReader(in))
+  }
+
+  def testrep1Fold(in: Rep[Array[Char]]): Rep[Option[Int]] = {
+    val parser = rep1Fold(digit2Int, digit2Int)((x,y) => x + y)
+    phrase(parser, StringReader(in))
   }
 
   //rep
-  def test10(in: Rep[Array[Char]]): Rep[Unit] = {
-    val parser = (rep(letter(in)) ^^ { x: Rep[List[Char]] => x.mkString })
-    val res = parser(unit(0))
-    println(res)
+  def test10(in: Rep[Array[Char]]): Rep[Option[String]] = {
+    val parser = rep(letter) ^^ { x: Rep[List[Char]] => x.mkString }
+    phrase(parser, StringReader(in))
   }
 
   //repFold
-  def test11(in: Rep[Array[Char]]): Rep[Unit] = {
+  def test11(in: Rep[Array[Char]]): Rep[Option[Int]] = {
     val parser =
-      repFold(digit2Int(in))(unit(0), (x: Rep[Int], y: Rep[Int]) => x + y)
-    val res = parser(unit(0))
-    println(res)
+      repFold(digit2Int)(unit(0), (x: Rep[Int], y: Rep[Int]) => x + y)
+    phrase(parser, StringReader(in))
   }
 
-  def test12(in: Rep[Array[Char]]): Rep[Unit] = {
+  def test12(in: Rep[Array[Char]]): Rep[Option[(Char,Char)]] = {
     val parser =
-      repFold(digit(in) ~ digit(in))(make_tuple2(unit('a'), unit('a')), (x: Rep[(Char, Char)], y: Rep[(Char, Char)]) => y)
-    val res = parser(unit(0))
-    println(res)
+      repFold(digit ~ digit)(make_tuple2(unit('a'), unit('a')), (x: Rep[(Char, Char)], y: Rep[(Char, Char)]) => y)
+    phrase(parser, StringReader(in))
   }
 
   //cond
-  def testCond(in: Rep[Array[Char]], n: Rep[Int]): Rep[Unit] = {
+  def testCond(in: Rep[Array[Char]], n: Rep[Int]): Rep[Option[Char]] = {
     val parser: Parser[Char] =
-      if (n < unit(3)) accept(in, unit('b'))
-      else accept(in, unit('c'))
-    val res = parser(unit(0))
-    println(res)
+      if (n < unit(3)) accept(unit('b'))
+      else accept(unit('c'))
+    phrase(parser, StringReader(in))
   }
 
   //bind
-  def testBind(in: Rep[Array[Char]]): Rep[Unit] = {
-    val parser = letter(in) >> { x: Rep[Char] =>
-      if (x == unit('a')) accept(in, unit('b')) ^^ { y: Rep[Char] => x + unit(", ") + y }
-      else accept(in, unit('d')) ^^ { y: Rep[Char] => x + unit(", ") + y }
+  def testBind(in: Rep[Array[Char]]): Rep[Option[String]] = {
+    val parser = letter >> { x: Rep[Char] =>
+      if (x == unit('a')) accept(unit('b')) ^^ { y: Rep[Char] => x + unit(", ") + y }
+      else accept(unit('d')) ^^ { y: Rep[Char] => x + unit(", ") + y }
     }
 
-    val res = parser(unit(0))
-    println(res)
+    phrase(parser, StringReader(in))
   }
 }
 
@@ -145,9 +134,16 @@ class TestCharParsers extends FileDiffSuite {
 
   def testSimpleParsers = {
     withOutFile(prefix + "char-parser") {
-      new CharParsersProg with MyScalaOpsPkgExp with CharOpsExp with MyIfThenElseExpOpt with StructOpsFatExpOptCommon with ParseResultOpsExp with FunctionsExp with OptionOpsExp with StringStructOpsExp with BarrierOpsExp with MyScalaCompile { self =>
+      new CharParsersProg with MyScalaOpsPkgExp with CharOpsExp
+        with MyIfThenElseExpOpt with StructOpsFatExpOptCommon
+        with ParseResultOpsExp with FunctionsExp with OptionOpsExp
+        with StringStructOpsExp with BarrierOpsExp with StringReaderOpsExp with MyScalaCompile { self =>
 
-        val codegen = new MyScalaCodeGenPkg with ScalaGenCharOps with ScalaGenParseResultOps with ScalaGenFatStructOps with ScalaGenFunctions with ScalaGenOptionOps with ScalaGenStringStructOps with ScalaGenBarrierOps with ScalaGenIfThenElseFat {
+        val codegen = new MyScalaCodeGenPkg with ScalaGenCharOps with ScalaGenParseResultOps
+          with ScalaGenFatStructOps with ScalaGenFunctions with ScalaGenOptionOps
+          with ScalaGenStringStructOps with ScalaGenBarrierOps with ScalaGenIfThenElseFat
+          with ScalaGenReaderOps {
+
           val IR: self.type = self
         }
 
@@ -155,54 +151,54 @@ class TestCharParsers extends FileDiffSuite {
         codegen.reset
 
         val testc1 = compile(test1)
-        testc1("hello".toArray)
+        scala.Console.println(testc1("hello".toArray))
         codegen.reset
 
         codegen.emitSource(test2 _, "test2", new java.io.PrintWriter(System.out))
         codegen.reset
 
         val testc2 = compile(test2)
-        testc2("hello".toArray)
-        testc2("1".toArray)
+        scala.Console.println(testc2("hello".toArray))
+        scala.Console.println(testc2("1".toArray))
         codegen.reset
 
         codegen.emitSource(test3 _, "test3", new java.io.PrintWriter(System.out))
         codegen.reset
 
         val testc3 = compile(test3)
-        testc3("hello".toArray)
-        testc2("1".toArray)
+        scala.Console.println(testc3("hello".toArray))
+        scala.Console.println(testc3("1".toArray))
         codegen.reset
 
         codegen.emitSource(test4 _, "test4", new java.io.PrintWriter(System.out))
         codegen.reset
 
         val testc4 = compile(test4)
-        testc4("12".toArray)
-        testc4("hello".toArray)
+        scala.Console.println(testc4("12".toArray))
+        scala.Console.println(testc4("hello".toArray))
         codegen.reset
 
         codegen.emitSource(test5 _, "test5", new java.io.PrintWriter(System.out))
         codegen.reset
 
         val testc5 = compile(test5)
-        testc5("hello".toArray) //succeeding a ~ b
-        testc5("1ello".toArray) //failing left
-        testc5("h2llo".toArray) //failing right
+        scala.Console.println(testc5("hello".toArray)) //succeeding a ~ b
+        scala.Console.println(testc5("1ello".toArray)) //failing left
+        scala.Console.println(testc5("h2llo".toArray)) //failing right
         codegen.reset
 
         codegen.emitSource(test6 _, "test6", new java.io.PrintWriter(System.out))
         codegen.reset
 
         val testc6 = compile(test6)
-        testc6("hello".toArray)
+        scala.Console.println(testc6("hello".toArray))
         codegen.reset
 
         codegen.emitSource(test7 _, "test7", new java.io.PrintWriter(System.out))
         codegen.reset
 
         val testc7 = compile(test7)
-        testc7("hello".toArray)
+        scala.Console.println(testc7("hello".toArray))
         codegen.reset
 
         //digit2Int
@@ -210,17 +206,17 @@ class TestCharParsers extends FileDiffSuite {
         codegen.reset
 
         val testc8 = compile(test8)
-        testc8("1ello".toArray)
-        testc8("hello".toArray)
+        scala.Console.println(testc8("1ello".toArray))
+        scala.Console.println(testc8("hello".toArray))
         codegen.reset
 
         codegen.emitSource(test9 _, "test9", new java.io.PrintWriter(System.out))
         codegen.reset
 
         val testc9 = compile(test9)
-        testc9("hello".toArray)
-        testc9("12".toArray)
-        testc9(":".toArray)
+        scala.Console.println(testc9("hello".toArray))
+        scala.Console.println(testc9("12".toArray))
+        scala.Console.println(testc9(":".toArray))
         codegen.reset
 
         codegen.emitSource(testOr2 _, "testOr2", new java.io.PrintWriter(System.out))
@@ -228,34 +224,41 @@ class TestCharParsers extends FileDiffSuite {
         codegen.reset
 
         val testcOr2 = compile(testOr2)
-        testcOr2("hello".toArray)
-        testcOr2("12".toArray)
-        testcOr2(":".toArray) //fail case
-        testcOr2("h1".toArray) //fail case
-        testcOr2("1d".toArray) //fail case
+        scala.Console.println(testcOr2("hello".toArray))
+        scala.Console.println(testcOr2("12".toArray))
+        scala.Console.println(testcOr2(":".toArray)) //fail case
+        scala.Console.println(testcOr2("h1".toArray)) //fail case
+        scala.Console.println(testcOr2("1d".toArray)) //fail case
+        codegen.reset
+
+        codegen.emitSource(testrep1Fold _, "testrep1Fold", new java.io.PrintWriter(System.out))
+        codegen.reset
+
+        val testcRep1Fold = compile(testrep1Fold)
+        scala.Console.println(testcRep1Fold("12345".toArray))
         codegen.reset
 
         codegen.emitSource(test10 _, "test10", new java.io.PrintWriter(System.out))
         codegen.reset
 
         val testc10 = compile(test10)
-        testc10("hello21".toArray)
+        scala.Console.println(testc10("hello21".toArray))
         codegen.reset
 
         codegen.emitSource(test11 _, "test11", new java.io.PrintWriter(System.out))
         codegen.reset
 
         val testc11 = compile(test11)
-        testc11("12345".toArray)
-        testc11("asd".toArray)
-        testc11("".toArray)
+        scala.Console.println(testc11("12345".toArray))
+        scala.Console.println(testc11("asd".toArray))
+        scala.Console.println(testc11("".toArray))
         codegen.reset
 
         codegen.emitSource(test12 _, "test12", new java.io.PrintWriter(System.out))
         codegen.reset
 
         val testc12 = compile(test12)
-        testc12("1234".toArray)
+        scala.Console.println(testc12("1234".toArray))
         codegen.reset
 
         val printWriter = new java.io.PrintWriter(System.out)
@@ -266,18 +269,18 @@ class TestCharParsers extends FileDiffSuite {
         val source = new StringWriter
         codegen.emitDataStructures(new PrintWriter(source))
         val testcCond = compile2s(testCond, source)
-        testcCond("b".toArray, 2)
-        testcCond("c".toArray, 6)
+        scala.Console.println(testcCond("b".toArray, 2))
+        scala.Console.println(testcCond("c".toArray, 6))
         codegen.reset
 
         codegen.emitSource(testBind _, "testBind", new java.io.PrintWriter(System.out))
         codegen.reset
 
         val testcBind = compile(testBind)
-        testcBind("ab".toArray) //successful
-        testcBind("ac".toArray) //fail
-        testcBind("cd".toArray) //successful
-        testcBind("ca".toArray) //fail
+        scala.Console.println(testcBind("ab".toArray)) //successful
+        scala.Console.println(testcBind("ac".toArray)) //fail
+        scala.Console.println(testcBind("cd".toArray)) //successful
+        scala.Console.println(testcBind("ca".toArray)) //fail
         codegen.reset
 
       }
@@ -287,9 +290,15 @@ class TestCharParsers extends FileDiffSuite {
 
   def testOr {
     withOutFile(prefix + "or-parser") {
-      new CharParsersProg with MyScalaOpsPkgExp with CharOpsExp with MyIfThenElseExpOpt with StructOpsFatExpOptCommon with ParseResultOpsExp with FunctionsExp with OptionOpsExp with StringStructOpsExp with BarrierOpsExp with MyScalaCompile { self =>
+      new CharParsersProg with MyScalaOpsPkgExp with CharOpsExp
+        with MyIfThenElseExpOpt with StructOpsFatExpOptCommon
+        with ParseResultOpsExp with FunctionsExp with OptionOpsExp
+        with StringStructOpsExp with BarrierOpsExp with StringReaderOpsExp with MyScalaCompile { self =>
 
-        val codegen = new MyScalaCodeGenPkg with ScalaGenCharOps with ScalaGenParseResultOps with ScalaGenFatStructOps with ScalaGenFunctions with ScalaGenStringStructOps with ScalaGenOptionOps with ScalaGenBarrierOps with ScalaGenIfThenElseFat {
+        val codegen = new MyScalaCodeGenPkg with ScalaGenCharOps with ScalaGenParseResultOps
+          with ScalaGenFatStructOps with ScalaGenFunctions with ScalaGenStringStructOps
+          with ScalaGenOptionOps with ScalaGenBarrierOps with ScalaGenIfThenElseFat with ScalaGenReaderOps {
+
           val IR: self.type = self
         }
 
@@ -298,11 +307,11 @@ class TestCharParsers extends FileDiffSuite {
         codegen.reset
 
         val testcOr2 = compile(testOr2)
-        testcOr2("hello".toArray)
-        testcOr2("12".toArray)
-        testcOr2(":".toArray) //fail case
-        testcOr2("h1".toArray) //fail case
-        testcOr2("1d".toArray) //fail case
+        scala.Console.println(testcOr2("hello".toArray))
+        scala.Console.println(testcOr2("12".toArray))
+        scala.Console.println(testcOr2(":".toArray)) //fail case
+        scala.Console.println(testcOr2("h1".toArray)) //fail case
+        scala.Console.println(testcOr2("1d".toArray)) //fail case
         codegen.reset
 
         codegen.emitSource(testOr3 _, "testOr3", new java.io.PrintWriter(System.out))
@@ -310,11 +319,11 @@ class TestCharParsers extends FileDiffSuite {
         codegen.reset
 
         val testcOr3 = compile(testOr3)
-        testcOr3("he3lo".toArray)
-        testcOr3("123".toArray)
-        testcOr3(":".toArray) //fail case
-        testcOr3("he1".toArray) //fail case
-        testcOr3("12d".toArray) //fail case
+        scala.Console.println(testcOr3("he3lo".toArray))
+        scala.Console.println(testcOr3("123".toArray))
+        scala.Console.println(testcOr3(":".toArray)) //fail case
+        scala.Console.println(testcOr3("he1".toArray)) //fail case
+        scala.Console.println(testcOr3("12d".toArray)) //fail case
         codegen.reset
 
       }

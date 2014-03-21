@@ -1,3 +1,4 @@
+/*
 package lms.parsing
 
 import lms._
@@ -85,3 +86,4 @@ class TestParseResultOps extends FileDiffSuite {
     assertFileEqualsCheck(prefix + "parseresult")
   }
 }
+*/

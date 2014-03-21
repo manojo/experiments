@@ -1,4 +1,4 @@
-package lms.parsing.examples
+/*package lms.parsing.examples
 
 import lms._
 import lms.parsing._
@@ -174,4 +174,4 @@ repFold( (chr(in,'\\')~>acceptIf(in,x=>unit(true))) | acceptIf(in, x => x!=unit(
   def hex(in: Rep[Input]) = acceptIf(in,
     c => isDigit(c) || (c >= unit('A') && c <= unit('F'))
   )
-}
+}*/

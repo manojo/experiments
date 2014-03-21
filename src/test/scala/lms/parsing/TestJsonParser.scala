@@ -1,4 +1,4 @@
-package lms.parsing
+/*package lms.parsing
 
 import lms._
 import lms.util._
@@ -110,4 +110,4 @@ class TestJsonParser extends FileDiffSuite {
 
     assertFileEqualsCheck(prefix + "json-parser")
   }
-}
+}*/
