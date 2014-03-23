@@ -1,4 +1,4 @@
-/*package lms.parsing.examples
+package lms.parsing.examples
 
 import lms._
 import lms.parsing._
@@ -77,20 +77,20 @@ trait JsonParser extends TokenParsers with RecParsers with StringStructOps with 
   def jObject(a: Rep[List[JV]]) = JV(kObject, a)
 
   //local whitespaces
-  override def whitespaces(in: Rep[Input]): Parser[String] =
-    repToS_f(acceptIf(in, { x: Rep[Char] => x == unit(' ') || x == unit('\n') })) // ^^^ {unit("")}
+  override def whitespaces: Parser[String] =
+    repToS_f(acceptIf({ x: Rep[Char] => x == unit(' ') || x == unit('\n') })) // ^^^ {unit("")}
 
   // true | false | null | doubleLit | intLit | stringLit
-  def primitives(in: Rep[Input]): Parser[JV] = (
-    acceptB(in, "false") ^^^ jFalse
-    | acceptB(in, "true") ^^^ jTrue
-    | acceptB(in, "null") ^^^ jNull
-    | doubleLit(in) ^^ { s => jDouble(s) }
-    | intLit(in) ^^ { s => jInt(s) }
-    | stringLit(in) ^^ { s => jString(s) }
+  def primitives: Parser[JV] = (
+    acceptB("false") ^^^ jFalse
+    | acceptB("true") ^^^ jTrue
+    | acceptB("null") ^^^ jNull
+    | doubleLit ^^ { s => jDouble(s) }
+    | intLit ^^ { s => jInt(s) }
+    | stringLit ^^ { s => jString(s) }
   )
 
-  def json(in: Rep[Input]): Parser[JV] = {
+  def json: Parser[JV] = {
 
     //Original grammar
     //def value : Parser[Any] = obj | arr | stringLiteral |
@@ -101,25 +101,25 @@ trait JsonParser extends TokenParsers with RecParsers with StringStructOps with 
     //def member: Parser[Any] = stringLiteral~":"~value
 
     def value: Parser[JV] = rec("value",
-      obj | arr | primitives(in)
+      obj | arr | primitives
     )
 
     def arr: Parser[JV] = (
-      (chr(in, '[') ~> whitespaces(in)) ~>
-      repsep(value, whitespaces(in) ~> chr(in, ',') ~> whitespaces(in)) <~
-      (whitespaces(in) ~> chr(in, ']'))
+      (chr('[') ~> whitespaces) ~>
+      repsep(value, whitespaces ~> chr(',') ~> whitespaces) <~
+      (whitespaces ~> chr(']'))
     ) ^^ { x => jArray(x.AsInstanceOf[List[JV]]) }
 
     def member: Parser[JV] = (
-      (stringLit(in)
-        <~ (whitespaces(in) <~ accept(in, unit(':')) ~ whitespaces(in)))
+      (stringLit
+        <~ (whitespaces <~ accept(unit(':')) ~ whitespaces))
         ~ value
     ) ^^ { x => jMember(x) }
 
     def obj: Parser[JV] = (
-      (chr(in, '{') ~> whitespaces(in)) ~>
-      repsep(member, whitespaces(in) ~> chr(in, ',') ~> whitespaces(in)) <~
-      (whitespaces(in) ~> chr(in, '}'))
+      (chr('{') ~> whitespaces) ~>
+      repsep(member, whitespaces ~> chr(',') ~> whitespaces) <~
+      (whitespaces ~> chr('}'))
     ) ^^ { x => jObject(x) }
 
     value
@@ -132,15 +132,23 @@ trait JsonParser extends TokenParsers with RecParsers with StringStructOps with 
     else if (c >= unit('a') && c < unit('f')) (c - unit('a' - 10)).toInt
     else unit(0)
 
-  def unquote(in: Rep[Input], start: Rep[Int], end: Rep[Int]): Rep[String] = {
+  def unquote(start: Rep[Int], end: Rep[Int]) = Parser[String] { in =>
+
+    barrierSync("TODO: Hack!")
+
     var p = __newVar(start) // read head position
     var n = __newVar(unit(0)) // number of valid chars
     val a = NewArray[Char](end - start)
     while (p < end) {
-      if (in(p) == unit('\\') && p + unit(1) < end) {
-        val c = in(p + 1)
+      if (in.input(p) == unit('\\') && p + unit(1) < end) {
+        val c = in.input(p + 1)
         if (c == 'u' && p + unit(5) < end) {
-          val x = unhex(in(p + 2)) * unit(0x1000) + unhex(in(p + 3)) * unit(0x100) + unhex(in(p + 4)) * unit(0x10) + unhex(in(p + 5))
+          val x =
+            unhex(in.input(p + 2)) * unit(0x1000) +
+              unhex(in.input(p + 3)) * unit(0x100) +
+              unhex(in.input(p + 4)) * unit(0x10) +
+              unhex(in.input(p + 5))
+
           a(n) = x.toChar; p += 4;
         } else if (c == unit('b')) a(n) = unit('\b')
         else if (c == unit('f')) a(n) = unit('\f')
@@ -150,11 +158,12 @@ trait JsonParser extends TokenParsers with RecParsers with StringStructOps with 
         else a(n) = c // invalid escape ignored
         p += 2
       } else {
-        a(n) = in(p); p += 1
+        a(n) = in.input(p); p += 1
       }
       n += 1;
     }
-    String(a, unit(0), n).mkString
+
+    Success(String(a, unit(0), n).mkString, in)
   }
 
   /*
@@ -165,13 +174,18 @@ repFold( (chr(in,'\\')~>acceptIf(in,x=>unit(true))) | acceptIf(in, x => x!=unit(
 )) ~ pos(in)) ^^ { x => / *String(in,x._1,x._2-x._1)* / dequote(in,x._1,x._2) } ) <~ chr(in,'\"')
 */
 
-  override def stringLit(in: Rep[Input]): Parser[String] =
-    chr(in, '\"') ~> (((pos(in) <~
-      repFold((chr(in, '\\') ~> acceptIf(in, x => unit(true))) | acceptIf(in, x => x != unit('\"'))
-      )(unit(""), (acc: Rep[String], x: Rep[Char]) => acc
-      )) ~ pos(in)) ^^ { x => unquote(in, x._1, x._2) }) <~ chr(in, '\"')
+  override def stringLit: Parser[String] = {
 
-  def hex(in: Rep[Input]) = acceptIf(in,
+    val parser: Parser[(Int, Int)] = chr('\"') ~> ((pos <~
+      repFold((chr('\\') ~> acceptIf(x => unit(true))) | acceptIf(x => x != unit('\"'))
+      )(unit(""), (acc: Rep[String], x: Rep[Char]) => acc
+      )) ~ pos) <~ chr('\"')
+
+    val res = parser >> { x => unquote(x._1, x._2) }
+    res
+  }
+
+  def hex = acceptIf(
     c => isDigit(c) || (c >= unit('A') && c <= unit('F'))
   )
-}*/
+}

@@ -18,6 +18,12 @@ trait CharParsersProg extends CharParsers with OptionOps {
     phrase(parser, StringReader(in))
   }
 
+  //simple acceptIf filter
+  def testSpecChar(in: Rep[Array[Char]]): Rep[Option[Char]] = {
+    val parser = acceptIf(x => x == unit('\\'))
+    phrase(parser, StringReader(in))
+  }
+
   //accept function: generates the exact same code as test1
   def test2(in: Rep[Array[Char]]): Rep[Option[Char]] = {
     val parser = accept(unit('h'))
@@ -152,6 +158,13 @@ class TestCharParsers extends FileDiffSuite {
 
         val testc1 = compile(test1)
         scala.Console.println(testc1("hello".toArray))
+        codegen.reset
+
+        codegen.emitSource(testSpecChar _, "testSpecChar", new java.io.PrintWriter(System.out))
+        codegen.reset
+
+        val testcSpecChar = compile(testSpecChar)
+        scala.Console.println(testcSpecChar("\\ello".toArray))
         codegen.reset
 
         codegen.emitSource(test2 _, "test2", new java.io.PrintWriter(System.out))

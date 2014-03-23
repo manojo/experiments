@@ -32,7 +32,7 @@ trait ReaderOps extends Base {
 }
 
 trait StringReaderOps extends ReaderOps with ArrayOps with OrderingOps
-  with NumericOps with While with LiftVariables with BooleanOps {
+    with NumericOps with While with LiftVariables with BooleanOps {
 
   type Elem = Char
   type Input = StringReader
@@ -59,13 +59,12 @@ trait StringReaderOps extends ReaderOps with ArrayOps with OrderingOps
 }
 
 trait StringReaderOpsExp extends StringReaderOps with ArrayOpsExp with OrderingOpsExp
-  with NumericOpsExp with StructOpsExpOpt with WhileExp with BooleanOpsExp {
+    with NumericOpsExp with StructOpsExpOpt with WhileExp with BooleanOpsExp {
 
   //A bit of a hack: manifest[StringReader] causes a nullPointerException
   //possibly due to a bug in Scala
 
-  implicit val mInput: Manifest[Input]
-    = scala.reflect.ManifestFactory.classType[StringReader](classOf[StringReader])
+  implicit val mInput: Manifest[Input] = scala.reflect.ManifestFactory.classType[StringReader](classOf[StringReader])
 
   def StringReader(input: Rep[Array[Char]], offset: Rep[Int] = unit(0)) = {
 
@@ -85,12 +84,10 @@ trait StringReaderOpsExp extends StringReaderOps with ArrayOpsExp with OrderingO
 trait ReaderGenBase extends GenericCodegen with BaseGenStructOps {
   val IR: StringReaderOpsExp
 
-
-
   override def remap[A](m: Manifest[A]) = {
     m.erasure.getSimpleName match {
-    case "StringReader" => IR.structName(m)
-    case _ => super.remap(m)
+      case "StringReader" => IR.structName(m)
+      case _ => super.remap(m)
     }
   }
 }
@@ -157,4 +154,4 @@ trait ReaderOpsExp extends ReaderOps with StructOpsExpOpt {
 }
 
 //trait CGenReaderOps extends CGenBase with ReaderGenBase with CGenStructOps { val IR: ReaderOpsExp }
-*/
+*/ 

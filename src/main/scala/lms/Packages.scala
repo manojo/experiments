@@ -17,11 +17,20 @@ trait MyScalaOpsPkgExp extends MyScalaOpsPkg
   with SeqOpsExp with DSLOpsExp with MathOpsExp with CastingOpsExp with SetOpsExp with ObjectOpsExp with ArrayBufferOpsExp
 
 trait MyScalaCodeGenPkg extends ScalaGenImplicitOps with ScalaGenNumericOps with ScalaGenFractionalOps with ScalaGenOrderingOps
-  with ScalaGenStringOps with ScalaGenRangeOps with ScalaGenIOOps with ScalaGenArrayOps with ScalaGenBooleanOps
-  with ScalaGenPrimitiveOps with ScalaGenMiscOps with ScalaGenFunctions with ScalaGenEqual with ScalaGenIfThenElse
-  with ScalaGenVariables with ScalaGenWhile with ScalaGenMyTupleOps with ScalaGenListOps
-  with ScalaGenSeqOps with ScalaGenDSLOps with ScalaGenMathOps with ScalaGenCastingOps with ScalaGenSetOps
-  with ScalaGenObjectOps with ScalaGenArrayBufferOps { val IR: MyScalaOpsPkgExp }
+    with ScalaGenStringOps with ScalaGenRangeOps with ScalaGenIOOps with ScalaGenArrayOps with ScalaGenBooleanOps
+    with ScalaGenPrimitiveOps with ScalaGenMiscOps with ScalaGenFunctions with ScalaGenEqual with ScalaGenIfThenElse
+    with ScalaGenVariables with ScalaGenWhile with ScalaGenMyTupleOps with ScalaGenListOps
+    with ScalaGenSeqOps with ScalaGenDSLOps with ScalaGenMathOps with ScalaGenCastingOps with ScalaGenSetOps
+    with ScalaGenObjectOps with ScalaGenArrayBufferOps {
+  val IR: MyScalaOpsPkgExp
+
+  import IR._
+
+  override def quote(x: Exp[Any]): String = x match {
+    case Const(c: Char) if c == '\\' => "\'\\\\\'"
+    case _ => super.quote(x)
+  }
+}
 
 trait MyCCodeGenPkg extends CGenDSLOps with CGenImplicitOps with CGenNumericOps with CGenFractionalOps with CGenOrderingOps
   with CGenStringOps with CGenRangeOps with CGenIOOps with CGenArrayOps with CGenBooleanOps
@@ -46,4 +55,4 @@ trait ScalaGenPackage extends ScalaCodeGenPkg with ScalaGenMyRangeOps with Scala
 trait CGenPackage extends CCodeGenPkg {
   val IR: ScalaOpsPkgExp
 }
-*/
+*/ 

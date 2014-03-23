@@ -92,6 +92,27 @@ class JsonParseBenchmark extends PerformanceTest
     }
   }
 
+  //parser result
+  val stagedJsonParserResult = new JsonParseResult(
+    "false".length, "false".toArray,
+    "true".length, "true".toArray,
+    "null".toArray //,
+  //print = false
+  )
+
+  performance of "StagedJsonParserResult" in {
+    measure method "parse" config ( //exec.minWarmupRuns -> 500,
+    //exec.maxWarmupRuns -> 500
+    //exec.benchRuns -> 15
+    //exec.independentSamples -> 1
+    ) in {
+      using(range) in { j =>
+        for (i <- 1 to j; m <- messages)
+          stagedJsonParserResult.apply(m)
+      }
+    }
+  }
+
   //spray json
 
   //performance of "SprayJsonParser" in {

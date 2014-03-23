@@ -195,7 +195,8 @@ trait HttpParser extends TokenParsers with HttpComponents with StringStructOps w
     if (in.offset + n < in.input.length) Success[String](
       String(in.input, in.offset, n).toStr,
       StringReader(in.input, in.offset + n)
-    ) else Failure[String](in)
+    )
+    else Failure[String](in)
   }
 
   def collect(res: Rep[Response], hName: Rep[StringStruct], prop: Rep[StringStruct]): Rep[Response] = {

@@ -57,16 +57,14 @@ trait ParseResultOps extends Base with IfThenElse with BooleanOps { self: Reader
 }
 
 trait ParseResultOpsExp extends ParseResultOps with IfThenElseExp with BooleanOpsExp
-  with StructOpsExpOpt {  self: ReaderOps =>
+    with StructOpsExpOpt { self: ReaderOps =>
 
   //implicit def make_parseResult[A:Manifest](pr: ParseResult[A])(implicit pos: SourceContext): Exp[ParseResult[A]]
   //  = struct(classTag[ParseResult[A]], "res" -> pr.res, "empty" -> pr.isEmpty, "next" -> pr.next)
 
-  def parseresult_isEmpty[A: Manifest](pr: Rep[ParseResult[A]])(implicit pos: SourceContext): Rep[Boolean]
-    = field[Boolean](pr, "empty")
+  def parseresult_isEmpty[A: Manifest](pr: Rep[ParseResult[A]])(implicit pos: SourceContext): Rep[Boolean] = field[Boolean](pr, "empty")
 
-  def parseresult_get[A: Manifest](pr: Rep[ParseResult[A]])(implicit pos: SourceContext): Rep[A]
-    = field[A](pr, "res")
+  def parseresult_get[A: Manifest](pr: Rep[ParseResult[A]])(implicit pos: SourceContext): Rep[A] = field[A](pr, "res")
 
   def parseresult_next[A: Manifest](pr: Rep[ParseResult[A]])(implicit pos: SourceContext): Rep[Input] = field[Input](pr, "next")
 
@@ -106,8 +104,7 @@ trait ParseResultOpsExp extends ParseResultOps with IfThenElseExp with BooleanOp
 
   }
 
-  def Failure[T: Manifest](next: Rep[Input]): Exp[ParseResult[T]]
-    = struct(classTag[ParseResult[T]], "res" -> unit(ZeroVal[T]), "empty" -> unit(true), "next" -> next)
+  def Failure[T: Manifest](next: Rep[Input]): Exp[ParseResult[T]] = struct(classTag[ParseResult[T]], "res" -> unit(ZeroVal[T]), "empty" -> unit(true), "next" -> next)
 }
 
 trait ParseResultGenBase extends GenericCodegen with BaseGenStructOps {

@@ -89,33 +89,54 @@ trait TopDownParsers extends MyScalaOpsPkg with LiftVariables
   def rep1Fold[T: Manifest, U: Manifest](p: => Parser[U], q: => Parser[T])(f: (Rep[U], Rep[T]) => Rep[U]) = p >> {
     pres =>
 
-    Parser[U] { in =>
-      var current = pres
-      var continue = unit(true)
-      var curInput = in
+      Parser[U] { in =>
+        var current = pres
+        var continue = unit(true)
+        var curInput = in
 
-      while(continue) {
-        val progress = q(curInput)
-        if(!progress.isEmpty){
-          current = f(current, progress.get)
-          curInput = progress.next
-        } else {
-          continue = unit(false)
+        while (continue) {
+          val progress = q(curInput)
+          if (!progress.isEmpty) {
+            current = f(current, progress.get)
+            curInput = progress.next
+          } else {
+            continue = unit(false)
+          }
         }
+
+        Success(current, curInput)
+
       }
-
-      Success(current, curInput)
-
-    }
   }
 
   def repFold[T: Manifest, U: Manifest](p: => Parser[T])(z: Rep[U], f: (Rep[U], Rep[T]) => Rep[U]) = Parser[U] { in =>
-    val prep = rep1Fold(p ^^ {x => f(z, x)}, p)(f)
+
+    barrierSync("TODO: Hack!")
+
+    var s = Success[U](z, in)
+
+    var old = unit(-1)
+    var continue = unit(true)
+    var curInput = in
+
+    while (readVar(continue) && readVar(old) != readVar(curInput).offset) {
+      old = readVar(curInput).offset
+      val tmp = p(curInput)
+
+      if (tmp.isEmpty) { continue = unit(false) }
+      else {
+        s = Success(f(readVar(s).get, tmp.get), tmp.next)
+        curInput = tmp.next
+      }
+    }
+    readVar(s)
+    /*
+    val prep = rep1Fold(p ^^ { x => f(z, x) }, p)(f)
     val atLeastOne = prep(in)
 
     atLeastOne orElse Success(z, in)
+    */
   }
-
 
   //rep can be expressed as a fold
   def rep[T: Manifest](p: => Parser[T]) =
@@ -131,7 +152,6 @@ trait TopDownParsers extends MyScalaOpsPkg with LiftVariables
     in => if (cond) thenp(in) else elsep(in)
   }
 
-
   def opt[T: Manifest](p: Parser[T]) = Parser[Option[T]] { in =>
     val x = p(in)
     if (x.isEmpty) Success(none[T](), x.next)
@@ -144,7 +164,7 @@ trait TopDownParsers extends MyScalaOpsPkg with LiftVariables
   def success[T: Manifest](v: Rep[T]) = Parser[T] { in => Success(v, in) }
 
   // A terminal that return the current reading position
-  def pos(in: Rep[Input]) = Parser[Int] { in => Success[Int](in.offset, in) }
+  def pos = Parser[Int] { in => Success[Int](in.offset, in) }
 
   def phrase[T: Manifest](p: => Parser[T], in: Rep[Input]): Rep[Option[T]] = {
     val presult = p(in)
@@ -154,7 +174,7 @@ trait TopDownParsers extends MyScalaOpsPkg with LiftVariables
 }
 
 trait CharParsers extends TopDownParsers with CharOps with StringStructOps
-  with StringReaderOps {
+    with StringReaderOps {
 
   def isLetter(c: Rep[Char]): Rep[Boolean] =
     (c >= unit('a') && c <= unit('z')) ||
@@ -254,7 +274,7 @@ trait TokenParsers extends TopDownParsers with CharParsers with StringStructOps 
   */
 
   def whitespaces: Parser[String] =
-    repToS(acceptIf{ x: Rep[Char] => x == unit(' ') || x == unit('\n') }) ^^^ { unit("") }
+    repToS(acceptIf { x: Rep[Char] => x == unit(' ') || x == unit('\n') }) ^^^ { unit("") }
 
   def repToS(p: Parser[Char]): Parser[String] =
     repFold(p)(unit(""), (res: Rep[String], x: Rep[Char]) => res + x)
@@ -333,7 +353,7 @@ trait TokenParsers extends TopDownParsers with CharParsers with StringStructOps 
 
   def stringStruct(p: Parser[Int]) = Parser[StringStruct] { in =>
     //println(unit("enter stringStruct {"))
-    //barrierSync("TODO: Hack!")
+    barrierSync("TODO: Hack!")
     var old = unit(-1)
     var continue = unit(true)
     var curInput = in
