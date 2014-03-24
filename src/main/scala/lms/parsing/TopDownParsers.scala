@@ -323,8 +323,10 @@ trait TokenParsers extends TopDownParsers with CharParsers with StringStructOps 
     val len = staticData(s.length)
     val arr = staticData(s.toArray)
     Parser[Boolean] { in =>
+
       if (in.offset + len > in.input.length) Failure[Boolean](in)
       else {
+        barrierSync("TODO: Hack!")
         var count = unit(0); var matches = unit(true)
         while (matches && count < len) {
           if (in.input(in.offset + readVar(count)) != arr(readVar(count))) matches = unit(false)

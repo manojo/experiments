@@ -174,6 +174,16 @@ repFold( (chr(in,'\\')~>acceptIf(in,x=>unit(true))) | acceptIf(in, x => x!=unit(
 )) ~ pos(in)) ^^ { x => / *String(in,x._1,x._2-x._1)* / dequote(in,x._1,x._2) } ) <~ chr(in,'\"')
 */
 
+  /*
+  override def stringLit: Parser[String] = (
+    chr('\"') ~>
+      repFold(
+        (chr('\\') ~> acceptIf(x => unit(true))) | acceptIf(x => x != unit('\"'))
+      )(unit(""), (acc: Rep[String], x: Rep[Char]) => acc)
+    <~ chr('\"')
+  )
+*/
+
   override def stringLit: Parser[String] = {
 
     val parser: Parser[(Int, Int)] = chr('\"') ~> ((pos <~

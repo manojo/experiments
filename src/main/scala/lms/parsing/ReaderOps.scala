@@ -32,7 +32,7 @@ trait ReaderOps extends Base {
 }
 
 trait StringReaderOps extends ReaderOps with ArrayOps with OrderingOps
-    with NumericOps with While with LiftVariables with BooleanOps {
+    with NumericOps with While with LiftVariables with BooleanOps with MiscOps {
 
   type Elem = Char
   type Input = StringReader
@@ -49,7 +49,10 @@ trait StringReaderOps extends ReaderOps with ArrayOps with OrderingOps
     }
   }
 
-  def rdr_first(rdr: Rep[Input]): Rep[Elem] = rdr.input(rdr.offset)
+  def rdr_first(rdr: Rep[Input]): Rep[Elem] = {
+    //print(rdr.offset); print(unit(" : ")); println(rdr.input(rdr.offset));
+    rdr.input(rdr.offset)
+  }
   def rdr_atEnd(rdr: Rep[Input]): Rep[Boolean] = rdr.offset >= rdr.input.length
   def rdr_rest(rdr: Rep[Input]): Rep[Input] = StringReader(rdr.input, rdr.offset + unit(1))
 
@@ -59,7 +62,7 @@ trait StringReaderOps extends ReaderOps with ArrayOps with OrderingOps
 }
 
 trait StringReaderOpsExp extends StringReaderOps with ArrayOpsExp with OrderingOpsExp
-    with NumericOpsExp with StructOpsExpOpt with WhileExp with BooleanOpsExp {
+    with NumericOpsExp with StructOpsExpOpt with WhileExp with BooleanOpsExp with MiscOpsExp {
 
   //A bit of a hack: manifest[StringReader] causes a nullPointerException
   //possibly due to a bug in Scala

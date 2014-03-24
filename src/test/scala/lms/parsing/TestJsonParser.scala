@@ -29,11 +29,38 @@ trait JsonParserProg extends JsonParser {
   def primitiveParse(in: Rep[Array[Char]]): Rep[Option[JV]] = {
     phrase(primitives, StringReader(in))
   }
+
+  def reppedPrimitives(in: Rep[Array[Char]]): Rep[Option[List[JV]]] = {
+    val parser =
+      (chr('[') ~> whitespaces) ~>
+      repsep(primitives, whitespaces ~> chr(',') ~> whitespaces) <~
+      (whitespaces ~> chr(']'))
+
+    phrase(parser, StringReader(in))
+  }
 }
 
 class TestJsonParser extends FileDiffSuite {
 
   val prefix = "test-out/"
+
+  //load tweet data
+  def tweetData: Array[Char] = {
+    import java.io.{ BufferedReader, FileReader, Serializable }
+    import scala.collection.mutable.ArrayBuffer
+
+    val file = new BufferedReader(new FileReader("src/test/resources/just_tweet1"))
+    val out = new ArrayBuffer[Char]
+
+    var line = file.readLine
+
+    while (line != null) {
+      out ++= line + "\n"
+      line = file.readLine
+    }
+
+    out.toArray
+  }
 
   def testJsonParser = {
     withOutFile(prefix + "json-parser") {
@@ -73,8 +100,20 @@ class TestJsonParser extends FileDiffSuite {
         scala.Console.println(testcPrimitives("\"\u003c\"".toArray))
         codegen.reset
 
+
+        codegen.emitSource(reppedPrimitives _, "reppedPrimitives", new java.io.PrintWriter(System.out))
+        codegen.reset
+
+        val testcReppedPrimitives = compile(reppedPrimitives)
+        scala.Console.println(testcReppedPrimitives("[2,3,3]".toArray))
+        scala.Console.println(testcReppedPrimitives("[1,false,54]".toArray))
+        scala.Console.println(testcReppedPrimitives("[-22.13, 56, null]".toArray))
+        scala.Console.println(testcReppedPrimitives("[null, true]".toArray))
+        scala.Console.println(testcReppedPrimitives("[null, false]".toArray))
+        codegen.reset
+
         codegen.emitSource(jsonParse _, "jsonParse", new java.io.PrintWriter(System.out))
-        codegen.emitDataStructures(new java.io.PrintWriter(System.out))
+//        codegen.emitDataStructures(new java.io.PrintWriter(System.out))
         codegen.reset
 
         val testcJson = compile(jsonParse)
@@ -84,11 +123,15 @@ class TestJsonParser extends FileDiffSuite {
           "true", "false", "null",
           "\"hi\"", "\"\\\"hello\"", "\"\\/hello\"",
           "[3]", "[3,[2],[[1]]]",
+          "[false, true]",
           "{\"hi\" : 2}",
           "{\"hi\" : 2, \"hoy\" : 3}",
           "{\"hi\" : {\"hoy\" : 3}}",
           "{\"hi\" : 2, \"hoy\" : [3]}",
           "{\"hi\" : 2,\"hey\" : {\"hey\" : 2}}",
+          "{\"hi\" : true,\"hey\" : null}",
+          "{\"hi\" : true,\"hey\" : {\"hey\" : null}}",
+          "{\"hi\" : true,\"hey\" : {\"hey\" : false}}",
           """{
           "address book": {
           "name": "John Smith",
@@ -109,6 +152,8 @@ class TestJsonParser extends FileDiffSuite {
         jsonMsgs.foreach { msg =>
           scala.Console.println(testcJson(msg.toArray))
         }
+
+        //scala.Console.println(testcJson(tweetData))
 
         codegen.reset
       }
