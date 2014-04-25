@@ -3,6 +3,7 @@ package parsing
 import scala.util.continuations._
 
 trait SimpleParsers {
+
   type Elem
   type Input = Reader[Elem]
 
@@ -90,28 +91,30 @@ trait SimpleParsers {
   def rep[T](p: => Parser[T]): Parser[List[T]] = repFold(p)(Nil, (xs: List[T], x: T) => x :: xs) ^^ (_.reverse)
 
   def success[T](t: T) = Parser[T] { in => Success(t, in) }
+/*
+  implicit class Bla(rdr: Reader[Elem]) {
+    //def readChunked(p: Parser[Int]) = Reader[Elem]
+    def readChunked(p: Parser[Int], chunkEnd: Int): Reader[Elem] = new Reader[Elem] {
+      def input = rdr.input
+      def first = rdr.first
+      def offset = rdr.offset
+      def atEnd = rdr.atEnd
 
-}
-
-trait CharParsers extends SimpleParsers {
-  type Elem = Char
-
-  def isLetter(c: Char) = c >= 'a' && c <= 'z'
-  def isDigit(c: Char) = c >= '0' && c <= '9'
-
-  def letter = accept(isLetter(_))
-  def letters: Parser[String] = repFold(letter)("", { (str: String, c) => str + c.toString })
-
-  def digit: Parser[Int] = accept(isDigit(_)) ^^ { c => (c - '0').toInt }
-  def number: Parser[Int] = digit >> { x =>
-    repFold(digit)(x, (res: Int, y: Int) => res * 10 + y)
+      def rest = if(offset == chunkEnd -1) {
+        val next = rdr.rest
+        p(next) match {
+          case Success(chunkSize2, rest2) => readChunked(p, rest2.offset + chunkSize2)
+          case Failure(rest) => rest
+        }
+      } else readChunked(p, chunkEnd)
+    }
   }
+*/
 
-  def accept(s: String): Parser[String] =
-    accept(s.toList) ^^ { xs => xs.mkString }
+
 }
 
-trait Reader[+T] {
+abstract class Reader[+T] { self =>
   def first: T
   def rest: Reader[T]
   def offset: Int
@@ -140,6 +143,7 @@ class StringReader(s: String, override val offset: Int = 0) extends Reader[Char]
   def atEnd = offset >= s.length
 
   def input = s
+
 }
 
 case class ChunkReader(s: String, chunks: List[(Int, Int)]) extends Reader[Char] {
@@ -167,6 +171,24 @@ case class ChunkReader(s: String, chunks: List[(Int, Int)]) extends Reader[Char]
     assert(s == that.s)
     new ChunkReader(s, chunks ++ that.chunks)
   }
+}
+
+trait CharParsers extends SimpleParsers {
+  type Elem = Char
+
+  def isLetter(c: Char) = c >= 'a' && c <= 'z'
+  def isDigit(c: Char) = c >= '0' && c <= '9'
+
+  def letter = accept(isLetter(_))
+  def letters: Parser[String] = repFold(letter)("", { (str: String, c) => str + c.toString })
+
+  def digit: Parser[Int] = accept(isDigit(_)) ^^ { c => (c - '0').toInt }
+  def number: Parser[Int] = digit >> { x =>
+    repFold(digit)(x, (res: Int, y: Int) => res * 10 + y)
+  }
+
+  def accept(s: String): Parser[String] =
+    accept(s.toList) ^^ { xs => xs.mkString }
 }
 
 object Interleaved extends CharParsers {
@@ -209,6 +231,7 @@ object Interleaved extends CharParsers {
     def atEnd = rdr.atEnd
   }
 
+
   def hewords = accept("hello") | accept("helicopter")
 
   def body(x: Int): Parser[ChunkReader] = Parser { in: Reader[Char] =>
@@ -233,6 +256,8 @@ object Interleaved extends CharParsers {
     }
   }
 
+
+
   def main(args: Array[String]) = {
     println("Interleaving is the form of the day!")
 
@@ -246,6 +271,12 @@ object Interleaved extends CharParsers {
       case Success(str, _) => str
       case Failure(in) => in.offset
     })
+
+//    println(hewords(readChunked(new StringReader("he3llo"), number, 2)))
+//    println(hewords(readChunked(new StringReader("he3lic3opt2er"), number, 2)) match {
+//      case Success(str, _) => str
+//      case Failure(in) => in.offset
+//    })
   }
 }
 

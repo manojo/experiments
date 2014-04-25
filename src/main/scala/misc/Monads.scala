@@ -47,12 +47,14 @@ class ExceptionMonad extends Monad {
 
 }
 
+/*
+
 class StateMonad extends Monad {
 
   type State = Int
   type M[+A] = State => (A, State)
 
-  def unit[A](a: A) = { s: State => (a, s) }
+  def unit[A](a: A) = s: State => (a, s)
   def bind[A, B](m: M[A], f: A => M[B]) = { s: State =>
 
     val (a1, s1) = m(s)
@@ -63,6 +65,7 @@ class StateMonad extends Monad {
   def tick: M[Unit] = { s: State => ((), s + 1) }
 
 }
+*/
 
 class OutputMonad extends Monad {
 
