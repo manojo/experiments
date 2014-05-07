@@ -73,7 +73,7 @@ object TestJson {
       // Re-hack the generated file
       val txt = scala.io.Source.fromFile(file).mkString
                  .replaceAll("case class (Tuple2StringString|Tuple2CharString|ParseResultString|ParseResultChar).*\n","")
-                 .replaceAll("class JsonParse","case class JsonParse") // serializability for benchmarks
+                 .replaceAll("class JsonParse2","case class JsonParse") // serializability for benchmarks
                  .replaceAll("println\\(.*\\)","()")
       val o2 = new FileOutputStream(file);
       o2.write(txt.getBytes)
@@ -81,7 +81,7 @@ object TestJson {
     }
   }
   def main(args:Array[String]) {
-    val w = new Writer("src/main/scala/lms/parsing/JsonParseGen.scala")
+    val w = new Writer("src/main/scala/lms/parsing/JsonParseGen2.scala")
     w.codegen.emitSource(w.jsonParse _ , "JsonParse", w.pr)
     w.close
   }

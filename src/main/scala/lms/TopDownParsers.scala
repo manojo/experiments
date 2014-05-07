@@ -227,7 +227,7 @@ trait CharParsers extends TopDownParsers with CharOps with StringStructOps {
     Generator{ g =>
       val l = in.length
       val e = __newVar(pos)
-      while (e<l && p(in(e))) { e += 1 }
+      while (e < l && p(in(e))) { e += 1 }
       if (empty) g(Success[StringStruct](String(in,pos,e-pos),e))
       else {
         if (pos==e) g(Failure[StringStruct](pos))

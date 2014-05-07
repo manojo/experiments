@@ -21,7 +21,13 @@ object TestJsonParse{
     "null".toArray
   )
 
-  val fileNames = List(1,2,3,4,6).map{x=> "just_tweet"+x}
+  val jsonparser2 = new JsonParse2(
+    "false".length,"false".toArray,
+    "true".length,"true".toArray,
+    "null".toArray
+  )
+
+  val fileNames = List(1/*,2,3,4,6*/).map{x=> "just_tweet"+x}
 
   val messages = fileNames.foldLeft(List[Array[Char]]()){case (acc, fileName) =>
     val file = new BufferedReader(new FileReader("src/test/resources/"+fileName))
@@ -35,22 +41,37 @@ object TestJsonParse{
     out.toArray :: acc
   }.map(_.toArray)
 
+    val addressbook=
+"""{
+"address book": {
+"name": "John Smith",
+"address": {
+"street": "10 Market Street",
+"city" : "San Francisco, CA",
+"zip" : 94111
+},
+"phone Nums": [
+"408 338-4238",
+"408 111-6892"
+]
+}
+}
+"""
+
   def time(ns:Long,n:Int=2) = { val ms=ns/1000000; ("%"+(if (n==0)"" else n)+"d.%03d").format(ms/1000,ms%1000) }
   def ns[T](f:()=>T) = { val t0=System.nanoTime(); var r=f(); val t1=System.nanoTime(); (t1-t0,r) }
 
   def main(args:Array[String]){
-    val N_LOOPS = 100 // 100
-    val N_SAMPLES = 5 // 5
+    val N_LOOPS = 1 // 100
+    val N_SAMPLES = 1 // 5
 
     (0 until N_SAMPLES).foreach { k =>
       val n = ns{()=>
         var i=0;
         while(i<N_LOOPS) {
-          jsonparser.apply(messages(0))
-          jsonparser.apply(messages(1))
-          jsonparser.apply(messages(2))
-          jsonparser.apply(messages(3))
-          jsonparser.apply(messages(4))
+          jsonparser.apply(addressbook.toArray)
+          jsonparser2.apply(addressbook.toArray)
+
           i=i+1;
         }
       }._1
