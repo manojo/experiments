@@ -8,6 +8,8 @@ import java.io.PrintWriter
 import java.io.StringWriter
 import java.io.FileOutputStream
 
+import scala.collection.mutable.ListBuffer
+
 // -------- Copied from FunctionsRecursiveExp in lms/src/common/Functions.scala
 import scala.reflect.SourceContext
 import scala.virtualization.lms.util.ClosureCompare
@@ -29,7 +31,14 @@ trait FunctionsRecursiveExp2 extends FunctionsExp with ClosureCompare {
 // --------
 
 trait JsonParser extends TokenParsers with RecParsers with StringStructOps with CastingOps
- with CharOps with FunctionsRecursiveExp2 {
+ with CharOps with FunctionsRecursiveExp2 with ListBufferOps {
+
+  //override rep to use ListBuffer
+  override def rep[T:Manifest](p : => Parser[T]) =
+    repFold(p)(ListBuffer[T](),
+      {(ls : Rep[ListBuffer[T]], t: Rep[T]) => ls += t }
+    ) ^^ { x => x.toList }
+
   final val kNull = unit(0)
   final val kFalse = unit(1)
   final val kTrue = unit(2)

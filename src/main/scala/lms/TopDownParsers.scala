@@ -135,7 +135,7 @@ trait TopDownParsers extends MyScalaOpsPkg with GeneratorOps with LiftVariables
       {(ls : Rep[List[T]], t: Rep[T]) => t :: ls }
     ) ^^ { x => x.reverse }
 
-  def repsep[T:Manifest,U:Manifest](p: => Parser[T], q: =>Parser[U]): Parser[List[T]] =
+  def repsep[T:Manifest,U:Manifest](p: => Parser[T], q: => Parser[U]): Parser[List[T]] =
     (p ~ rep(q ~>  p)) ^^ {x => x._1 :: x._2 } | success(List[T]())
 
   //a 'conditional' parser

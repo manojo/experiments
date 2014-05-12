@@ -27,6 +27,12 @@ object TestJsonParse{
     "null".toArray
   )
 
+  val jsonparser3 = new JsonParse3(
+    "false".length,"false".toArray,
+    "true".length,"true".toArray,
+    "null".toArray
+  )
+
   val fileNames = List(1/*,2,3,4,6*/).map{x=> "just_tweet"+x}
 
   val messages = fileNames.foldLeft(List[Array[Char]]()){case (acc, fileName) =>
@@ -68,9 +74,15 @@ object TestJsonParse{
     (0 until N_SAMPLES).foreach { k =>
       val n = ns{()=>
         var i=0;
-        while(i<N_LOOPS) {
-          jsonparser.apply(addressbook.toArray)
+        while(i < N_LOOPS) {
+          // jsonparser.apply(addressbook.toArray)
           jsonparser2.apply(addressbook.toArray)
+
+          println("")
+          println("blabla")
+          println("")
+
+          jsonparser3.apply(addressbook.toArray)
 
           i=i+1;
         }

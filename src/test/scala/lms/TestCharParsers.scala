@@ -8,8 +8,7 @@ import java.io.PrintWriter
 import java.io.StringWriter
 import java.io.FileOutputStream
 
-
-trait CharParsersProg extends CharParsers{
+trait CharParsersProg extends CharParsers {
 
   //simple acceptIf filter
   def test1(in: Rep[Array[Char]]): Rep[Unit] = {

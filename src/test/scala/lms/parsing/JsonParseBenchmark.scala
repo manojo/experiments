@@ -8,7 +8,7 @@ import DefaultJsonProtocol._
 
 //class JsonParseBenchmark extends PerformanceTest.Regression
 class JsonParseBenchmark extends PerformanceTest
-  with Serializable{
+  with Serializable {
 
   /* configuration */
   def executor = SeparateJvmsExecutor(
@@ -77,12 +77,21 @@ class JsonParseBenchmark extends PerformanceTest
     "null".toArray
   )
 
+  // staged3, with ListBuffer
+  val stagedJsonParser3 = new JsonParse3(
+    "false".length,"false".toArray,
+    "true".length,"true".toArray,
+    "null".toArray
+  )
+
   bench("StagedJsonParser","parse",stagedJsonParser.apply _)
 
   bench("StagedJsonParser2","parse",stagedJsonParser2.apply _)
 
+  bench("StagedJsonParser3","parse",stagedJsonParser3.apply _)
+
   // spray json
-  bench("SprayJsonParser","parse",spray.json.JsonParser.apply _)
+  //bench("SprayJsonParser","parse",spray.json.JsonParser.apply _)
 
   // scala parser combinators
   // bench("ScalaJsonParser","parse",...)

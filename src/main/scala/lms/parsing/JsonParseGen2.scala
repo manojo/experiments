@@ -1,27 +1,7 @@
 // Generated file using sbt> test:run-main lms.parsing.TestJson
 package lms.parsing
 
-//case class OptionChar(value: Char, defined: Boolean)
-//
-//
-//case class Anon6507737(kind: Int, data: Any)
-//
-//case class ParseResultAnon6507737(res: Anon6507737, empty: Boolean, next: Int)
-//
-//case class Tuple2Anon6507737ListAnon6507737(_1: Anon6507737, _2: scala.collection.immutable.List[Anon6507737])
-//
-//case class Anon1680061013(input: Array[Char], start: Int, length: Int)
-//
-//
-//case class ParseResultInt(res: Int, empty: Boolean, next: Int)
-//
-//case class Tuple2OptionCharString(_1: OptionChar, _2: java.lang.String)
-//
-//case class ParseResultListAnon6507737(res: scala.collection.immutable.List[Anon6507737], empty: Boolean, next: Int)
-//
 case class Tuple2Anon1680061013Anon6507737(_1: Anon1680061013, _2: Anon6507737)
-//
-//case class Tuple2OptionCharInt(_1: OptionChar, _2: Int)
 /*****************************************
   Emitting Generated Code
 *******************************************/
@@ -3135,6 +3115,7 @@ val x2751 = x2
 val x2752 = x3
 val x2753 = x4
 val x2754 = new ParseResultAnon6507737(x2751,x2752,x2753)
+
 val x2755 = ()
 x2755
 }

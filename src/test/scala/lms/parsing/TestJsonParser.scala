@@ -9,7 +9,7 @@ import java.io.StringWriter
 import java.io.FileOutputStream
 
 
-trait JsonParserProg extends JsonParser{
+trait JsonParserProg extends JsonParser {
 /*
   def jsonParse(in: Rep[Array[Char]]): Rep[Unit] = {
     var s = Failure[(String,String)](unit(-1))
@@ -53,12 +53,12 @@ object TestJson {
   class Writer(file:String) extends JsonParserProg with RecParsersExp with MyScalaOpsPkgExp
     with GeneratorOpsExp with CharOpsExp with MyIfThenElseExpOpt with StructOpsExpOptCommon
     with ParseResultOpsExp with FunctionsExp with OptionOpsExp with StringStructOpsExp
-    with CastingOpsExp with MyScalaCompile{self =>
+    with CastingOpsExp with ListBufferOpsExp with MyScalaCompile { self =>
 
     val codegen = new MyScalaCodeGenPkg with ScalaGenGeneratorOps
       with ScalaGenCharOps with ScalaGenParseResultOps with ScalaGenStructOps
       with ScalaGenFunctions with ScalaGenOptionOps with ScalaGenStringStructOps
-      with ScalaGenCastingOps {
+      with ScalaGenCastingOps with ScalaGenListBufferOps {
         val IR: self.type = self
       }
     val buf = new ByteArrayOutputStream()
@@ -73,7 +73,7 @@ object TestJson {
       // Re-hack the generated file
       val txt = scala.io.Source.fromFile(file).mkString
                  .replaceAll("case class (Tuple2StringString|Tuple2CharString|ParseResultString|ParseResultChar).*\n","")
-                 .replaceAll("class JsonParse2","case class JsonParse") // serializability for benchmarks
+                 .replaceAll("class JsonParse3","case class JsonParse3") // serializability for benchmarks
                  .replaceAll("println\\(.*\\)","()")
       val o2 = new FileOutputStream(file);
       o2.write(txt.getBytes)
@@ -81,8 +81,8 @@ object TestJson {
     }
   }
   def main(args:Array[String]) {
-    val w = new Writer("src/main/scala/lms/parsing/JsonParseGen2.scala")
-    w.codegen.emitSource(w.jsonParse _ , "JsonParse", w.pr)
+    val w = new Writer("src/main/scala/lms/parsing/JsonParseGen3.scala")
+    w.codegen.emitSource(w.jsonParse _ , "JsonParse3", w.pr)
     w.close
   }
 }
@@ -131,12 +131,12 @@ class TestJsonParser extends FileDiffSuite {
       new JsonParserProg with RecParsersExp with MyScalaOpsPkgExp with GeneratorOpsExp
        with CharOpsExp with MyIfThenElseExpOpt with StructOpsExpOptCommon
        with ParseResultOpsExp with FunctionsExp with OptionOpsExp with StringStructOpsExp
-       with CastingOpsExp with MyScalaCompile{self =>
+       with CastingOpsExp with ListBufferOpsExp with MyScalaCompile { self =>
 
         val codegen = new MyScalaCodeGenPkg with ScalaGenGeneratorOps
           with ScalaGenCharOps with ScalaGenParseResultOps with ScalaGenStructOps
           with ScalaGenFunctions with ScalaGenOptionOps with ScalaGenStringStructOps
-          with ScalaGenCastingOps{
+          with ScalaGenCastingOps with ScalaGenListBufferOps {
           val IR: self.type = self
         }
 
@@ -176,20 +176,20 @@ class TestJsonParser extends FileDiffSuite {
           "[3]","[3,[2],[[1]]]",
           "{\"hi\" : 2,\"hey\" : {\"hey\" : 2}}",
           """{
-          "address book": {
-          "name": "John Smith",
-          "address": {
-          "street": "10 Market Street",
-          "city" : "San Francisco, CA",
-          "zip" : 94111
-          },
-          "phone Nums": [
-          "408 338-4238",
-          "408 111-6892"
-          ]
-          }
-          }
-          """
+          |"address book": {
+          |"name": "John Smith",
+          |"address": {
+          |"street": "10 Market Street",
+          |"city" : "San Francisco, CA",
+          |"zip" : 94111
+          |},
+          |"phone Nums": [
+          |"408 338-4238",
+          |"408 111-6892"
+          |]
+          |}
+          |}
+          """.stripMargin
         )
 
         jsonMsgs.foreach{msg =>
