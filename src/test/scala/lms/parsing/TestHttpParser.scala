@@ -248,8 +248,8 @@ object TestHttpCParser {
         override def write(b:Int) {}
     }))
     def on = scala.Console.setOut(o)
-    var i=0; off; while(i<1000) { f(s); i+=1 }
-    var k=0; while(k<10) { println(time(ns(()=>{ off; i=0; while(i<100) { f(s); i+=1 }; on })._1)); k+=1 }
+    var i=0; off; while(i < 1000) { f(s); i+=1 }
+    var k=0; while(k < 10) { println(time(ns(()=>{ off; i=0; while(i < 100) { f(s); i+=1 }; on })._1)); k+=1 }
 
     val w = new Writer("src/main/c/http_gen_full2.h")
     w.codegen.emitSource(w.respAndMessageParse _ , "respAndMessageParse", w.pr)

@@ -57,7 +57,7 @@ class HttpParseBenchmark extends PerformanceTest
       ) in {
         using(range) /*.config(exec.jvmflags -> "-Xmx12G -Xms12G -Xss64m")*/ in { n=>
           // we use while to remove overhead of for ... yield
-          var i=0; while (i<n) { var m=0; while (m<mn) { f(ms(m)); m+=1 }; i+=1 }
+          var i=0; while (i < n) { var m=0; while (m < mn) { f(ms(m)); m+=1 }; i+=1 }
         }
       }
     }
@@ -81,7 +81,6 @@ class HttpParseBenchmark extends PerformanceTest
     "chunked".toArray,
     "upgrade".toArray
   )
-  //bench("RespAndMessageParserStatic","parse",stagedParserStatic.apply _)
 
   //staged parser static new
   val stagedParserStaticNew = new ResponseParseStatic(
@@ -94,7 +93,18 @@ class HttpParseBenchmark extends PerformanceTest
     "chunked".toArray,
     "upgrade".toArray
   )
+
+  //staged parser static 2
+  val stagedParserStatic2 = new ResponseParseStatic2(
+    "content-length".toArray,
+    "transfer-encoding".toArray,
+    "chunked".toArray,
+    "upgrade".toArray
+  )
+
+  bench("RespAndMessageParserStatic","parse",stagedParserStatic.apply _)
   bench("RespAndMessageParserStaticNew","parse",stagedParserStaticNew.apply _)
+  bench("RespAndMessageParserStatic2","parse",stagedParserStatic2.apply _)
 
   // hand written, folding
   val handWrittenParser = HandWrittenParserWrapper.getParser

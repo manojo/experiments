@@ -3,6 +3,7 @@ package lms.parsing
 import lms._
 import scala.virtualization.lms.common._
 import scala.virtualization.lms.internal.Effects
+import scala.virtualization.lms.internal._
 
 import java.io.PrintWriter
 import java.io.StringWriter
@@ -73,7 +74,7 @@ object TestJson {
       // Re-hack the generated file
       val txt = scala.io.Source.fromFile(file).mkString
                  .replaceAll("case class (Tuple2StringString|Tuple2CharString|ParseResultString|ParseResultChar).*\n","")
-                 .replaceAll("class JsonParse3","case class JsonParse3") // serializability for benchmarks
+                 .replaceAll("class JsonParse4","case class JsonParse4") // serializability for benchmarks
                  .replaceAll("println\\(.*\\)","()")
       val o2 = new FileOutputStream(file);
       o2.write(txt.getBytes)
@@ -81,8 +82,8 @@ object TestJson {
     }
   }
   def main(args:Array[String]) {
-    val w = new Writer("src/main/scala/lms/parsing/JsonParseGen3.scala")
-    w.codegen.emitSource(w.jsonParse _ , "JsonParse3", w.pr)
+    val w = new Writer("src/main/scala/lms/parsing/JsonParseGen4.scala")
+    w.codegen.emitSource(w.jsonParse _ , "JsonParse4", w.pr)
     w.close
   }
 }

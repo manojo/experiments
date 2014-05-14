@@ -59,6 +59,7 @@ trait TopDownParsers extends MyScalaOpsPkg with GeneratorOps with LiftVariables
     def ^^[U:Manifest](f: Rep[T] => Rep[U]) = self.map(f)
     def ^^^[U:Manifest](u: Rep[U]) = self.map(x => u)
 
+
     def | [U>:T:Manifest](that: Parser[U]) = {
       val p = Parser[U]{ pos =>
         val tmpSelf = toplevel(self)
@@ -69,6 +70,29 @@ trait TopDownParsers extends MyScalaOpsPkg with GeneratorOps with LiftVariables
       }
       toplevel(p)
     }
+
+    /*
+    def | [U>:T:Manifest](that: Parser[U]) = Parser[U]{ pos =>
+        Generator{ g =>
+          var s = Failure[U](pos)
+
+          self(pos).apply { x: Rep[ParseResult[T]] =>
+            if(x.isEmpty) that(pos).apply { y => s = y }
+            else { s = x.asInstanceOf[Rep[ParseResult[T]]] }
+          }
+          g(readVar(s))
+        }
+      }
+    */
+
+//        val tmpSelf = toplevel(self)
+//
+//        tmpSelf(pos).flatMap{x =>
+//          if(x.isEmpty) that(pos) else elGen(x.asInstanceOf[Rep[ParseResult[U]]])
+//        }
+//      }
+//      toplevel(p)
+//    }
 
     def filter(p: Rep[T] => Rep[Boolean]) = Parser[T]{pos =>
       self(pos).map{ x =>
@@ -268,9 +292,9 @@ trait TokenParsers extends TopDownParsers with CharParsers with StringStructOps{
   def chr(in:Rep[Input],c:Char) = accept(in, unit(c))
 
   def doubleLit(in:Rep[Input]) : Parser[Double] = (
-    ((opt(chr(in,'-'))~numeric(in)) ^^ {x: Rep[(Option[Char], String)] => if(x._1.isDefined) x._1.get + x._2 else x._2})
+    ((opt(chr(in,'-')) ~ numeric(in)) ^^ {x: Rep[(Option[Char], String)] => if(x._1.isDefined) x._1.get + x._2 else x._2})
     ~ (chr(in,'.')~> numeric(in))
-  ) ^^ {x => (x._1+unit(".")+x._2).toDouble}
+  ) ^^ {x => (x._1 + unit(".") + x._2).toDouble}
     // c==unit('e') || c==unit('E')) ^^ { _.toStr.toDouble }
 
 

@@ -168,7 +168,7 @@ trait HttpParser extends TokenParsers with HttpComponents with StringStructOps{
     repFold(p)(unit(""), (res: Rep[String], x: Rep[Char]) => res + toLower(x))
 
   def headerName(in: Rep[Input]): Parser[StringStruct] =
-    letterIdx(in)~stringStruct(in, letterIdx(in) | acceptIdx(in, unit('-'))) ^^ {
+    letterIdx(in) ~ stringStruct(in, letterIdx(in) | acceptIdx(in, unit('-'))) ^^ {
       x: Rep[(Int, StringStruct)] => String(in, st = x._1, len = x._2.length + unit(1))
     }
 
@@ -189,28 +189,31 @@ trait HttpParser extends TokenParsers with HttpComponents with StringStructOps{
   //def body(in:Rep[Input], n:Rep[Int]) =
   //  repNFold(acceptAll(in), n)(unit(""), (res: Rep[String], c: Rep[Char]) => res + c)
   def body(in:Rep[Input], n:Rep[Int]) = Parser[StringStruct] { i =>
-    if (i+n<in.length) elGen(Success[StringStruct](String(in,i,n),i+n))
+    if (i+n < in.length) elGen(Success[StringStruct](String(in,i,n), i + n))
     else elGen(Failure[StringStruct](i))
   }
 
-  def collect(res: Rep[Response], hName: Rep[StringStruct], prop: Rep[StringStruct]) : Rep[Response] =
-    if((hName == "connection" || hName == "proxy-connection")
-      && (prop == "keep-alive" || prop == "close")
+  def collect(res: Rep[Response], hName: Rep[StringStruct], prop: Rep[StringStruct]) : Rep[Response] = {
+    val hNameStr = hName.mkString; val propStr = prop.mkString
+
+    if((hNameStr == "connection" || hNameStr == "proxy-connection")
+      && (propStr == "keep-alive" || propStr == "close")
     ){
       Response(st = res.status, cL = res.contentLength, conn = prop.mkString,
         ch = res.chunked, up = res.upgrade)
-    }else if(hName == "content-length"){
+    }else if(hNameStr == "content-length"){
       Response(st = res.status, cL = prop.mkString.toInt, conn = res.connection,
         ch = res.chunked, up = res.upgrade)
-    }else if(hName == "transfer-encoding" && prop == "chunked"){
+    }else if(hNameStr == "transfer-encoding" && propStr == "chunked"){
       Response(st = res.status, cL = res.contentLength, conn = res.connection,
         ch = unit(true), up = res.upgrade)
-    }else if(hName == "upgrade"){
+    }else if(hNameStr == "upgrade"){
       Response(st = res.status, cL = res.contentLength, conn = res.connection,
         ch = res.chunked, up = unit(true))
     }else {
       res
     }
+  }
 
   def respAndMessage(in: Rep[Input]): Parser[(Response,StringStruct)] = response(in) >> { rsp =>
     body(in, rsp.contentLength) ^^ {txt: Rep[StringStruct] => make_tuple2(rsp, txt)}
