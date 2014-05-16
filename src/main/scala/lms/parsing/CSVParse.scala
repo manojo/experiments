@@ -45,18 +45,34 @@ object CSVParse {
     out.toArray :: acc
   }.map(_.toArray)
 
-  def main(args : Array[String]){
-    (new CSVDoubleParseGen).apply(messages(0))
+  val fileNames3 = List("csvStringLits.txt")
 
-    val boolParser = CSVBooleanParseGen(
-      "false".length,
-      "false".toArray,
-      "true".length,
-      "true".toArray,
-      "false".toArray,
-      "true".toArray
-    )
+  val messages3 = fileNames3.foldLeft(List[Array[Char]]()){case (acc, fileName) =>
+    val file = new BufferedReader(new FileReader("src/test/resources/"+fileName))
+    val out = new ArrayBuffer[Char]
+
+    var line = file.readLine
+    while(line != null){
+      out ++= line + "\n"
+      line = file.readLine
+    }
+    out.toArray :: acc
+  }.map(_.toArray)
+
+  def main(args : Array[String]){
+    //(new CSVDoubleParseGen).apply(messages(0))
+    //(new CSVDoubleParseGen2).apply(messages(0))
+
+    //val boolParser = CSVBooleanParseGen(
+    //  "false".length,
+    //  "false".toArray,
+    //  "true".length,
+    //  "true".toArray,
+    //  "false".toArray,
+    //  "true".toArray
+    //)
 
     //boolParser.apply(messages2(0))
+    println((new CSVStringLitParseGen).apply(messages3(0)))
   }
 }

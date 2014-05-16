@@ -25,6 +25,14 @@ trait CSVParserProg extends CSVParser {
     println(s)
   }
 
+  def csvStringLitParse(in: Rep[Array[Char]]): Rep[Unit] = {
+    var s = Failure[List[StringStruct]](unit(-1))
+    val p = csvStringLit(in).apply(unit(0))
+    p{x => s = x}
+    println(s)
+  }
+
+
 }
 
 class TestCSVParser extends FileDiffSuite {
@@ -59,6 +67,14 @@ class TestCSVParser extends FileDiffSuite {
 
         val testcCsvBoolean = compile(csvBooleanParse)
         testcCsvBoolean("[true, false, false, true, false, true, true]".toArray)
+        codegen.reset
+
+        codegen.emitSource(csvStringLitParse _, "csvStringLitParse", new java.io.PrintWriter(System.out))
+        codegen.emitDataStructures(new java.io.PrintWriter(System.out))
+        codegen.reset
+
+        val testcCSVStringLitParse = compile(csvStringLitParse)
+        testcCSVStringLitParse("[\"bla\", \"carol\"]".toArray)
         codegen.reset
       }
     }
@@ -105,12 +121,16 @@ object TestCSV {
   }
 
   def main(args:Array[String]) {
-    val w = new Writer("src/main/scala/lms/parsing/CSVDoubleParseGen.scala", "CSVDoubleParseGen")
-    w.codegen.emitSource(w.csvOnlyDoublesParse _ , "CSVDoubleParseGen", w.pr)
-    w.close
+    //val w = new Writer("src/main/scala/lms/parsing/CSVDoubleParseGen2.scala", "CSVDoubleParseGen2")
+    //w.codegen.emitSource(w.csvOnlyDoublesParse _ , "CSVDoubleParseGen2", w.pr)
+    //w.close
 
-    val w2 = new Writer("src/main/scala/lms/parsing/CSVBooleanParseGen.scala", "CSVBooleanParseGen")
-    w2.codegen.emitSource(w2.csvBooleanParse _ , "CSVBooleanParseGen", w2.pr)
-    w2.close
+    //val w2 = new Writer("src/main/scala/lms/parsing/CSVBooleanParseGen.scala", "CSVBooleanParseGen")
+    //w2.codegen.emitSource(w2.csvBooleanParse _ , "CSVBooleanParseGen", w2.pr)
+    //w2.close
+
+    val w3 = new Writer("src/main/scala/lms/parsing/CSVStringLitParseGen.scala", "CSVStringLitParseGen")
+    w3.codegen.emitSource(w3.csvStringLitParse _ , "CSVStringLitParseGen", w3.pr)
+    w3.close
   }
 }

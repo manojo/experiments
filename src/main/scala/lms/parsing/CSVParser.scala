@@ -66,6 +66,18 @@ trait CSVParser extends TokenParsers with RecParsers with StringStructOps with C
   override def whitespaces(in: Rep[Input]) : Parser[String] =
     repToS_f(acceptIf(in, {x:Rep[Char] => x == unit(' ') || x == unit('\n')}))// ^^^ {unit("")}
 
+  override def doubleLit(in:Rep[Input]) : Parser[Double] =
+    (opt(chr(in, '-')) ~
+      (numericStruct(in) ~ (chr(in, '.') ~> numeric(in)) ^^ { x => String(in, x._1.start, x._1.length + x._2.length + unit(1)) })
+    ) ^^ {
+      x => if(x._1.isDefined) String(in, x._2.start - unit(1), x._2.length + unit(1)) else x._2
+    } ^^ { x => x.mkString.toDouble }
+
+  def numericStruct(in: Rep[Input]): Parser[StringStruct] =
+    ( digitIdx(in) ~ stringStruct(in, digitIdx(in)) ) ^^ { x =>
+      String(in, x._1, x._2.length + 1)
+    }
+
   // true | false | null | doubleLit | intLit | stringLit
   def primitives(in: Rep[Input]): Parser[JV] = (
       acceptB(in,"false") ^^^ jFalse
@@ -97,6 +109,12 @@ trait CSVParser extends TokenParsers with RecParsers with StringStructOps with C
 
     arr
   }
+
+  def csvStringLit(in: Rep[Input]) : Parser[List[StringStruct]] = (
+    (chr(in,'[') ~> whitespaces(in)) ~>
+    repsep(stringStructLit(in), whitespaces(in) ~> chr(in, ',') ~> whitespaces(in)) <~
+      (whitespaces(in) ~> chr(in, ']'))
+  )
 
   def stringStructLit(in:Rep[Input]): Parser[StringStruct] = (
     chr(in,'\"') ~>

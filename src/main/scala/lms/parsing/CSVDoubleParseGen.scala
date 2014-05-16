@@ -10,8 +10,8 @@ case class ParseResultTuple2DoubleListDouble(res: Tuple2DoubleListDouble, empty:
 /*****************************************
   Emitting Generated Code
 *******************************************/
-case class CSVDoubleParseGen extends ((Array[Char])=>(Unit)) {
-def apply(x0:Array[Char]): Unit = {
+case class CSVDoubleParseGen extends ((Array[Char])=> ParseResultListDouble) {
+def apply(x0:Array[Char]): ParseResultListDouble = {
 var x2: scala.collection.immutable.List[Double] = null
 var x3: Boolean = true
 var x4: Int = -1
@@ -2458,9 +2458,8 @@ val x1974 = x2
 val x1975 = x3
 val x1976 = x4
 val x1977 = new ParseResultListDouble(x1974,x1975,x1976)
-println(x1977)
-val x1978 = ()
-x1978
+
+x1977
 }
 }
 /*****************************************
