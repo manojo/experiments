@@ -9,6 +9,18 @@ import java.io.PrintWriter
 import java.io.StringWriter
 import java.io.FileOutputStream
 
+object CSVParseRun {
+  def main(args: Array[String]) {
+    println("cho tai!!")
+
+    val data = "[1.223, -123.243, 212143223.211]".toCharArray
+
+    //println(cvsParser.doubles(data))
+    println((new CSVDoubleParseGen2).apply(data))
+    println((new CSVDoubleParseGen2).apply(data))
+  }
+}
+
 trait CSVParserProg extends CSVParser {
 
   def csvOnlyDoublesParse(in: Rep[Array[Char]]): Rep[Unit] = {
@@ -121,16 +133,16 @@ object TestCSV {
   }
 
   def main(args:Array[String]) {
-    //val w = new Writer("src/main/scala/lms/parsing/CSVDoubleParseGen2.scala", "CSVDoubleParseGen2")
-    //w.codegen.emitSource(w.csvOnlyDoublesParse _ , "CSVDoubleParseGen2", w.pr)
-    //w.close
+    val w = new Writer("src/main/scala/lms/parsing/CSVDoubleParseGen3.scala", "CSVDoubleParseGen3")
+    w.codegen.emitSource(w.csvOnlyDoublesParse _ , "CSVDoubleParseGen3", w.pr)
+    w.close
 
     //val w2 = new Writer("src/main/scala/lms/parsing/CSVBooleanParseGen.scala", "CSVBooleanParseGen")
     //w2.codegen.emitSource(w2.csvBooleanParse _ , "CSVBooleanParseGen", w2.pr)
     //w2.close
 
-    val w3 = new Writer("src/main/scala/lms/parsing/CSVStringLitParseGen.scala", "CSVStringLitParseGen")
-    w3.codegen.emitSource(w3.csvStringLitParse _ , "CSVStringLitParseGen", w3.pr)
-    w3.close
+    //val w3 = new Writer("src/main/scala/lms/parsing/CSVStringLitParseGen.scala", "CSVStringLitParseGen")
+    //w3.codegen.emitSource(w3.csvStringLitParse _ , "CSVStringLitParseGen", w3.pr)
+    //w3.close
   }
 }

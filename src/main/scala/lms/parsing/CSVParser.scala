@@ -68,7 +68,7 @@ trait CSVParser extends TokenParsers with RecParsers with StringStructOps with C
 
   override def doubleLit(in:Rep[Input]) : Parser[Double] =
     (opt(chr(in, '-')) ~
-      (numericStruct(in) ~ (chr(in, '.') ~> numeric(in)) ^^ { x => String(in, x._1.start, x._1.length + x._2.length + unit(1)) })
+      (numericStruct(in) ~ (chr(in, '.') ~> numericStruct(in)) ^^ { x => String(in, x._1.start, x._1.length + x._2.length + unit(1)) })
     ) ^^ {
       x => if(x._1.isDefined) String(in, x._2.start - unit(1), x._2.length + unit(1)) else x._2
     } ^^ { x => x.mkString.toDouble }
